@@ -1,0 +1,45 @@
+Text Fields¶
+	text
+	textarea
+	email
+	integer
+	money
+	number
+	password
+	percent
+	search
+	url
+
+Choice Fields¶
+	choice
+	entity
+	country
+	language
+	locale
+	timezone
+
+Date and Time Fields¶
+	date
+	datetime
+	time
+	birthday
+
+
+Other Fields¶
+	checkbox
+	file
+	radio
+
+
+Field Groups¶
+	collection
+	repeated
+
+Hidden Fields¶
+	hidden
+	csrf
+
+
+Base Fields¶
+field
+form
