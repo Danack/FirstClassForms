@@ -36,6 +36,4 @@
         "zendframework/zend-filter": ">=2.1.5",
         "zendframework/zend-validator": ">=2.1.5"
 	}
-
-
 }
