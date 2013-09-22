@@ -26,7 +26,7 @@ class Title extends AbstractElement {
     function render() {
         $output = "<div class='row-fluid'>";
         $output .= "<legend class='span12'>";
-        $output .= $this->currentValue;
+        $output .= $this->getCurrentValue();
         $output .= "</legend>";
         $output .= "</div>";
 

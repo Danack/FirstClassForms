@@ -47,7 +47,7 @@ class Text extends AbstractElement {
         }
 
         $output .= "<div class='$remainingSpan'>";
-        $output .= "<input type='text' name='" . $this->getFormName() . "' size='80' value='" . htmlentities($this->currentValue) . "' placeholder='Name' style='width: 100%;' />";
+        $output .= "<input type='text' name='" . $this->getFormName() . "' size='80' value='" . htmlentities($this->getCurrentValue()) . "' placeholder='Name' style='width: 100%;' />";
 
         $output .= "</div>";
         $output .= "</div>";

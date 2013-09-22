@@ -26,7 +26,7 @@ class Label extends AbstractElement {
     function render() {
         $output = "<div class='row-fluid'>";
         $output .= "<div class='" . $this->getStyleName() . " span12'>";
-        $output .= $this->currentValue;
+        $output .= $this->getCurrentValue();
         $output .= "</div>";
         $output .= "</div>";
 

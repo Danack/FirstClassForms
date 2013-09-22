@@ -13,12 +13,16 @@ abstract class AbstractElement {
     /** @var  string */
     protected $name;
 
-    protected $currentValue;
+    private $currentValue;
     protected $id;
 
     /** @var  \Zend\Validator\ValidatorInterface[] */
     public $validationRules = array();
 
+    /** @var \Zend\Filter\AbstractFilter[] */
+    public $filters = array();
+    
+    
     public $errorMessages = array();
     public $label = null;
 
@@ -108,6 +112,11 @@ abstract class AbstractElement {
      * @param $value
      */
     public function setCurrentValue($value) {
+        
+        foreach ($this->filters as $filter) {
+            $value = $filter->filter($value);
+        }
+
         $this->currentValue = $value;
     }
 
@@ -118,7 +127,7 @@ abstract class AbstractElement {
         if ($this->name != null) {
             if (array_key_exists($this->getName(), $data) == true) {
                 $value = $data[$this->getName()];
-                $this->currentValue = $value;
+                $this->setCurrentValue($value);
             }
         }
     }
@@ -137,8 +146,26 @@ abstract class AbstractElement {
             $this->currentValue = $formElement['value'];
         }
 
+        if (array_key_exists('filter', $formElement) == true) {
+            $this->addFilters($formElement['filter']);
+        }
+
         if (array_key_exists('validation', $formElement) == true) {
             $this->addValidationRules($formElement['validation']);
+        }
+    }
+
+
+    public function addFilters($filterArray) {
+
+        foreach ($filterArray as $filterClassname => $options) {
+            if (is_object($options) == true) {
+                $this->filters[] = $options;
+            }
+            else{
+                $validator = new $className($options);
+                $this->filters[] = $validator;
+            }
         }
     }
 
@@ -147,8 +174,14 @@ abstract class AbstractElement {
      */
     public function addValidationRules($validationInfoArray) {
         foreach ($validationInfoArray as $className => $options) {
-            $validator = new $className($options);
-            $this->validationRules[] = $validator;
+            
+            if (is_object($options) == true) {
+                $this->validationRules[] = $options;
+            }
+            else{
+                $validator = new $className($options);
+                $this->validationRules[] = $validator;
+            }
         }
     }
 
@@ -157,7 +190,7 @@ abstract class AbstractElement {
      */
     public function setValue($dataSource) {
         if (array_key_exists($this->name, $dataSource) == true) {
-            $this->currentValue = $dataSource[$this->name];
+            $this->setCurrentValue($dataSource[$this->name]);
         }
     }
 

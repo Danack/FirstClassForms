@@ -131,6 +131,16 @@ abstract class Form {
         }
     }
 
+    function addStartElement($definition) {
+        $formElement = $this->createElement($definition);
+        array_push ($this->startElements, $formElement);
+    }
+    
+    function addEndElement($definition) {
+        $formElement = $this->createElement($definition);
+        array_unshift ($this->endElements, $formElement);
+    }
+
     /**
      * @param $formElement
      * @return mixed
@@ -155,26 +165,28 @@ abstract class Form {
      * @throws \Exception
      */
     function useSubmittedValues() {
+        foreach ($this->startElements as $element) {
+            $element->useSubmittedValue();
+        }
+        
+        foreach ($this->endElements as $element) {
+            $element->useSubmittedValue();
+        }
+
         $rowIDs = getVariable("rowIDs", false);
 
         if ($rowIDs == false) {
-            throw new \Exception("Form had no row ids?");
+            return;
         }
 
         $rowIDs = explode(',', $rowIDs);
 
-        foreach ($this->startElements as $element) {
-            $element->useSubmittedValue();
-        }
         foreach ($rowIDs as $rowID) {
             $rowID = trim($rowID);
             $formElementCollection = new FormElementCollection($this, $rowID, $this->rowElements);
             $formElementCollection->useSubmittedValue();
             $this->rowFieldCollectionArray[] = $formElementCollection;
             $this->rowIDs[] = $rowID;
-        }
-        foreach ($this->endElements as $element) {
-            $element->useSubmittedValue();
         }
     }
 
@@ -259,6 +271,47 @@ abstract class Form {
         return $formSubmitted;
     }
 
+
+    /**
+     * @return bool
+     */
+    function useDataAvailable() {
+        $dataStoredInSession = $this->checkPostRedirectGet();
+
+        if ($dataStoredInSession == true) {
+            return true;
+        }
+
+        if ($this->isSubmitted() == true) {
+            $this->useSubmittedValues();
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return array
+     */
+    function getAllValues() {
+        $data = array();
+        foreach ($this->startElements as $element) {
+            $data[$element->getName()] = $element->getCurrentValue();
+        }
+
+        foreach ($this->rowFieldCollectionArray as $rowField) {
+            foreach ($rowField->elements as $element) {
+                $data[$element->getName()] = $element->getCurrentValue();
+            }
+        }
+
+        foreach ($this->endElements as $element) {
+            $data[$element->getName()] = $element->getCurrentValue();
+        }
+        
+        return $data;
+    }
+    
     /**
      * @param $id
      * @param $name
@@ -324,6 +377,8 @@ abstract class Form {
     function storeValuesInSession() {
         $serializedData = $this->serialize();
         $sessionName = $this->getSessionName();
+        
+     
         $this->session->setSessionVariable($sessionName, $serializedData);
     }
 
@@ -432,13 +487,22 @@ abstract class Form {
         //TODO - need to create an object to set time to prevent form from being resubmitted ages later.
         $storedValues = $this->session->getSessionVariable($sessionName, false, true);
 
-        $this->useStoredValues($storedValues);
-
         if ($storedValues === false) {
             return false;
         }
 
+        $this->useStoredValues($storedValues);
+
+//        echo "sessionName";
+//        var_dump($sessionName);
+//        echo "storedValues";
+//        var_dump($storedValues);
+//        //exit(0);
+        
         return true;
     }
+    
+    
+    
 }
 

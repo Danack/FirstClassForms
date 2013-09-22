@@ -34,11 +34,11 @@ class CSRF extends AbstractElement {
     function render() {
         $output = "";
         //Showing a CSRF element, creates the value
-        $this->currentValue = uniqid(); //mt_rand(1000000, 10000000);
+        $this->setCurrentValue(uniqid()); //mt_rand(1000000, 10000000);
         $sessionName = $this->getSessionName();
 
         $session = $this->form->getSession();
-        $session->setSessionVariable($sessionName, $this->currentValue);
+        $session->setSessionVariable($sessionName, $this->getCurrentValue());
 
         if (count($this->errorMessages) > 0) {
             $output .= "<div class='errorMessage'>";
@@ -49,7 +49,7 @@ class CSRF extends AbstractElement {
             $output .= "</div>";
         }
 
-        $output .= "<input type='hidden' name='" . $this->getFormName() . "' value='" . $this->currentValue . "' />";
+        $output .= "<input type='hidden' name='" . $this->getFormName() . "' value='" . $this->getCurrentValue() . "' />";
 
         return $output;
     }
@@ -68,7 +68,7 @@ class CSRF extends AbstractElement {
      * @return mixed
      */
     public function getValidationValue() {
-        $sessionName = $this->getSessionName($this->currentValue);
+        $sessionName = $this->getSessionName($this->getCurrentValue());
         $session = $this->form->getSession();
         $validationValue = $session->getSessionVariable($sessionName, false, true);
 

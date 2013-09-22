@@ -25,7 +25,7 @@ class Hidden extends AbstractElement {
      */
     function render() {
         $output = "";
-        $output .= "<input type='hidden' name='" . $this->getFormName() . "' value='" . $this->currentValue . "' />";
+        $output .= "<input type='hidden' name='" . $this->getFormName() . "' value='" . $this->getCurrentValue() . "' />";
 
         return $output;
     }

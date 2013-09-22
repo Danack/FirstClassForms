@@ -10,17 +10,6 @@ class CheckBox extends AbstractElement {
     }
 
     /**
-     * @param $value
-     */
-    public function setCurrentValue($value) {
-        if ($value == 'false') {
-            $value = false; //False values from Javascript is passed as string 'false'.
-        }
-
-        $this->currentValue = (bool)$value;
-    }
-
-    /**
      * @return string
      */
     function getClassName() {
@@ -41,7 +30,7 @@ class CheckBox extends AbstractElement {
         }
 
         $checked = '';
-        if ($this->currentValue == true) {
+        if ($this->getCurrentValue() == true) {
             $checked = "checked='checked'";
         }
 
@@ -52,17 +41,6 @@ class CheckBox extends AbstractElement {
         $output .= "</div>";
 
         return $output;
-    }
-
-    /**
-     * @return bool|mixed
-     */
-    function getCurrentValue() {
-        if ($this->currentValue) {
-            return true;
-        }
-
-        return false;
     }
 }
 
