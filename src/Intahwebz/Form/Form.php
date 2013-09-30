@@ -90,7 +90,7 @@ abstract class Form {
             ), 
             array(
                 'type' => \Intahwebz\FormElement\CSRF::class, 
-                'name' => 'csrf', //				'value' => 'true',
+                'name' => 'csrf',
                 'validation' => array(
                     "Intahwebz\\Validator\\CSRF" => array(),
                 )

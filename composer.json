@@ -34,6 +34,8 @@
 
     "require":{
 		"psr/log": "~1.0",
+        "intahwebz/core": "dev-master",
+        "intahwebz/utils": "dev-master",
         "zendframework/zend-inputfilter" : ">=2.1.5",
         "zendframework/zend-filter": ">=2.1.5",
         "zendframework/zend-validator": ">=2.1.5"
