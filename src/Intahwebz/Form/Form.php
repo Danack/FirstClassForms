@@ -492,13 +492,6 @@ abstract class Form {
         }
 
         $this->useStoredValues($storedValues);
-
-//        echo "sessionName";
-//        var_dump($sessionName);
-//        echo "storedValues";
-//        var_dump($storedValues);
-//        //exit(0);
-        
         return true;
     }
     
