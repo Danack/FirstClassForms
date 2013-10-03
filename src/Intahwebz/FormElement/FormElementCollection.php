@@ -98,6 +98,16 @@ class FormElementCollection {
         return null;
     }
 
+    public function getAllValues() {
+        $data = [];
+        foreach ($this->elements as $element) {
+            $data[$element->getName()] = $element->getCurrentValue();
+        }
+        
+        return $data;
+    }
+    
+    
     /**
      * @param $dataSource
      */

@@ -202,6 +202,19 @@ abstract class Form {
         $this->rowIDs[] = $rowID;
     }
 
+
+//    /**
+//     * @param $rowID
+//     * @param array $dataSource
+//     */
+//    function addBlankRow($rowID, array $dataSource) {
+//        $formElementCollection = new FormElementCollection($this, $rowID, $this->rowElements);
+//        $formElementCollection->setValues($dataSource);
+//        $this->rowFieldCollectionArray[] = $formElementCollection;
+//
+//        $this->rowIDs[] = $rowID;
+//    }
+
     /**
      * @param $dataSource
      */
@@ -343,6 +356,15 @@ abstract class Form {
         return null;
     }
 
+    
+    function getRowValues($id) {
+        foreach ($this->rowFieldCollectionArray as $rowField) {
+            if ($rowField->getID() == $id) {
+                return $rowField->getAllValues();
+            }
+        }
+        return null;
+    }
 
     /**
      * @return bool
@@ -493,9 +515,6 @@ abstract class Form {
 
         $this->useStoredValues($storedValues);
         return true;
-    }
-    
-    
-    
+    }   
 }
 
