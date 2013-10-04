@@ -515,6 +515,18 @@ abstract class Form {
 
         $this->useStoredValues($storedValues);
         return true;
-    }   
+    }
+
+    function reset() {
+        foreach ($this->startElements as $element) {
+            $element->reset();
+        }
+
+        $this->rowFieldCollectionArray = array();
+
+        foreach ($this->endElements as $element) {
+            $element->reset();
+        }
+    }
 }
 

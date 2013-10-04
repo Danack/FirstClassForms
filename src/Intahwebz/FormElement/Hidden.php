@@ -4,7 +4,7 @@
 namespace Intahwebz\FormElement;
 
 
-class Hidden extends AbstractElement {
+class Hidden extends AbstractHiddenElement {
 
     /**
      * @return string
@@ -29,5 +29,7 @@ class Hidden extends AbstractElement {
 
         return $output;
     }
+    
+    
 }
 

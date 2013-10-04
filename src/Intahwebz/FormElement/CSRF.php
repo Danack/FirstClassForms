@@ -33,10 +33,9 @@ class CSRF extends AbstractElement {
      */
     function render() {
         $output = "";
+        $this->setCurrentValue(uniqid());
         //Showing a CSRF element, creates the value
-        $this->setCurrentValue(uniqid()); //mt_rand(1000000, 10000000);
         $sessionName = $this->getSessionName();
-
         $session = $this->form->getSession();
         $session->setSessionVariable($sessionName, $this->getCurrentValue());
 

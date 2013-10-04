@@ -224,5 +224,9 @@ abstract class AbstractElement {
     function serialize() {
         return array($this->name => $this->currentValue);
     }
+
+    function reset() {
+        $this->setCurrentValue(null);
+    }
 }
 
