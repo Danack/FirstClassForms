@@ -103,7 +103,7 @@ abstract class AbstractElement {
      */
     public function useSubmittedValue() {
         if ($this->name != null) {
-            $value = getVariable($this->getFormName(), null);
+            $value = $this->form->request->getVariable($this->getFormName(), null);
             $this->setCurrentValue($value);
         }
     }
@@ -227,6 +227,11 @@ abstract class AbstractElement {
 
     function reset() {
         $this->setCurrentValue(null);
+    }
+
+    //TODO - rename this getFormElementName/ID?
+    function getID() {
+        return $this->form->getID().'_'.$this->getName();
     }
 }
 

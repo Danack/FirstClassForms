@@ -31,13 +31,28 @@ abstract class Form {
     var $rowIDs = array();
 
     var $class = 'standardForm';
+    
+    
 
-    var $id = 'form_12345';
+    var $id = null;
 
     /**
      * @var Session
      */
     private $session;
+
+    /**
+     * @var \Intahwebz\Request
+     */
+    public $request;
+
+    function __construct(Session $session, \Intahwebz\Request $request) {
+        $this->session = $session;
+        $this->request = $request;
+
+        $definition = $this->getDefinition();
+        $this->init($definition);
+    }
 
     /**
      * @return Session
@@ -61,20 +76,13 @@ abstract class Form {
     }
 
     function getID() {
-        return $this->id;
-    }
-
-    function __construct(Session $session) {
-        $this->session = $session;
-        $definition = $this->getDefinition();
-        $this->init($definition);
-    }
-
-    static function createForm(Session $session) {
-        /** @var  $form Form */
-        $form = new static($session);
-
-        return $form;
+        foreach ($this->endElements as $element) {
+            if ($element->getName() == 'formID') {
+                return $element->getCurrentValue();
+            }
+        }
+        
+        throw new \Exception("Could not find formID");
     }
 
     function getStandardElements() {
@@ -83,7 +91,12 @@ abstract class Form {
                 'type' => \Intahwebz\FormElement\Hidden::class, 
                 'name' => 'formClass', 
                 'value' => get_class($this),
-            ), 
+            ),
+            array(
+                'type' => \Intahwebz\FormElement\Hidden::class,
+                'name' => 'formID',
+                'value' => uniqid(),
+            ),
             array(
                 'type' => \Intahwebz\FormElement\Hidden::class, 
                 'name' => 'formSubmitted', 'value' => 'true',
@@ -165,6 +178,9 @@ abstract class Form {
      * @throws \Exception
      */
     function useSubmittedValues() {
+        
+        
+        
         foreach ($this->startElements as $element) {
             $element->useSubmittedValue();
         }
@@ -242,8 +258,13 @@ abstract class Form {
             }
         }
 
+        $formID = $this->getID();
+        
+        $output .= "<form action='' method='post' name='vbform' onsubmit='' id='".$formID."' class='well ".$this->class."' enctype='multipart/form-data'>";
 
-        $output .= "<form action='' method='post' name='vbform' onsubmit='' id='" . $this->id . "' class='well " . $this->class . "'>";
+        $output .= "<input type='hidden' name='formID' value='".$formID."' />";  
+        
+        echo "FormID is $formID";
 
         $output .= "<div class='row-fluid'>";
         $output .= "<div class='span12' style='padding-left: 20px'>";
@@ -399,8 +420,7 @@ abstract class Form {
     function storeValuesInSession() {
         $serializedData = $this->serialize();
         $sessionName = $this->getSessionName();
-        
-     
+
         $this->session->setSessionVariable($sessionName, $serializedData);
     }
 
@@ -527,6 +547,14 @@ abstract class Form {
         foreach ($this->endElements as $element) {
             $element->reset();
         }
+    }
+
+    /**
+     * @param $filename
+     * @return \Intahwebz\Utils\UploadedFile
+     */
+    function getUploadedFile($filename) {
+        return $this->request->getUploadedFile($filename);
     }
 }
 
