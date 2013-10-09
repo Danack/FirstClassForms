@@ -112,11 +112,9 @@ abstract class AbstractElement {
      * @param $value
      */
     public function setCurrentValue($value) {
-        
         foreach ($this->filters as $filter) {
             $value = $filter->filter($value);
         }
-
         $this->currentValue = $value;
     }
 
@@ -157,7 +155,6 @@ abstract class AbstractElement {
 
 
     public function addFilters($filterArray) {
-
         foreach ($filterArray as $filterClassname => $options) {
             if (is_object($options) == true) {
                 $this->filters[] = $options;

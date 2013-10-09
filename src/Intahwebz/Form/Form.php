@@ -94,13 +94,18 @@ abstract class Form {
             ),
             array(
                 'type' => \Intahwebz\FormElement\Hidden::class,
+                'name' => 'formSubmitted',
+                'value' => $this->getFormName()
+            ),
+            array(
+                'type' => \Intahwebz\FormElement\Hidden::class,
                 'name' => 'formID',
                 'value' => uniqid(),
             ),
-            array(
-                'type' => \Intahwebz\FormElement\Hidden::class, 
-                'name' => 'formSubmitted', 'value' => 'true',
-            ), 
+//            array(
+//                'type' => \Intahwebz\FormElement\Hidden::class, 
+//                'name' => 'formSubmitted', 'value' => 'true',
+//            ), 
             array(
                 'type' => \Intahwebz\FormElement\CSRF::class, 
                 'name' => 'csrf',
@@ -189,7 +194,7 @@ abstract class Form {
             $element->useSubmittedValue();
         }
 
-        $rowIDs = getVariable("rowIDs", false);
+        $rowIDs = $this->request->getVariable("rowIDs", false);
 
         if ($rowIDs == false) {
             return;
@@ -234,7 +239,7 @@ abstract class Form {
     /**
      * @param $dataSource
      */
-    function setValues($dataSource) {
+    function setValues(array $dataSource) {
         foreach ($this->startElements as $element) {
             $element->setValue($dataSource);
         }
@@ -264,7 +269,7 @@ abstract class Form {
 
         $output .= "<input type='hidden' name='formID' value='".$formID."' />";  
         
-        echo "FormID is $formID";
+        //echo "FormID is $formID";
 
         $output .= "<div class='row-fluid'>";
         $output .= "<div class='span12' style='padding-left: 20px'>";
@@ -300,9 +305,13 @@ abstract class Form {
      * @return bool
      */
     function isSubmitted() {
-        $formSubmitted = getVariable('formSubmitted', false);
+        $formSubmitted = $this->request->getVariable('formSubmitted', false);
 
-        return $formSubmitted;
+        if ($formSubmitted == $this->getFormName()) {
+            return true;
+        }
+
+        return false;
     }
 
 
@@ -428,7 +437,8 @@ abstract class Form {
      * @return string
      */
     public function getSessionName() {
-        return 'formData';
+        //return 'formData';
+        return $this->getFormName();
     }
 
     /**
@@ -462,7 +472,7 @@ abstract class Form {
             }
         }
 
-        $rowIDs = getVariable('rowIDs', false);
+        $rowIDs = $this->request->getVariable('rowIDs', false);
 
         $result = array();
 
@@ -555,6 +565,10 @@ abstract class Form {
      */
     function getUploadedFile($filename) {
         return $this->request->getUploadedFile($filename);
+    }
+
+    function getFormName() {
+        return get_class($this);
     }
 }
 
