@@ -52,6 +52,10 @@ abstract class Form {
 
         $definition = $this->getDefinition();
         $this->init($definition);
+
+        //TODO - optimise this to only be used on forms with CSRF?
+        //But they all have CSRF!
+        $session->setSessionVariable("foo", 'boo');
     }
 
     /**

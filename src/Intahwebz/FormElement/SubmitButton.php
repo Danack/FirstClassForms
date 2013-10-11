@@ -30,7 +30,7 @@ class SubmitButton extends AbstractElement {
         $output .= "&nbsp;";
         $output .= "</div>";
         $output .= "<div class='$spanClass'>";
-        $output .= "<input type='submit' value='" . $this->text . "' />";
+        $output .= "<input type='submit' name='".$this->getFormName()."' value='" . $this->text . "' />";
 
         $output .= "</div>";
         $output .= "</div>";
