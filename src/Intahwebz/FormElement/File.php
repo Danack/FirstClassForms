@@ -3,7 +3,7 @@
 
 namespace Intahwebz\FormElement;
 
-use \Intahwebz\Utils\UploadedFile;
+use Intahwebz\UploadedFile;
 
 
 class File extends AbstractElement {

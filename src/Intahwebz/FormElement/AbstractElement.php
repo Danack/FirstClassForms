@@ -158,7 +158,7 @@ abstract class AbstractElement {
                 $this->filters[] = $options;
             }
             else{
-                $validator = new $className($options);
+                $validator = new $filterClassname($options);
                 $this->filters[] = $validator;
             }
         }

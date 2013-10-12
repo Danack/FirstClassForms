@@ -4,7 +4,7 @@
 namespace Intahwebz\FormElement;
 
 use Intahwebz\Form\Form;
-use Intahwebz\Utils\SafeAccess;
+use Intahwebz\SafeAccess;
 
 
 class FormElementCollection {

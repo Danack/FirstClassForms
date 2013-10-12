@@ -3,7 +3,7 @@
 namespace Intahwebz\Form;
 
 use Intahwebz\FormElement\FormElementCollection;
-use Intahwebz\Utils\SafeAccess;
+use Intahwebz\SafeAccess;
 
 use Intahwebz\Session;
 
@@ -565,7 +565,7 @@ abstract class Form {
 
     /**
      * @param $filename
-     * @return \Intahwebz\Utils\UploadedFile
+     * @return \Intahwebz\UploadedFile
      */
     function getUploadedFile($filename) {
         return $this->request->getUploadedFile($filename);
