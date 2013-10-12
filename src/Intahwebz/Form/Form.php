@@ -153,14 +153,26 @@ abstract class Form {
         }
     }
 
+    /**
+     * @param $definition
+     * @return \Intahwebz\FormElement\AbstractElement
+     */
     function addStartElement($definition) {
         $formElement = $this->createElement($definition);
         array_push ($this->startElements, $formElement);
+
+        return $formElement;
     }
-    
+
+    /**
+     * @param $definition
+     * @return \Intahwebz\FormElement\AbstractElement
+     */
     function addEndElement($definition) {
         $formElement = $this->createElement($definition);
         array_unshift ($this->endElements, $formElement);
+
+        return $formElement;
     }
 
     /**
@@ -173,7 +185,6 @@ abstract class Form {
             throw new FormInvalidException("Form element has no value for type.");
         }
 
-        //$className = "Intahwebz\\FormElement\\".$formElement['type'];
         $className = $formElement['type'];
         /** @var $element \Intahwebz\FormElement\AbstractElement */
         $element = new $className($this);
