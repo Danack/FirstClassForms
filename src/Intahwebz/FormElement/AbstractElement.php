@@ -5,8 +5,6 @@ namespace Intahwebz\FormElement;
 
 use Intahwebz\Form\Form;
 
-use Intahwebz\Validator\ElementValidator;
-
 
 abstract class AbstractElement {
 
@@ -198,7 +196,6 @@ abstract class AbstractElement {
         $isValid = true;
 
         foreach ($this->validationRules as $validationRule) {
-
             if ($validationRule instanceof ElementValidator) {
                 $validationResult = $validationRule->isValidElement($this);
             }
