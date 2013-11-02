@@ -31,8 +31,6 @@ abstract class Form {
     var $rowIDs = array();
 
     var $class = 'standardForm';
-    
-    
 
     var $id = null;
 
@@ -198,9 +196,7 @@ abstract class Form {
      * @throws \Exception
      */
     function useSubmittedValues() {
-        
-        
-        
+
         foreach ($this->startElements as $element) {
             $element->useSubmittedValue();
         }
@@ -542,9 +538,15 @@ abstract class Form {
 
             $this->useSubmittedValues();
 
+            if ($this->request->getMethod() == 'GET') {
+                return true;
+            }
+
             //TODO - use Serialize to avoid sticking huge amounts of data in POST.
             //or maybe just post_max_size
             $this->storeValuesInSession();
+            //TODO - use response
+            //TODO - use request to get uri
             header("Location: " . $_SERVER['REQUEST_URI']);
             exit(0);
         }
@@ -584,6 +586,11 @@ abstract class Form {
 
     function getFormName() {
         return get_class($this);
+    }
+
+
+    function addSubmittedValues($rowName, array $rowValues) {
+        $this->addRowValues($rowName, $rowValues);
     }
 }
 
