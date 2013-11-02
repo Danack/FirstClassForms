@@ -13,11 +13,15 @@ class File extends AbstractElement {
      * @return mixed|void
      */
     function init(array $info) {
+
+
     }
 
     public function useSubmittedValue() {
         if ($this->form->isSubmitted() ) {
-            $uploadedFile = $this->form->getUploadedFile($this->getFormName());
+            $fileFetcher = $this->form->getFileFetcher();
+            $uploadedFile = $fileFetcher->getUploadedFile($this->getFormName());
+
             if ($uploadedFile != false) {    
                 $tmpName = tempnam(sys_get_temp_dir(), "fileupload_");
                 $result = move_uploaded_file($uploadedFile->tmpName, $tmpName);
@@ -104,7 +108,5 @@ class File extends AbstractElement {
 
         $this->form->getSession()->unsetSessionVariable($this->getID());
     }
-    
-
 }
 

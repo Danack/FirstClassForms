@@ -16,6 +16,11 @@ abstract class Form {
 
     private $hasBeenValidated = false;
 
+    /**
+     * @var \Intahwebz\FileFetcher
+     */
+    protected $fileFetcher;
+
     /** @var FormElementCollection[] */
     var $rowFieldCollectionArray = array();
 
@@ -43,6 +48,12 @@ abstract class Form {
      * @var \Intahwebz\Request
      */
     public $request;
+
+
+    function getFileFetcher() {
+        return $this->fileFetcher;
+    }
+
 
     function __construct(Session $session, \Intahwebz\Request $request) {
         $this->session = $session;
