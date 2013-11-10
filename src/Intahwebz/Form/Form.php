@@ -15,6 +15,7 @@ abstract class Form {
 
     private $hasBeenValidated = false;
 
+    //TODO - this is referencing something outside of the project.
     /**
      * @var \Intahwebz\FileFetcher
      */
@@ -33,6 +34,8 @@ abstract class Form {
     var $endElements = array();
 
     var $rowIDs = array();
+
+    protected $errorMessage = "Form had errors.";
 
     var $class = 'standardForm';
 
@@ -130,6 +133,12 @@ abstract class Form {
         if (array_key_exists('class', $definition) == true) {
             $this->class = $definition['class'];
         }
+
+        if (array_key_exists('errorMessage', $definition) == true) {
+            $this->errorMessage = $definition['errorMessage'];
+        }
+
+
 
         if (array_key_exists('startElements', $definition)) {
             foreach ($definition['startElements'] as $rowElement) {
@@ -276,7 +285,7 @@ abstract class Form {
 
         if ($this->hasBeenValidated == true) {
             if ($this->isValid == false) {
-                $output .= "Form had problems.<br/>";
+                $output .= $this->errorMessage;
             }
         }
 

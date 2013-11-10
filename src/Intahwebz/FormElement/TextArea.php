@@ -6,10 +6,9 @@ namespace Intahwebz\FormElement;
 
 class TextArea extends AbstractElement {
 
-    
     private $rows = 8;
-    
-    private $cols = 80;
+
+    private $cols = null;
 
     /**
      * @param array $info
@@ -58,7 +57,23 @@ class TextArea extends AbstractElement {
         }
 
         $output .= "<div class='$remainingSpan'>";
-        $output .= "<textarea type='text' name='".$this->getFormName(). "' placeholder='Name' rows='".$this->rows."' cols='".$this->cols."' />";
+        $output .= "<textarea type='text' name='".$this->getFormName(). "'";
+
+        if ($this->placeHolder != null) {
+            $output .= "placeholder='".$this->placeHolder."'";
+        }
+
+        $output .= "rows='".$this->rows."'";
+
+        if ($this->cols != null) {
+            $output .= "cols='".$this->cols."'";
+        }
+        else {
+            $output .= "style='width: 100%'";
+        }
+
+
+        $output .= "/>";
 
         $output .= htmlentities($this->getCurrentValue());
 

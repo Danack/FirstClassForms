@@ -14,6 +14,8 @@ abstract class AbstractElement {
     private $currentValue;
     protected $id;
 
+    protected $placeHolder = null;
+
     /** @var  \Zend\Validator\ValidatorInterface[] */
     public $validationRules = array();
 
@@ -134,13 +136,23 @@ abstract class AbstractElement {
     public function initCommon($formElement) {
         if (array_key_exists('label', $formElement) == true) {
             $this->label = $formElement['label'];
+            $this->placeHolder = $this->label;
         }
+
+        if (array_key_exists('placeHolder', $formElement) == true) {
+            $this->placeHolder = $formElement['placeHolder'];
+        }
+
         if (array_key_exists('name', $formElement) == true) {
             $this->name = $formElement['name'];
         }
         if (array_key_exists('value', $formElement) == true) {
             $this->currentValue = $formElement['value'];
         }
+
+
+
+
 
         if (array_key_exists('filter', $formElement) == true) {
             $this->addFilters($formElement['filter']);
