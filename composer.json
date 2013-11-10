@@ -6,7 +6,8 @@
 	"autoload": {
 		"psr-0": {
 			"Intahwebz\\Form": "src/",
-            "Intahwebz\\FormElement": "src/"
+            "Intahwebz\\FormElement": "src/",
+            "Intahwebz\\Validator": "src/"
 		}
 	},
 
