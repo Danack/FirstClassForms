@@ -4,7 +4,6 @@ namespace Intahwebz\Form;
 
 use Intahwebz\FormElement\FormElementCollection;
 use Intahwebz\SafeAccess;
-
 use Intahwebz\Session;
 
 
@@ -115,10 +114,6 @@ abstract class Form {
                 'name' => 'formID',
                 'value' => uniqid(),
             ),
-//            array(
-//                'type' => \Intahwebz\FormElement\Hidden::class, 
-//                'name' => 'formSubmitted', 'value' => 'true',
-//            ), 
             array(
                 'type' => \Intahwebz\FormElement\CSRF::class, 
                 'name' => 'csrf',
