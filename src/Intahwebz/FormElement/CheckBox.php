@@ -12,7 +12,7 @@ class CheckBox extends AbstractElement {
     /**
      * @return string
      */
-    function getClassName() {
+    function getCSSClassName() {
         return 'CheckBox';
     }
 

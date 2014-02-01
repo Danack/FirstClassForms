@@ -9,7 +9,7 @@ class Hidden extends AbstractHiddenElement {
     /**
      * @return string
      */
-    function getClassName() {
+    function getCSSClassName() {
         return 'Hidden';
     }
 

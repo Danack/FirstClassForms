@@ -49,7 +49,7 @@ class File extends AbstractElement {
     /**
      * @return string
      */
-    function getClassName() {
+    function getCSSClassName() {
         return "FileSelect";
     }
         

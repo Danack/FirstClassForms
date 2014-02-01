@@ -17,7 +17,7 @@ class Select extends AbstractElement {
     /**
      * @return string
      */
-    function getClassName() {
+    function getCSSClassName() {
         return 'Select';
     }
 

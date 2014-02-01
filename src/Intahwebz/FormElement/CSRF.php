@@ -10,7 +10,7 @@ class CSRF extends AbstractElement {
      * TODO PHP5.5
      * @return string
      */
-    function getClassName() {
+    function getCSSClassName() {
         return 'CSRF';
     }
 
@@ -58,8 +58,7 @@ class CSRF extends AbstractElement {
      * @return string
      */
     public function getSessionName() {
-        //TOdO replace with get uniqueid based on form-name
-        return 'CSRF'; //.$this->currentValue;
+        return get_class($this->form)."_csrf";
     }
 
     /**

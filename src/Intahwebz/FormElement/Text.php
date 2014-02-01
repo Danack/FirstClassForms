@@ -16,7 +16,7 @@ class Text extends AbstractElement {
     /**
      * @return string
      */
-    function getClassName() {
+    function getCSSClassName() {
         return "InputText";
     }
 
@@ -47,7 +47,7 @@ class Text extends AbstractElement {
         }
 
         $output .= "<div class='$remainingSpan'>";
-        $output .= "<input type='text' name='" . $this->getFormName() . "' size='80' value='" . htmlentities($this->getCurrentValue()) . "'";
+        $output .= "<input type='text' name='" . $this->getFormName() . "' size='80' value='" . htmlentities($this->getCurrentValue(), ENT_QUOTES) . "'";
 
         if ($this->placeHolder != null) {
             $output .= "placeholder='".$this->placeHolder."'";

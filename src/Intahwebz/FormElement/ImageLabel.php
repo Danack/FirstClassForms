@@ -9,7 +9,7 @@ class ImageLabel extends AbstractElement {
     /**
      * @return string
      */
-    function getClassName() {
+    function getCSSClassName() {
         return "ImageLabel";
     }
 

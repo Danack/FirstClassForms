@@ -29,7 +29,7 @@ abstract class AbstractElement {
     public $helpText;
 
 
-    abstract function getClassName();
+    abstract function getCSSClassName();
 
     /**
      * @param Form $form
@@ -42,7 +42,7 @@ abstract class AbstractElement {
      * @return string
      */
     public function getStyleName() {
-        return $this->form->getClassName() . '_' . $this->getClassName();
+        return $this->form->getClassName() . '_' . $this->getCSSClassName();
     }
 
     /**

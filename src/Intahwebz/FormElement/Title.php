@@ -9,7 +9,7 @@ class Title extends AbstractElement {
     /**
      * @return string
      */
-    function getClassName() {
+    function getCSSClassName() {
         return "Title";
     }
 
