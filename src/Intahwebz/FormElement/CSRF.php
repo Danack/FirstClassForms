@@ -7,13 +7,12 @@ namespace Intahwebz\FormElement;
 class CSRF extends AbstractElement {
 
     /**
-     * TODO PHP5.5
      * @return string
      */
     function getCSSClassName() {
         return 'CSRF';
     }
-
+    
     /**
      * @param array $info
      * @return void

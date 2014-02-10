@@ -29,6 +29,11 @@ abstract class AbstractElement {
     public $helpText;
 
 
+    /**
+     * Use to generate the class that is applied to the element, to allow
+     * it to be styled specifically.
+     * @return mixed
+     */
     abstract function getCSSClassName();
 
     /**

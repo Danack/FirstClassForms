@@ -15,7 +15,6 @@ abstract class Form {
 
     private $hasBeenValidated = false;
 
-    //TODO - this is referencing something outside of the project.
     /**
      * @var \Intahwebz\FileFetcher
      */
@@ -56,7 +55,6 @@ abstract class Form {
         return $this->fileFetcher;
     }
 
-
     function __construct(Session $session, \Intahwebz\Request $request) {
         $this->session = $session;
         $this->request = $request;
@@ -66,7 +64,7 @@ abstract class Form {
 
         //TODO - optimise this to only be used on forms with CSRF?
         //But they all have CSRF!
-        $session->setSessionVariable("foo", 'boo');
+        $session->startSession();
     }
 
     /**
