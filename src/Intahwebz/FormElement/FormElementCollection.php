@@ -45,7 +45,8 @@ class FormElementCollection {
         $result = array();
 
         foreach ($this->elements as $element) {
-            $result[$element->getName()] = $element->getCurrentValue();
+            //$result[$element->getName()] = $element->getCurrentValue();
+            $result = array_merge($result, $element->serialize());
         }
 
         return $result;

@@ -54,6 +54,7 @@ abstract class Form {
     function getFileFetcher() {
         return $this->fileFetcher;
     }
+    
 
     function __construct(Session $session, \Intahwebz\Request $request) {
         $this->session = $session;
@@ -135,8 +136,6 @@ abstract class Form {
         if (array_key_exists('errorMessage', $definition) == true) {
             $this->errorMessage = $definition['errorMessage'];
         }
-
-
 
         if (array_key_exists('startElements', $definition)) {
             foreach ($definition['startElements'] as $rowElement) {
@@ -342,8 +341,12 @@ abstract class Form {
     /**
      * @return bool
      */
-    function useDataAvailable() {
-        $dataStoredInSession = $this->checkPostRedirectGet();
+    function initForm($automaticPostRedirectGet = true) {
+        $dataStoredInSession = false;
+        
+        if ($automaticPostRedirectGet) {
+            $dataStoredInSession = $this->checkPostRedirectGet();
+        }
 
         if ($dataStoredInSession == true) {
             return true;
@@ -478,12 +481,15 @@ abstract class Form {
 
             if ($serialized !== null) {
                 //Some elements are serialized - e.g. submitButton.
-                $start[$element->getName()] = $element->getCurrentValue();
+                //$start[$element->getName()] = $element->getCurrentValue();
+                $end = array_merge($start, $serialized);
             }
         }
 
         foreach ($this->rowFieldCollectionArray as $rowFieldCollection) {
             $rowID = $rowFieldCollection->getID();
+            //$rows[$rowID] = $rowFieldCollection->serialize();
+
             $rows[$rowID] = $rowFieldCollection->serialize();
         }
 
@@ -491,8 +497,10 @@ abstract class Form {
             $serialized = $element->serialize();
 
             if ($serialized !== null) {
+                //array($this->name => $this->currentValue);
                 //Some elements are serialized - e.g. submitButton.
-                $end[$element->getName()] = $element->getCurrentValue();
+                //$end[$element->getName()] = $element->getCurrentValue();
+                $end = array_merge($end, $serialized);
             }
         }
 
@@ -541,20 +549,18 @@ abstract class Form {
         return true;
     }
 
-    //TODO - need to use session shared across loadbalancer, i.e. session can't be local file.
     /**
      * @return bool
      */
-    function checkPostRedirectGet() {
+    function redirectToGetIfSubmitted() {
         //TODO - check if POST.
         if ($this->isSubmitted() == true) {
-
             $this->useSubmittedValues();
-
+    
             if ($this->request->getMethod() == 'GET') {
                 return true;
             }
-
+    
             //TODO - use Serialize to avoid sticking huge amounts of data in POST.
             //or maybe just post_max_size
             $this->storeValuesInSession();
@@ -563,7 +569,14 @@ abstract class Form {
             header("Location: " . $_SERVER['REQUEST_URI']);
             exit(0);
         }
-
+    }
+    
+    /**
+     * @return bool
+     */
+    function checkPostRedirectGet() {
+        $this->redirectToGetIfSubmitted(); 
+        //if we got here, this isn't a post - so instead get the values from the session.
         $sessionName = $this->getSessionName();
 
         //TODO - need to create an object to set time to prevent form from being resubmitted ages later.
@@ -572,6 +585,9 @@ abstract class Form {
         if ($storedValues === false) {
             return false;
         }
+        
+    //        var_dump($storedValues);
+    //        exit(0);
 
         $this->useStoredValues($storedValues);
         return true;

@@ -22,7 +22,6 @@ abstract class AbstractElement {
     /** @var \Zend\Filter\AbstractFilter[] */
     public $filters = array();
     
-    
     public $errorMessages = array();
     public $label = null;
 
@@ -155,10 +154,6 @@ abstract class AbstractElement {
             $this->currentValue = $formElement['value'];
         }
 
-
-
-
-
         if (array_key_exists('filter', $formElement) == true) {
             $this->addFilters($formElement['filter']);
         }
@@ -169,6 +164,9 @@ abstract class AbstractElement {
     }
 
 
+    /**
+     * @param $filterArray
+     */
     public function addFilters($filterArray) {
         foreach ($filterArray as $filterClassname => $options) {
             if (is_object($options) == true) {
