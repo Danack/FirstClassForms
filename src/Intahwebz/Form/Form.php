@@ -342,11 +342,11 @@ abstract class Form {
      * @return bool
      */
     function initForm($automaticPostRedirectGet = true) {
-        $dataStoredInSession = false;
-        
         if ($automaticPostRedirectGet) {
-            $dataStoredInSession = $this->checkPostRedirectGet();
+            $this->redirectToGetIfSubmitted();
         }
+
+        $dataStoredInSession = $this->getSessionStoredData();
 
         if ($dataStoredInSession == true) {
             return true;
@@ -574,8 +574,8 @@ abstract class Form {
     /**
      * @return bool
      */
-    function checkPostRedirectGet() {
-        $this->redirectToGetIfSubmitted(); 
+    function getSessionStoredData() {
+ 
         //if we got here, this isn't a post - so instead get the values from the session.
         $sessionName = $this->getSessionName();
 
@@ -585,9 +585,6 @@ abstract class Form {
         if ($storedValues === false) {
             return false;
         }
-        
-    //        var_dump($storedValues);
-    //        exit(0);
 
         $this->useStoredValues($storedValues);
         return true;
