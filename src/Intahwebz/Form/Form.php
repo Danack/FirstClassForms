@@ -464,7 +464,6 @@ abstract class Form {
      * @return string
      */
     public function getSessionName() {
-        //return 'formData';
         return $this->getFormName();
     }
 
@@ -480,16 +479,12 @@ abstract class Form {
             $serialized = $element->serialize();
 
             if ($serialized !== null) {
-                //Some elements are serialized - e.g. submitButton.
-                //$start[$element->getName()] = $element->getCurrentValue();
                 $end = array_merge($start, $serialized);
             }
         }
 
         foreach ($this->rowFieldCollectionArray as $rowFieldCollection) {
             $rowID = $rowFieldCollection->getID();
-            //$rows[$rowID] = $rowFieldCollection->serialize();
-
             $rows[$rowID] = $rowFieldCollection->serialize();
         }
 
@@ -497,9 +492,6 @@ abstract class Form {
             $serialized = $element->serialize();
 
             if ($serialized !== null) {
-                //array($this->name => $this->currentValue);
-                //Some elements are serialized - e.g. submitButton.
-                //$end[$element->getName()] = $element->getCurrentValue();
                 $end = array_merge($end, $serialized);
             }
         }
@@ -520,7 +512,7 @@ abstract class Form {
      * @param $sessionData
      * @return bool
      */
-    function useStoredValues($sessionData) {
+    function unserialize($sessionData) {
 
         //TODO - Data does need to be validated against form version id.
         if ($sessionData == false) {
@@ -586,7 +578,7 @@ abstract class Form {
             return false;
         }
 
-        $this->useStoredValues($storedValues);
+        $this->unserialize($storedValues);
         return true;
     }
 
@@ -617,6 +609,10 @@ abstract class Form {
 
     function addSubmittedValues($rowName, array $rowValues) {
         $this->addRowValues($rowName, $rowValues);
+    }
+    
+    function setFormError() {
+        
     }
 }
 
