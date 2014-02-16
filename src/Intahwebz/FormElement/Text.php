@@ -26,7 +26,6 @@ class Text extends AbstractElement {
     function render() {
 
         $output = "";
-        //$output .= "<div class='".$this->getStyleName()."'>";
         if (count($this->errorMessages) > 0) {
             $output .= "<div class='row-fluid'>";
             $output .= "<div class='errorMessage span12'>";
