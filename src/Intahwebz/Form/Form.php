@@ -3,9 +3,11 @@
 namespace Intahwebz\Form;
 
 use Intahwebz\FormElement\FormElementCollection;
+use Intahwebz\Response;
 use Intahwebz\SafeAccess;
 use Intahwebz\Session;
 
+use Intahwebz\HTTPSRequiredException;
 
 abstract class Form {
 
@@ -37,6 +39,8 @@ abstract class Form {
     protected $errorMessage = "Form had errors.";
 
     var $class = 'standardForm';
+    
+    private $requireHTTPS = false;
 
     var $id = null;
 
@@ -56,13 +60,19 @@ abstract class Form {
     }
     
 
-    function __construct(Session $session, \Intahwebz\Request $request) {
+    function __construct(Session $session, \Intahwebz\Request $request, Response $response) {
         $this->session = $session;
         $this->request = $request;
 
         $definition = $this->getDefinition();
         $this->init($definition);
 
+        if ($this->requireHTTPS == true) {
+            if (strcasecmp($request->getScheme(), 'HTTPS') !== 0) {
+                throw new HTTPSRequiredException(true);
+            }
+        }
+        
         //TODO - optimise this to only be used on forms with CSRF?
         //But they all have CSRF!
         $session->startSession();
@@ -132,6 +142,12 @@ abstract class Form {
         if (array_key_exists('class', $definition) == true) {
             $this->class = $definition['class'];
         }
+
+        
+        if (array_key_exists('requireHTTPS', $definition) == true) {
+            $this->requireHTTPS = $definition['requireHTTPS'];
+        }
+
 
         if (array_key_exists('errorMessage', $definition) == true) {
             $this->errorMessage = $definition['errorMessage'];
@@ -558,7 +574,7 @@ abstract class Form {
             $this->storeValuesInSession();
             //TODO - use response
             //TODO - use request to get uri
-            header("Location: " . $_SERVER['REQUEST_URI']);
+            header("Location: ".$_SERVER['REQUEST_URI']);
             exit(0);
         }
     }
