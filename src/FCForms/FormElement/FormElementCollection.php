@@ -7,7 +7,8 @@ use Intahwebz\Form\Form;
 use Intahwebz\SafeAccess;
 
 
-class FormElementCollection {
+class FormElementCollection
+{
 
     use SafeAccess;
 
@@ -45,7 +46,6 @@ class FormElementCollection {
         $result = array();
 
         foreach ($this->elements as $element) {
-            //$result[$element->getName()] = $element->getCurrentValue();
             $result = array_merge($result, $element->serialize());
         }
 
@@ -72,7 +72,28 @@ class FormElementCollection {
             $this->elements[] = $newElement;
         }
     }
+    
+    function getErrorMessages()
+    {
+        $errorMessages = [];
+        foreach ($this->elements as $element) {
+            $errorMessages[] = $element->getErrorMessages();
+        }
+        
+        return $errorMessages;
+    }
 
+    function isStoreable()
+    {
+        $storeable = true;
+        foreach ($this->elements as $element) {
+            $storeable &= $element->isStoreable();
+        }
+        
+        return $storeable;
+    }
+    
+    
     /**
      * @return bool
      */

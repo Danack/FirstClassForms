@@ -6,12 +6,13 @@ namespace Intahwebz\FormElement;
 use Intahwebz\Form\Form;
 
 
-abstract class AbstractElement {
-
+abstract class AbstractElement
+{
     /** @var  string */
     protected $name;
 
     private $currentValue;
+
     protected $id;
 
     protected $placeHolder = null;
@@ -40,6 +41,11 @@ abstract class AbstractElement {
      */
     public function __construct(Form $form) {
         $this->form = $form;
+    }
+    
+    public function getErrorMessages()
+    {
+        return $this->errorMessages;
     }
 
     /**
@@ -107,7 +113,7 @@ abstract class AbstractElement {
      */
     public function useSubmittedValue() {
         if ($this->name != null) {
-            $value = $this->form->request->getVariable($this->getFormName(), null);
+            $value = $this->form->variableMap->getVariable($this->getFormName(), null);
             $this->setCurrentValue($value);
         }
     }
@@ -128,7 +134,8 @@ abstract class AbstractElement {
     public function useData($data) {
         if ($this->name != null) {
             if (array_key_exists($this->getName(), $data) == true) {
-                $value = $data[$this->getName()];
+                //$value = $data[$this->getName()];
+                $value = $this->deserialize($data[$this->getName()]);
                 $this->setCurrentValue($value);
             }
         }
@@ -230,9 +237,16 @@ abstract class AbstractElement {
     /**
      * @return array
      */
-    function serialize() {
+    function serialize()
+    {
         return array($this->name => $this->currentValue);
     }
+    
+    function deserialize($string)
+    {
+        return $string;
+    }
+    
 
     function reset() {
         $this->setCurrentValue(null);
@@ -241,6 +255,10 @@ abstract class AbstractElement {
     //TODO - rename this getFormElementName/ID?
     function getID() {
         return $this->form->getID().'_'.$this->getName();
+    }
+    function isStoreable()
+    {
+        return true;
     }
 }
 

@@ -4,13 +4,15 @@
 namespace Intahwebz\FormElement;
 
 
-class Password extends AbstractElement {
+class Password extends AbstractElement
+{
     
     /**
      * @param array $info
      * @return mixed|void
      */
-    function init(array $info) {
+    function init(array $info)
+    {
     }
 
     /**
@@ -20,7 +22,8 @@ class Password extends AbstractElement {
      * validated the password.
      * @return array
      */
-    function serialize() {
+    function serialize()
+    {
         return array();
     }
     
@@ -35,8 +38,8 @@ class Password extends AbstractElement {
     /**
      * @return mixed|string
      */
-    function render() {
-
+    function render()
+    {
         $output = "";
         if (count($this->errorMessages) > 0) {
             $output .= "<div class='row-fluid'>";
@@ -59,7 +62,6 @@ class Password extends AbstractElement {
 
         $output .= "<div class='$remainingSpan'>";
 
-        
         //$output .= sprintf("<input type='hidden' name='%s' value='%d' />", $this->getIsHashedFormName(), $this->isHashed);
         $output .= "<input type='password' name='".$this->getFormName()."' size='80' value='" . htmlentities($this->getCurrentValue()) . "' placeholder='Password' style='width: 100%;' />";
 
@@ -68,7 +70,10 @@ class Password extends AbstractElement {
 
         return $output;
     }
-
-
+    
+    function isStoreable()
+    {
+        return false;
+    }
 }
 

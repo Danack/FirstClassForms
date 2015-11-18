@@ -14,30 +14,46 @@ class File extends AbstractElement {
      */
     function init(array $info) {
 
-
     }
+    
+    function serialize()
+    {
+        return array($this->name => $this->getCurrentValue()->serialize());
+    }
+    
+    function deserialize($serializedData)
+    {
+        $uploadedFile = UploadedFile::deserialize($serializedData);
+        //$value = $this->deserialize($data[$this->getName()]);
+        return $uploadedFile;
+    }
+    
 
     public function useSubmittedValue() {
         if ($this->form->isSubmitted() ) {
             $fileFetcher = $this->form->getFileFetcher();
+
+            if (!$fileFetcher->hasUploadedFile($this->getFormName())) {
+                return;
+            }
+
             $uploadedFile = $fileFetcher->getUploadedFile($this->getFormName());
 
             if ($uploadedFile != false) {    
                 $tmpName = tempnam(sys_get_temp_dir(), "fileupload_");
                 $result = move_uploaded_file($uploadedFile->tmpName, $tmpName);
-                
+
                 if ($result == true) {
                     $uploadedFile->tmpName = $tmpName;
-                    $serializedData = serialize($uploadedFile);
-                    $this->form->getSession()->setSessionVariable($this->getID(), $serializedData);
+                    $serializedData = $uploadedFile->serialize();
+                    $this->form->getDataStore()->storeData($this->getID(), $serializedData);
                     $this->setCurrentValue($uploadedFile);
                 }
             }
             else {
                 // try to get $userUploadedFile from session.
-                $serializedData = $this->form->getSession()->getSessionVariable($this->getID());
-                $uploadedFile = unserialize($serializedData);
-                //TODO - sanity check on $uploadedFile type?
+                $serializedData = $this->form->getDataStore()->getData($this->getID(), false, true);
+                $uploadedFile = UploadedFile::deserialize($serializedData);
                 $this->setCurrentValue($uploadedFile);
             }
         }
@@ -56,8 +72,8 @@ class File extends AbstractElement {
     /**
      * @return mixed|string
      */
-    function render() {
-
+    function render()
+    {
         $output = "";
 
         if (count($this->errorMessages) > 0) {
@@ -82,7 +98,11 @@ class File extends AbstractElement {
         $output .= "<div class='$remainingSpan'>";
 
         $uploadedFile = $this->getCurrentValue();
-        
+        if (!$uploadedFile instanceof UploadedFile) {
+            echo "wrong type";
+            exit(0);
+        }
+
         if ($uploadedFile == null) {
             $output .= "<input type='file' name='".$this->getFormName()."' value='' />";
         }
@@ -97,16 +117,16 @@ class File extends AbstractElement {
         return $output;
     }
 
-    function reset() {
+    function reset()
+    {
         $this->setCurrentValue(null);
+        $serializedData = $this->form->getDataStore()->getData($this->getID(), null, true);
 
-        $serializedData = $this->form->getSession()->getSessionVariable($this->getID());
-        $uploadedFile = unserialize($serializedData);
-
-        /** @var $uploadedFile UploadedFile */
-        echo "need to delete ".$uploadedFile->tmpName;
-
-        $this->form->getSession()->unsetSessionVariable($this->getID());
+        if ($serializedData) {
+            $uploadedFile = unserialize($serializedData);
+            /** @var $uploadedFile UploadedFile */
+            echo "need to delete ".$uploadedFile->tmpName;
+        }
     }
 }
 

@@ -4,15 +4,16 @@
 namespace Intahwebz\FormElement;
 
 
-class CSRF extends AbstractElement {
-
+class CSRF extends AbstractElement
+{
     /**
      * @return string
      */
-    function getCSSClassName() {
+    function getCSSClassName()
+    {
         return 'CSRF';
     }
-    
+
     /**
      * @param array $info
      * @return void
@@ -30,13 +31,14 @@ class CSRF extends AbstractElement {
      * Renders the form element
      * @return string
      */
-    function render() {
+    function render()
+    {
         $output = "";
         $this->setCurrentValue(uniqid());
         //Showing a CSRF element, creates the value
-        $sessionName = $this->getSessionName();
-        $session = $this->form->getSession();
-        $session->setSessionVariable($sessionName, $this->getCurrentValue());
+        $sessionName = $this->getSessionKeyNameForCSRF();
+        $dataStore = $this->form->getDataStore();
+        $dataStore->storeData($sessionName, $this->getCurrentValue());
 
         if (count($this->errorMessages) > 0) {
             $output .= "<div class='errorMessage'>";
@@ -47,7 +49,11 @@ class CSRF extends AbstractElement {
             $output .= "</div>";
         }
 
-        $output .= "<input type='hidden' name='" . $this->getFormName() . "' value='" . $this->getCurrentValue() . "' />";
+        $output .= sprintf(
+            "<input type='hidden' name='%s' value='%s' />",
+            $this->getFormName(),
+            $this->getCurrentValue()
+        );
 
         return $output;
     }
@@ -56,7 +62,8 @@ class CSRF extends AbstractElement {
      * Get the session name that stores the CSRF value in.
      * @return string
      */
-    public function getSessionName() {
+    public function getSessionKeyNameForCSRF()
+    {
         return get_class($this->form)."_csrf";
     }
 
@@ -64,10 +71,11 @@ class CSRF extends AbstractElement {
      * Get the value to compare the current value against.
      * @return mixed
      */
-    public function getValidationValue() {
-        $sessionName = $this->getSessionName($this->getCurrentValue());
-        $session = $this->form->getSession();
-        $validationValue = $session->getSessionVariable($sessionName, false, true);
+    public function getValidationValue()
+    {
+        $sessionName = $this->getSessionKeyNameForCSRF($this->getCurrentValue());
+        $dataStore = $this->form->getDataStore();
+        $validationValue = $dataStore->getData($sessionName, false, true);
 
         return $validationValue;
     }
