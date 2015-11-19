@@ -1,14 +1,14 @@
 <?php
 
 
-namespace Intahwebz\FormElement;
+namespace FCForms\FormElement;
 
-
-class Select extends AbstractElement {
-
+class Select extends AbstractElement
+{
     private $optionDescriptionMap = array();
 
-    function init(array $info) {
+    public function init(array $info)
+    {
         //$values
         //$descriptions
         $this->optionDescriptionMap = $info['options'];
@@ -17,14 +17,16 @@ class Select extends AbstractElement {
     /**
      * @return string
      */
-    function getCSSClassName() {
+    public function getCSSClassName()
+    {
         return 'Select';
     }
 
     /**
      * @return mixed|string
      */
-    function render() {
+    public function render()
+    {
         $output = "<div class='row-fluid'>";
         $labelSpan = "span" . $this->form->getLabelSpan();
 
@@ -44,7 +46,12 @@ class Select extends AbstractElement {
                 $selectedString = "selected='selected'";
             }
             
-           $output .= "<option value='".safeText($option)."' $selectedString>".safeText($description)."</option>";
+            $output .= sprintf(
+                "<option value='%s' %s >%s</option>",
+                safeText($option),
+                $selectedString,
+                safeText($description)
+            );
         }
 
         $output .= "</select>";
@@ -54,6 +61,4 @@ class Select extends AbstractElement {
 
         return $output;
     }
-
 }
-

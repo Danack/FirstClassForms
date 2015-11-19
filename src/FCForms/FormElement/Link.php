@@ -1,15 +1,15 @@
 <?php
 
 
-namespace Intahwebz\FormElement;
+namespace FCForms\FormElement;
 
-
-class Link extends AbstractElement {
-
+class Link extends AbstractElement
+{
     /**
      * @return string
      */
-    function getCSSClassName() {
+    public function getCSSClassName()
+    {
         return "Link";
     }
 
@@ -17,13 +17,15 @@ class Link extends AbstractElement {
      * @param array $info
      * @return mixed|void
      */
-    function init(array $info) {
+    public function init(array $info)
+    {
     }
 
     /**
      * @return mixed|string
      */
-    function render() {
+    public function render()
+    {
         $output = "<div class='row-fluid'>";
         $output .= "<div class='" . $this->getStyleName() . " span12'>";
         //$output .= $this->getCurrentValue();
@@ -34,4 +36,3 @@ class Link extends AbstractElement {
         return $output;
     }
 }
-

@@ -1,11 +1,9 @@
 <?php
 
+namespace FCForms\Form;
 
-namespace Intahwebz\Form;
-
-
-interface DataStore {
-
+interface DataStore
+{
     public function getData($name, $default, $clearOnRead);
 
     public function storeData($name, $data);

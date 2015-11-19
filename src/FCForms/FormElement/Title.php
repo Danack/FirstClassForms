@@ -1,15 +1,16 @@
 <?php
 
 
-namespace Intahwebz\FormElement;
+namespace FCForms\FormElement;
 
-
-class Title extends AbstractElement {
+class Title extends AbstractElement
+{
 
     /**
      * @return string
      */
-    function getCSSClassName() {
+    public function getCSSClassName()
+    {
         return "Title";
     }
 
@@ -17,13 +18,15 @@ class Title extends AbstractElement {
      * @param array $info
      * @return mixed|void
      */
-    function init(array $info) {
+    public function init(array $info)
+    {
     }
 
     /**
      * @return mixed|string
      */
-    function render() {
+    public function render()
+    {
         $output = "<div class='row-fluid'>";
         $output .= "<legend class='span12'>";
         $output .= $this->getCurrentValue();
@@ -33,4 +36,3 @@ class Title extends AbstractElement {
         return $output;
     }
 }
-

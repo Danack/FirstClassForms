@@ -1,11 +1,10 @@
 <?php
 
 
-namespace Intahwebz\FormElement;
+namespace FCForms\FormElement;
 
-
-class TextArea extends AbstractElement {
-
+class TextArea extends AbstractElement
+{
     private $rows = 8;
 
     private $cols = null;
@@ -14,7 +13,8 @@ class TextArea extends AbstractElement {
      * @param array $info
      * @return mixed|void
      */
-    function init(array $info) {
+    public function init(array $info)
+    {
         
         if (array_key_exists('rows', $info) == true) {
             $this->rows = intval($info['rows']);
@@ -27,15 +27,16 @@ class TextArea extends AbstractElement {
     /**
      * @return string
      */
-    function getCSSClassName() {
+    public function getCSSClassName()
+    {
         return "InputText";
     }
 
     /**
      * @return mixed|string
      */
-    function render() {
-
+    public function render()
+    {
         $output = "";
         if (count($this->errorMessages) > 0) {
             $output .= "<div class='row-fluid'>";
@@ -85,4 +86,3 @@ class TextArea extends AbstractElement {
         return $output;
     }
 }
-

@@ -1,24 +1,24 @@
 <?php
 
+namespace FCForms\FormElement;
 
-namespace Intahwebz\FormElement;
-
-
-class SubmitButton extends AbstractElement {
-
+class SubmitButton extends AbstractElement
+{
     public $text;
 
     /**
      * @return string
      */
-    function getCSSClassName() {
+    public function getCSSClassName()
+    {
         return "SubmitButton";
     }
 
     /**
      * @return mixed|string
      */
-    function render() {
+    public function render()
+    {
         $output = "";
 
         $output .= "<div class='row-fluid'>";
@@ -42,7 +42,8 @@ class SubmitButton extends AbstractElement {
      * @param array $info
      * @return mixed|void
      */
-    function init(array $info) {
+    public function init(array $info)
+    {
         $this->text = $info['text'];
         $this->name = 'submitButton';
     }

@@ -1,10 +1,8 @@
 <?php
 
+namespace FCForms\FormElement;
 
-namespace Intahwebz\FormElement;
-
-use Intahwebz\Form\Form;
-
+use FCForms\Form\Form;
 
 abstract class AbstractElement
 {
@@ -28,18 +26,18 @@ abstract class AbstractElement
 
     public $helpText;
 
-
     /**
      * Use to generate the class that is applied to the element, to allow
      * it to be styled specifically.
      * @return mixed
      */
-    abstract function getCSSClassName();
+    abstract public function getCSSClassName();
 
     /**
      * @param Form $form
      */
-    public function __construct(Form $form) {
+    public function __construct(Form $form)
+    {
         $this->form = $form;
     }
     
@@ -51,14 +49,16 @@ abstract class AbstractElement
     /**
      * @return string
      */
-    public function getStyleName() {
+    public function getStyleName()
+    {
         return $this->form->getClassName() . '_' . $this->getCSSClassName();
     }
 
     /**
      * @return string
      */
-    public function getFormName() {
+    public function getFormName()
+    {
         if ($this->id != null) {
             return $this->id . "_" . $this->name;
         }
@@ -69,7 +69,8 @@ abstract class AbstractElement
     /**
      * @return mixed
      */
-    public function getCurrentValue() {
+    public function getCurrentValue()
+    {
         return $this->currentValue;
     }
 
@@ -78,7 +79,8 @@ abstract class AbstractElement
      * against the value stored in the session.
      * @return mixed
      */
-    public function getValidationValue() {
+    public function getValidationValue()
+    {
         return $this->currentValue;
     }
 
@@ -86,14 +88,16 @@ abstract class AbstractElement
     /**
      * @return string
      */
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 
     /**
      * @param $id
      */
-    public function setID($id) {
+    public function setID($id)
+    {
         $this->id = $id;
     }
 
@@ -101,17 +105,18 @@ abstract class AbstractElement
      * @param array $info
      * @return mixed
      */
-    abstract function init(array $info);
+    abstract public function init(array $info);
 
     /**
      * @return mixed
      */
-    abstract function render();
+    abstract public function render();
 
     /**
      *
      */
-    public function useSubmittedValue() {
+    public function useSubmittedValue()
+    {
         if ($this->name != null) {
             $value = $this->form->variableMap->getVariable($this->getFormName(), null);
             $this->setCurrentValue($value);
@@ -121,7 +126,8 @@ abstract class AbstractElement
     /**
      * @param $value
      */
-    public function setCurrentValue($value) {
+    public function setCurrentValue($value)
+    {
         foreach ($this->filters as $filter) {
             $value = $filter->filter($value);
         }
@@ -131,7 +137,8 @@ abstract class AbstractElement
     /**
      * @param $data
      */
-    public function useData($data) {
+    public function useData($data)
+    {
         if ($this->name != null) {
             if (array_key_exists($this->getName(), $data) == true) {
                 //$value = $data[$this->getName()];
@@ -144,7 +151,8 @@ abstract class AbstractElement
     /**
      * @param $formElement
      */
-    public function initCommon($formElement) {
+    public function initCommon($formElement)
+    {
         if (array_key_exists('label', $formElement) == true) {
             $this->label = $formElement['label'];
             $this->placeHolder = $this->label;
@@ -174,12 +182,13 @@ abstract class AbstractElement
     /**
      * @param $filterArray
      */
-    public function addFilters($filterArray) {
+    public function addFilters($filterArray)
+    {
         foreach ($filterArray as $filterClassname => $options) {
             if (is_object($options) == true) {
                 $this->filters[] = $options;
             }
-            else{
+            else {
                 $validator = new $filterClassname($options);
                 $this->filters[] = $validator;
             }
@@ -189,13 +198,13 @@ abstract class AbstractElement
     /**
      * @param $validationInfoArray
      */
-    public function addValidationRules($validationInfoArray) {
+    public function addValidationRules($validationInfoArray)
+    {
         foreach ($validationInfoArray as $className => $options) {
-            
             if (is_object($options) == true) {
                 $this->validationRules[] = $options;
             }
-            else{
+            else {
                 $validator = new $className($options);
                 $this->validationRules[] = $validator;
             }
@@ -205,7 +214,8 @@ abstract class AbstractElement
     /**
      * @param $dataSource
      */
-    public function setValue($dataSource) {
+    public function setValue($dataSource)
+    {
         if (array_key_exists($this->name, $dataSource) == true) {
             $this->setCurrentValue($dataSource[$this->name]);
         }
@@ -214,7 +224,8 @@ abstract class AbstractElement
     /**
      * @return bool
      */
-    public function validate() {
+    public function validate()
+    {
         $isValid = true;
 
         foreach ($this->validationRules as $validationRule) {
@@ -237,28 +248,30 @@ abstract class AbstractElement
     /**
      * @return array
      */
-    function serialize()
+    public function serialize()
     {
         return array($this->name => $this->currentValue);
     }
     
-    function deserialize($string)
+    public function deserialize($string)
     {
         return $string;
     }
     
 
-    function reset() {
+    public function reset()
+    {
         $this->setCurrentValue(null);
     }
 
     //TODO - rename this getFormElementName/ID?
-    function getID() {
+    public function getID()
+    {
         return $this->form->getID().'_'.$this->getName();
     }
-    function isStoreable()
+    
+    public function isStoreable()
     {
         return true;
     }
 }
-

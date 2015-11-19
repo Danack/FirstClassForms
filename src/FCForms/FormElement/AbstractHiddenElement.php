@@ -1,14 +1,11 @@
 <?php
 
+namespace FCForms\FormElement;
 
-namespace Intahwebz\FormElement;
-
-
-abstract class AbstractHiddenElement extends AbstractElement {
-
-    function reset() {
+abstract class AbstractHiddenElement extends AbstractElement
+{
+    public function reset()
+    {
         //Does nothings
     }
 }
-
- 

@@ -1,48 +1,48 @@
 <?php
 
+namespace FCForms\FormElement;
 
-namespace Intahwebz\FormElement;
-
-use Intahwebz\Form\Form;
-use Intahwebz\SafeAccess;
-
+use FCForms\Form\Form;
+use FCForms\SafeAccess;
 
 class FormElementCollection
 {
-
     use SafeAccess;
 
     /** @var  int The row identifier - which is either 'add' for a new item or the primary ID (or equivalent). */
     public $id;
 
     /**
-     * @var \Intahwebz\Form\Form The form this element is used in.
+     * @var \FCForms\Form\Form The form this element is used in.
      */
     private $form;
 
     /** @var AbstractElement[] */
     public $elements = array();
 
-    var $className = "collection";
+    protected $className = "collection";
 
     /**
      * @return string
      */
-    public function getStyleName() {
+    public function getStyleName()
+    {
         return $this->form->getClassName() . "_" . $this->className;
     }
 
     /**
      * @return int
      */
-    public function getID() {
+    public function getID()
+    {
         return $this->id;
     }
 
     /**
      * @return array
      */
-    public function serialize() {
+    public function serialize()
+    {
         $result = array();
 
         foreach ($this->elements as $element) {
@@ -58,7 +58,8 @@ class FormElementCollection
      * @param $rowElements AbstractElement[]
      * @throws \Exception
      */
-    public function __construct(Form $form, $rowID, $rowElements) {
+    public function __construct(Form $form, $rowID, $rowElements)
+    {
         $this->form = $form;
         $this->id = $rowID;
 
@@ -73,7 +74,7 @@ class FormElementCollection
         }
     }
     
-    function getErrorMessages()
+    public function getErrorMessages()
     {
         $errorMessages = [];
         foreach ($this->elements as $element) {
@@ -83,7 +84,7 @@ class FormElementCollection
         return $errorMessages;
     }
 
-    function isStoreable()
+    public function isStoreable()
     {
         $storeable = true;
         foreach ($this->elements as $element) {
@@ -97,7 +98,8 @@ class FormElementCollection
     /**
      * @return bool
      */
-    function validate() {
+    public function validate()
+    {
         $isValid = true;
         foreach ($this->elements as $element) {
             $isValid = ($isValid && $element->validate());
@@ -110,7 +112,8 @@ class FormElementCollection
      * @param $name
      * @return mixed|null
      */
-    public function getValue($name) {
+    public function getValue($name)
+    {
         foreach ($this->elements as $element) {
             if ($element->getName() == $name) {
                 return $element->getCurrentValue();
@@ -120,7 +123,8 @@ class FormElementCollection
         return null;
     }
 
-    public function getAllValues() {
+    public function getAllValues()
+    {
         $data = [];
         foreach ($this->elements as $element) {
             $data[$element->getName()] = $element->getCurrentValue();
@@ -133,7 +137,8 @@ class FormElementCollection
     /**
      * @param $dataSource
      */
-    public function setValues($dataSource) {
+    public function setValues($dataSource)
+    {
         foreach ($this->elements as $element) {
             $element->setValue($dataSource);
         }
@@ -142,7 +147,8 @@ class FormElementCollection
     /**
      *
      */
-    public function useSubmittedValue() {
+    public function useSubmittedValue()
+    {
         foreach ($this->elements as $element) {
             $element->useSubmittedValue();
         }
@@ -151,7 +157,8 @@ class FormElementCollection
     /**
      * @param $rowData
      */
-    public function useData($rowData) {
+    public function useData($rowData)
+    {
         foreach ($this->elements as $element) {
             $element->useData($rowData);
         }
@@ -160,7 +167,8 @@ class FormElementCollection
     /**
      * @return string
      */
-    public function render() {
+    public function render()
+    {
         $output = "";
 
         foreach ($this->elements as $element) {
@@ -169,6 +177,4 @@ class FormElementCollection
 
         return $output;
     }
-
 }
-

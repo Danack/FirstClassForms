@@ -1,15 +1,14 @@
 <?php
 
+namespace FCForms\FormElement;
 
-namespace Intahwebz\FormElement;
-
-
-class Label extends AbstractElement {
-
+class Label extends AbstractElement
+{
     /**
      * @return string
      */
-    function getCSSClassName() {
+    public function getCSSClassName()
+    {
         return "Label";
     }
 
@@ -17,13 +16,15 @@ class Label extends AbstractElement {
      * @param array $info
      * @return mixed|void
      */
-    function init(array $info) {
+    public function init(array $info)
+    {
     }
 
     /**
      * @return mixed|string
      */
-    function render() {
+    public function render()
+    {
         $output = "<div class='row-fluid'>";
         $output .= "<div class='" . $this->getStyleName() . " span12'>";
         $output .= $this->getCurrentValue();
@@ -33,4 +34,3 @@ class Label extends AbstractElement {
         return $output;
     }
 }
-

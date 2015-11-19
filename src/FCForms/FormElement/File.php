@@ -1,27 +1,26 @@
 <?php
 
+namespace FCForms\FormElement;
 
-namespace Intahwebz\FormElement;
+use FCForms\UploadedFile;
 
-use Intahwebz\UploadedFile;
-
-
-class File extends AbstractElement {
-
+class File extends AbstractElement
+{
     /**
      * @param array $info
      * @return mixed|void
      */
-    function init(array $info) {
+    public function init(array $info)
+    {
 
     }
     
-    function serialize()
+    public function serialize()
     {
         return array($this->name => $this->getCurrentValue()->serialize());
     }
     
-    function deserialize($serializedData)
+    public function deserialize($serializedData)
     {
         $uploadedFile = UploadedFile::deserialize($serializedData);
         //$value = $this->deserialize($data[$this->getName()]);
@@ -29,8 +28,9 @@ class File extends AbstractElement {
     }
     
 
-    public function useSubmittedValue() {
-        if ($this->form->isSubmitted() ) {
+    public function useSubmittedValue()
+    {
+        if ($this->form->isSubmitted()) {
             $fileFetcher = $this->form->getFileFetcher();
 
             if (!$fileFetcher->hasUploadedFile($this->getFormName())) {
@@ -39,7 +39,7 @@ class File extends AbstractElement {
 
             $uploadedFile = $fileFetcher->getUploadedFile($this->getFormName());
 
-            if ($uploadedFile != false) {    
+            if ($uploadedFile != false) {
                 $tmpName = tempnam(sys_get_temp_dir(), "fileupload_");
                 $result = move_uploaded_file($uploadedFile->tmpName, $tmpName);
 
@@ -57,7 +57,7 @@ class File extends AbstractElement {
                 $this->setCurrentValue($uploadedFile);
             }
         }
-    }   
+    }
     
     //    // Ensure the form is using correct enctype
     //$form->setAttribute('enctype', 'multipart/form-data');
@@ -65,14 +65,15 @@ class File extends AbstractElement {
     /**
      * @return string
      */
-    function getCSSClassName() {
+    public function getCSSClassName()
+    {
         return "FileSelect";
     }
         
     /**
      * @return mixed|string
      */
-    function render()
+    public function render()
     {
         $output = "";
 
@@ -106,7 +107,7 @@ class File extends AbstractElement {
         if ($uploadedFile == null) {
             $output .= "<input type='file' name='".$this->getFormName()."' value='' />";
         }
-        else{
+        else {
             //show info about $userUploadedFile
             echo "File uploaded ".safeText($uploadedFile->name);
         }
@@ -117,7 +118,7 @@ class File extends AbstractElement {
         return $output;
     }
 
-    function reset()
+    public function reset()
     {
         $this->setCurrentValue(null);
         $serializedData = $this->form->getDataStore()->getData($this->getID(), null, true);
@@ -129,4 +130,3 @@ class File extends AbstractElement {
         }
     }
 }
-

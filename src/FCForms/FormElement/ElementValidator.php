@@ -1,8 +1,6 @@
 <?php
 
-
-namespace Intahwebz\FormElement;
-
+namespace FCForms\FormElement;
 
 interface ElementValidator
 {
@@ -14,4 +12,3 @@ interface ElementValidator
      */
     public function isValidElement(AbstractElement $element);
 }
-

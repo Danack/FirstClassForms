@@ -1,15 +1,13 @@
 <?php
 
-
-namespace Intahwebz\FormElement;
-
+namespace FCForms\FormElement;
 
 class CSRF extends AbstractElement
 {
     /**
      * @return string
      */
-    function getCSSClassName()
+    public function getCSSClassName()
     {
         return 'CSRF';
     }
@@ -18,7 +16,8 @@ class CSRF extends AbstractElement
      * @param array $info
      * @return void
      */
-    function init(array $info) {
+    public function init(array $info)
+    {
         if (array_key_exists('name', $info) == true) {
             $this->name = $info['name'];
         }
@@ -31,7 +30,7 @@ class CSRF extends AbstractElement
      * Renders the form element
      * @return string
      */
-    function render()
+    public function render()
     {
         $output = "";
         $this->setCurrentValue(uniqid());

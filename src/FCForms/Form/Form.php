@@ -1,13 +1,11 @@
 <?php
 
-namespace Intahwebz\Form;
-//@TODO - rename namespace to FirstClassForms
+namespace FCForms\Form;
 
-use Intahwebz\FormElement\FormElementCollection;
-use Intahwebz\SafeAccess;
-
+use FCForms\FormElement\FormElementCollection;
+use FCForms\SafeAccess;
+use FCForms\FileFetcher;
 use Room11\HTTP\VariableMap;
-use Intahwebz\FileFetcher;
 
 abstract class Form
 {
@@ -18,33 +16,33 @@ abstract class Form
     private $hasBeenValidated = false;
 
     /**
-     * @var \Intahwebz\FileFetcher
+     * @var \FCForms\FileFetcher
      */
     protected $fileFetcher;
 
     /** @var FormElementCollection[] */
-    var $rowFieldCollectionArray = array();
+    protected $rowFieldCollectionArray = array();
 
-    /** @var  \Intahwebz\FormElement\AbstractElement[] */
-    var $rowElements = array();
+    /** @var  \FCForms\FormElement\AbstractElement[] */
+    protected $rowElements = array();
 
-    /** @var \Intahwebz\FormElement\AbstractElement[] */
-    var $startElements = array();
+    /** @var \FCForms\FormElement\AbstractElement[] */
+    protected $startElements = array();
 
-    /** @var \Intahwebz\FormElement\AbstractElement[] */
-    var $endElements = array();
+    /** @var \FCForms\FormElement\AbstractElement[] */
+    protected $endElements = array();
 
-    var $rowIDs = array();
+    protected $rowIDs = array();
 
     protected $forceError = false;
     protected $errorMessage = "Form had errors.";
 
-    var $class = 'standardForm';
+    protected $class = 'standardForm';
 
-    var $id = null;
+    protected $id = null;
 
     /**
-     * @var \Intahwebz\Form\DataStore
+     * @var \FCForms\Form\DataStore
      */
     private $dataStore;
 
@@ -55,12 +53,13 @@ abstract class Form
 
     const FORM_HIDDEN_FQCN = 'formClass';
 
-    function getFileFetcher() {
+    public function getFileFetcher()
+    {
         return $this->fileFetcher;
     }
     
     //TODO - needs to be variable map, not request.
-    function __construct(
+    public function __construct(
         DataStore $dataStore,
         VariableMap $variableMap,
         FileFetcher $fileFetcher
@@ -74,31 +73,31 @@ abstract class Form
     }
 
     /**
-     * @return \Intahwebz\Form\DataStore
+     * @return \FCForms\Form\DataStore
      */
     public function getDataStore()
     {
         return $this->dataStore;
     }
 
-    abstract function getDefinition();
+    abstract public function getDefinition();
 
-    function getLabelSpan()
+    public function getLabelSpan()
     {
         return 2;
     }
 
-    function getClassName()
+    public function getClassName()
     {
         return $this->class;
     }
 
-    function getRowIDs()
+    public function getRowIDs()
     {
         return $this->rowIDs;
     }
 
-    function getID()
+    public function getID()
     {
         foreach ($this->endElements as $element) {
             if ($element->getName() == 'formID') {
@@ -106,15 +105,15 @@ abstract class Form
             }
         }
         
-        throw new FormInvalidException("Could not find formID");
+        throw new DataMissingException("Could not find formID");
     }
 
-    function getStandardElements()
+    public function getStandardElements()
     {
         $standardElements = array(
             array(
-                'type' => 'Intahwebz\FormElement\Hidden', 
-                'name' => self::FORM_HIDDEN_FQCN, 
+                'type' => 'Intahwebz\FormElement\Hidden',
+                'name' => self::FORM_HIDDEN_FQCN,
                 'value' => get_class($this),
             ),
             array(
@@ -128,7 +127,7 @@ abstract class Form
                 'value' => uniqid(),
             ),
             array(
-                'type' => 'Intahwebz\FormElement\CSRF', 
+                'type' => 'Intahwebz\FormElement\CSRF',
                 'name' => 'csrf',
                 'validation' => array(
                     "Intahwebz\\Validator\\CSRF" => array(),
@@ -139,7 +138,7 @@ abstract class Form
         return $standardElements;
     }
 
-    function init($definition)
+    public function init($definition)
     {
         if (array_key_exists('class', $definition) == true) {
             $this->class = $definition['class'];
@@ -177,24 +176,24 @@ abstract class Form
 
     /**
      * @param $definition
-     * @return \Intahwebz\FormElement\AbstractElement
+     * @return \FCForms\FormElement\AbstractElement
      */
-    function addStartElement($definition)
+    public function addStartElement($definition)
     {
         $formElement = $this->createElement($definition);
-        array_push ($this->startElements, $formElement);
+        array_push($this->startElements, $formElement);
 
         return $formElement;
     }
 
     /**
      * @param $definition
-     * @return \Intahwebz\FormElement\AbstractElement
+     * @return \FCForms\FormElement\AbstractElement
      */
-    function addEndElement($definition)
+    public function addEndElement($definition)
     {
         $formElement = $this->createElement($definition);
-        array_unshift ($this->endElements, $formElement);
+        array_unshift($this->endElements, $formElement);
 
         return $formElement;
     }
@@ -202,16 +201,16 @@ abstract class Form
     /**
      * @param $formElement
      * @return mixed
-     * @throws FormInvalidException
+     * @throws DataMissingException
      */
-    function createElement($formElement)
+    public function createElement($formElement)
     {
         if (array_key_exists('type', $formElement) == false) {
-            throw new FormInvalidException("Form element has no value for type.");
+            throw new DataMissingException("Form element has no value for type.");
         }
 
         $className = $formElement['type'];
-        /** @var $element \Intahwebz\FormElement\AbstractElement */
+        /** @var $element \FCForms\FormElement\AbstractElement */
         $element = new $className($this);
         $element->initCommon($formElement);
         $element->init($formElement);
@@ -222,7 +221,7 @@ abstract class Form
     /**
      * @throws \Exception
      */
-    function useSubmittedValues()
+    public function useSubmittedValues()
     {
         foreach ($this->startElements as $element) {
             $element->useSubmittedValue();
@@ -253,7 +252,7 @@ abstract class Form
      * @param $rowID
      * @param array $dataSource
      */
-    function addRowValues($rowID, array $dataSource)
+    public function addRowValues($rowID, array $dataSource)
     {
         $formElementCollection = new FormElementCollection($this, $rowID, $this->rowElements);
         $formElementCollection->setValues($dataSource);
@@ -278,7 +277,8 @@ abstract class Form
     /**
      * @param $dataSource
      */
-    function setValues(array $dataSource) {
+    public function setValues(array $dataSource)
+    {
         foreach ($this->startElements as $element) {
             $element->setValue($dataSource);
         }
@@ -293,7 +293,8 @@ abstract class Form
     /**
      * @return string
      */
-    function render() {
+    public function render()
+    {
         $output = '';
 
         if ($this->hasBeenValidated == true) {
@@ -314,8 +315,7 @@ abstract class Form
             "enctype='multipart/form-data'"
         );
 
-        $output .= "<input type='hidden' name='formID' value='".$formID."' />";  
-
+        $output .= "<input type='hidden' name='formID' value='".$formID."' />";
         $output .= "<div class='row-fluid'>";
         $output .= "<div class='span12' style='padding-left: 20px'>";
 
@@ -349,7 +349,7 @@ abstract class Form
     /**
      * @return bool
      */
-    function isSubmitted()
+    public function isSubmitted()
     {
         $formSubmitted = $this->variableMap->getVariable('formSubmitted', false);
 
@@ -364,7 +364,7 @@ abstract class Form
     /**
      * @return array
      */
-    function getAllValues()
+    public function getAllValues()
     {
         $data = array();
         foreach ($this->startElements as $element) {
@@ -389,7 +389,7 @@ abstract class Form
      * @param $name
      * @return mixed|null
      */
-    function getValue($id, $name)
+    public function getValue($id, $name)
     {
         foreach ($this->startElements as $element) {
             if ($element->getName() == $name) {
@@ -415,8 +415,7 @@ abstract class Form
         return null;
     }
 
-    
-    function getRowValues($id)
+    public function getRowValues($id)
     {
         foreach ($this->rowFieldCollectionArray as $rowField) {
             if ($rowField->getID() == $id) {
@@ -429,7 +428,7 @@ abstract class Form
     /**
      * @return bool
      */
-    function validate()
+    public function validate()
     {
         $isValid = true;
 
@@ -466,9 +465,8 @@ abstract class Form
         foreach ($this->startElements as $element) {
             $errorMessages += $element->getErrorMessages();
         }
-        
+
         foreach ($this->rowFieldCollectionArray as $rowFieldCollection) {
-            
             $errorMessages += $rowFieldCollection->getErrorMessages();
         }
         
@@ -504,7 +502,7 @@ abstract class Form
     /**
      *
      */
-    function storeValuesInSession()
+    public function storeValuesInSession()
     {
         $serializedData = $this->serialize();
         $sessionName = $this->getSessionName();
@@ -523,7 +521,7 @@ abstract class Form
     /**
      * @return array
      */
-    function serialize()
+    public function serialize()
     {
         $start = array();
         $rows = array();
@@ -568,7 +566,7 @@ abstract class Form
      * @param $sessionData
      * @return bool
      */
-    function unserialize($sessionData)
+    public function unserialize($sessionData)
     {
         //TODO - Data does need to be validated against form version id.
         if ($sessionData == false) {
@@ -602,7 +600,7 @@ abstract class Form
     /**
      * @return bool
      */
-    function getSessionStoredData($validateIfDataLoaded)
+    public function getSessionStoredData($validateIfDataLoaded)
     {
         $sessionName = $this->getSessionName();
 
@@ -626,7 +624,7 @@ abstract class Form
         return true;
     }
 
-    function reset()
+    public function reset()
     {
         foreach ($this->startElements as $element) {
             $element->reset();
@@ -641,25 +639,25 @@ abstract class Form
 
     /**
      * @param $filename
-     * @return \Intahwebz\UploadedFile
+     * @return \FCForms\UploadedFile
      */
-    function getUploadedFile($filename)
+    public function getUploadedFile($filename)
     {
         throw new \Exception("Not currently supported");
         //return $this->variableMap->getUploadedFile($filename);
     }
 
-    function getFormName()
+    public function getFormName()
     {
         return get_class($this);
     }
 
-    function addSubmittedValues($rowName, array $rowValues)
+    public function addSubmittedValues($rowName, array $rowValues)
     {
         $this->addRowValues($rowName, $rowValues);
     }
     
-    function setFormError($errorMessage)
+    public function setFormError($errorMessage)
     {
         $this->errorMessage = $errorMessage;
         $this->forceError = true;
@@ -671,7 +669,7 @@ abstract class Form
      * Processes the form.
      * @param $callback
      */
-    function process(callable $validCallback, callable $invalidCallback = null)
+    public function process(callable $validCallback, callable $invalidCallback = null)
     {
         $this->useSubmittedValues();
         $this->validate();

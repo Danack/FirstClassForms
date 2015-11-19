@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Intahwebz\Utils;
+namespace FCForms\Utils;
 
-use Intahwebz\FileFetcher;
-use Intahwebz\FileUploadException;
+use FCForms\FileFetcher;
+use FCForms\FileUploadException;
 
 function getNormalizedFILES($files)
 {

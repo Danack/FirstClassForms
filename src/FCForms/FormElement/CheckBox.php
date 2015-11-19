@@ -1,25 +1,26 @@
 <?php
 
+namespace FCForms\FormElement;
 
-namespace Intahwebz\FormElement;
-
-
-class CheckBox extends AbstractElement {
-
-    function init(array $info) {
+class CheckBox extends AbstractElement
+{
+    public function init(array $info)
+    {
     }
 
     /**
      * @return string
      */
-    function getCSSClassName() {
+    public function getCSSClassName()
+    {
         return 'CheckBox';
     }
 
     /**
      * @return mixed|string
      */
-    function render() {
+    public function render()
+    {
         $output = "<div class='row-fluid'>";
         $labelSpan = "span" . $this->form->getLabelSpan();
 
@@ -36,11 +37,9 @@ class CheckBox extends AbstractElement {
 
         $output .= "<div class='$remainingSpan'>";
         $output .= "<input type='checkbox' name='" . $this->getFormName() . "' value='1' $checked />";
-
         $output .= "</div>";
         $output .= "</div>";
 
         return $output;
     }
 }
-

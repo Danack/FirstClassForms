@@ -4,8 +4,52 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "b86e3ab1688b29002b82a4fac41de82a",
+    "hash": "70a6a618a85bb15d2fd3e7c4e2d7a64f",
     "packages": [
+        {
+            "name": "room11/http",
+            "version": "0.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Danack/HTTP.git",
+                "reference": "6b3a970eb379abeb174d6f84f610bb207f140b5c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Danack/HTTP/zipball/6b3a970eb379abeb174d6f84f610bb207f140b5c",
+                "reference": "6b3a970eb379abeb174d6f84f610bb207f140b5c",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8.5",
+                "rdlowrey/auryn": "^1.0.2",
+                "squizlabs/php_codesniffer": "^2.0.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Room11\\HTTP": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Dan Ackroyd",
+                    "email": "Danack@basereality.com",
+                    "homepage": "http://www.basereality.com"
+                }
+            ],
+            "description": "A set of interfaces and standard implementations to allow sweet sweet interoperability.",
+            "keywords": [
+                "http",
+                "interface",
+                "room11"
+            ],
+            "time": "2015-11-16 20:42:31"
+        },
         {
             "name": "zendframework/zend-filter",
             "version": "2.5.1",
@@ -662,6 +706,80 @@
                 "ioc"
             ],
             "time": "2015-08-26 16:31:48"
+        },
+        {
+            "name": "squizlabs/php_codesniffer",
+            "version": "2.3.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
+                "reference": "11a2545c44a5915f883e2e5ec12e14ed345e3ab2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/11a2545c44a5915f883e2e5ec12e14ed345e3ab2",
+                "reference": "11a2545c44a5915f883e2e5ec12e14ed345e3ab2",
+                "shasum": ""
+            },
+            "require": {
+                "ext-tokenizer": "*",
+                "ext-xmlwriter": "*",
+                "php": ">=5.1.2"
+            },
+            "bin": [
+                "scripts/phpcs",
+                "scripts/phpcbf"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0.x-dev"
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "CodeSniffer.php",
+                    "CodeSniffer/CLI.php",
+                    "CodeSniffer/Exception.php",
+                    "CodeSniffer/File.php",
+                    "CodeSniffer/Fixer.php",
+                    "CodeSniffer/Report.php",
+                    "CodeSniffer/Reporting.php",
+                    "CodeSniffer/Sniff.php",
+                    "CodeSniffer/Tokens.php",
+                    "CodeSniffer/Reports/",
+                    "CodeSniffer/Tokenizers/",
+                    "CodeSniffer/DocGenerators/",
+                    "CodeSniffer/Standards/AbstractPatternSniff.php",
+                    "CodeSniffer/Standards/AbstractScopeSniff.php",
+                    "CodeSniffer/Standards/AbstractVariableSniff.php",
+                    "CodeSniffer/Standards/IncorrectPatternException.php",
+                    "CodeSniffer/Standards/Generic/Sniffs/",
+                    "CodeSniffer/Standards/MySource/Sniffs/",
+                    "CodeSniffer/Standards/PEAR/Sniffs/",
+                    "CodeSniffer/Standards/PSR1/Sniffs/",
+                    "CodeSniffer/Standards/PSR2/Sniffs/",
+                    "CodeSniffer/Standards/Squiz/Sniffs/",
+                    "CodeSniffer/Standards/Zend/Sniffs/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Greg Sherwood",
+                    "role": "lead"
+                }
+            ],
+            "description": "PHP_CodeSniffer tokenizes PHP, JavaScript and CSS files and detects violations of a defined set of coding standards.",
+            "homepage": "http://www.squizlabs.com/php-codesniffer",
+            "keywords": [
+                "phpcs",
+                "standards"
+            ],
+            "time": "2015-09-09 00:18:50"
         },
         {
             "name": "symfony/yaml",

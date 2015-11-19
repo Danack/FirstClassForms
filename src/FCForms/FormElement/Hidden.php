@@ -1,15 +1,15 @@
 <?php
 
 
-namespace Intahwebz\FormElement;
+namespace FCForms\FormElement;
 
-
-class Hidden extends AbstractHiddenElement {
-
+class Hidden extends AbstractHiddenElement
+{
     /**
      * @return string
      */
-    function getCSSClassName() {
+    public function getCSSClassName()
+    {
         return 'Hidden';
     }
 
@@ -17,19 +17,22 @@ class Hidden extends AbstractHiddenElement {
      * @param array $info
      * @return mixed|void
      */
-    function init(array $info) {
+    public function init(array $info)
+    {
     }
 
     /**
      * @return mixed|string
      */
-    function render() {
+    public function render()
+    {
         $output = "";
-        $output .= "<input type='hidden' name='" . $this->getFormName() . "' value='" . $this->getCurrentValue() . "' />";
+        $output .= sprintf(
+            "<input type='hidden' name='%s' value='%s' />",
+            $this->getFormName(),
+            $this->getCurrentValue()
+        );
 
         return $output;
     }
-    
-    
 }
-

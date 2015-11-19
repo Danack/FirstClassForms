@@ -9,7 +9,7 @@ use Auryn\Injector;
 class BasicTest extends BaseTestCase
 {
 
-    function testFirst()
+    public function testFirst()
     {
 
     }

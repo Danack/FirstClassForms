@@ -1,13 +1,14 @@
 <?php
 
-namespace Intahwebz\Utils;
+namespace FCForms\FileFetcher;
 
-use Intahwebz\FileFetcher;
+use FCForms\FileFetcher;
+use FCForms\UploadedFile;
 
-class MockFileFetcher implements FileFetcher
+class StubFileFetcher implements FileFetcher
 {
-
-    public function __construct($filename, $originalFilename) {
+    public function __construct($filename, $originalFilename)
+    {
         $this->filename = $filename;
         $this->originalFilename = $originalFilename;
     }
@@ -21,8 +22,9 @@ class MockFileFetcher implements FileFetcher
         return false;
     }
 
-    public function getUploadedFile($formFileName) {
-        $tempFilename = tempnam ('/tmp', 'mockFileFetcher');
+    public function getUploadedFile($formFileName)
+    {
+        $tempFilename = tempnam('/tmp', 'mockFileFetcher');
 
         if (file_exists($this->filename) == false) {
             throw new \InvalidArgumentException("File ".$this->filename." does not exist.");
@@ -30,7 +32,7 @@ class MockFileFetcher implements FileFetcher
 
         copy($this->filename, $tempFilename);
 
-        return new \Intahwebz\UploadedFile(
+        return new UploadedFile(
             $this->originalFilename,
             $tempFilename,
             filesize($tempFilename)

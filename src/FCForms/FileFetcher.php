@@ -1,12 +1,12 @@
 <?php
 
-namespace Intahwebz;
+namespace FCForms;
 
-interface FileFetcher {
-
+interface FileFetcher
+{
     /**
      * @param $formFileName
-     * @return \Intahwebz\UploadedFile
+     * @return \FCForms\UploadedFile
      * @throws \InvalidArgumentException
      */
     public function getUploadedFile($formFileName);
@@ -17,8 +17,3 @@ interface FileFetcher {
      */
     public function hasUploadedFile($formFileName);
 }
-
-
-
-
- 

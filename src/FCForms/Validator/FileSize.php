@@ -1,13 +1,14 @@
 <?php
 
-namespace Intahwebz\Validator;
+namespace FCForms\Validator;
 
+use FCForms\UploadedFile;
 
 /**
  * Validator for the size of all files which will be validated in sum
  */
-class FileSize extends \Zend\Validator\AbstractValidator {
-    
+class FileSize extends \Zend\Validator\AbstractValidator
+{
     private $minSize = 0;
     private $maxSize = 0;
 
@@ -33,8 +34,8 @@ class FileSize extends \Zend\Validator\AbstractValidator {
      * Min limits the used disk space for all files, when used with max=null it is the maximum file size
      * It also accepts an array with the keys 'min' and 'max'
      */
-    public function __construct($options = null) {
-        
+    public function __construct($options = null)
+    {
         if (array_key_exists('minSize', $options)) {
             $this->minSize = $options['minSize'];
         }
@@ -54,14 +55,14 @@ class FileSize extends \Zend\Validator\AbstractValidator {
      * @internal param array $file File data from \Zend\File\Transfer\Transfer
      * @return bool
      */
-    public function isValid($value) {
-
-        if (!($value instanceof \Intahwebz\UploadedFile)) {
+    public function isValid($value)
+    {
+        if (!($value instanceof UploadedFile)) {
             $this->error(self::NOT_READABLE);
             return false;
         }
         else {
-            /** @var $uploadedFile \Intahwebz\UploadedFile */
+            /** @var $uploadedFile UploadedFile */
             $uploadedFile = $value;
             
             $fileSize = @filesize($uploadedFile->tmpName);

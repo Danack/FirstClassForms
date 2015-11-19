@@ -1,10 +1,7 @@
 <?php
 
+namespace FCForms;
 
-namespace Intahwebz;
-
-
-class FileUploadException extends \Exception {
-
+class FileUploadException extends \Exception
+{
 }
-
