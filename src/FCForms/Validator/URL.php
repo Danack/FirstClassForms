@@ -4,7 +4,6 @@ namespace FCForms\Validator;
 
 class URL extends \Zend\Validator\AbstractValidator
 {
-
     const INVALID_URL = "URL is invalid";
 
     protected $messageTemplates = array(

@@ -3,6 +3,7 @@
 namespace FCForms\Validator;
 
 use FCForms\UploadedFile;
+use FCForms\FCFormsException;
 
 /**
  * Validator for the size of all files which will be validated in sum
@@ -51,27 +52,20 @@ class FileSize extends \Zend\Validator\AbstractValidator
      * Returns true if and only if the disk usage of all files is at least min and
      * not bigger than max (when max is not null).
      *
-     * @param  string|array $value Real file to check for size
-     * @internal param array $file File data from \Zend\File\Transfer\Transfer
+     * @param  string $value Real file to check for size
      * @return bool
      */
     public function isValid($value)
     {
         if (!($value instanceof UploadedFile)) {
-            $this->error(self::NOT_READABLE);
-            return false;
+            throw new FCFormsException("FileSize validator can only accept an object of type UploadedFile");
         }
         else {
             /** @var $uploadedFile UploadedFile */
             $uploadedFile = $value;
-            
-            $fileSize = @filesize($uploadedFile->tmpName);
-            
-            if ($fileSize === false) {
-                $this->error(self::NOT_READABLE);
-                return false;
-            }
-            
+
+            $fileSize = $uploadedFile->getSize();
+
             if ($this->minSize > 0) {
                 if ($this->minSize > $fileSize) {
                     $this->error(self::TOO_SMALL, $fileSize);

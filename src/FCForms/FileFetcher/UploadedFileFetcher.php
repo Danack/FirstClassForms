@@ -5,6 +5,7 @@ namespace FCForms\Utils;
 
 use FCForms\FileFetcher;
 use FCForms\FileUploadException;
+use FCForms\UploadedFile;
 
 function getNormalizedFILES($files)
 {

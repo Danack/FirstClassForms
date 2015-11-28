@@ -2,7 +2,9 @@
 
 namespace FCForms\FormElement;
 
-class Password extends AbstractElement
+use FCForms\Form\Form;
+
+class Password extends AbstractElementPrototype
 {
     /**
      * @param array $info
@@ -36,7 +38,7 @@ class Password extends AbstractElement
     /**
      * @return mixed|string
      */
-    public function render()
+    public function render(Form $form)
     {
         $output = "";
         if (count($this->errorMessages) > 0) {
@@ -53,8 +55,8 @@ class Password extends AbstractElement
         $remainingSpan = 'span12';
 
         if ($this->label !== null) {
-            $labelSpan = "span" . $this->form->getLabelSpan();
-            $remainingSpan = "span" . (12 - $this->form->getLabelSpan());
+            $labelSpan = "span" . $form->getLabelSpan();
+            $remainingSpan = "span" . (12 - $form->getLabelSpan());
             $output .= "<label class='$labelSpan' for='" . $this->getFormName() . "'>" . $this->label . "</label>";
         }
 
@@ -72,7 +74,7 @@ class Password extends AbstractElement
         return $output;
     }
     
-    public function isStoreable()
+    public function canBeStored()
     {
         return false;
     }

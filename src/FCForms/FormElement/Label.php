@@ -2,7 +2,9 @@
 
 namespace FCForms\FormElement;
 
-class Label extends AbstractElement
+use FCForms\Form\Form;
+
+class Label extends AbstractElementPrototype
 {
     /**
      * @return string
@@ -20,17 +22,16 @@ class Label extends AbstractElement
     {
     }
 
-    /**
-     * @return mixed|string
-     */
-    public function render()
+    public function hasData()
     {
-        $output = "<div class='row-fluid'>";
-        $output .= "<div class='" . $this->getStyleName() . " span12'>";
-        $output .= $this->getCurrentValue();
-        $output .= "</div>";
-        $output .= "</div>";
-
-        return $output;
+        return false;
+    }
+    
+    /**
+     * @return mixed
+     */
+    public function render(Form $form, Element $elementInstance)
+    {
+        return "This is a label";
     }
 }

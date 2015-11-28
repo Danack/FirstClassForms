@@ -3,7 +3,9 @@
 
 namespace FCForms\FormElement;
 
-class TextArea extends AbstractElement
+use FCForms\Form\Form;
+
+class TextArea extends AbstractElementPrototype
 {
     private $rows = 8;
 
@@ -35,13 +37,14 @@ class TextArea extends AbstractElement
     /**
      * @return mixed|string
      */
-    public function render()
+    public function render(Form $form, Element $elementInstance)
     {
         $output = "";
-        if (count($this->errorMessages) > 0) {
+        $errorMessages = $elementInstance->getErrorMessages();
+        if (count($errorMessages) > 0) {
             $output .= "<div class='row-fluid'>";
             $output .= "<div class='errorMessage span12'>";
-            foreach ($this->errorMessages as $errorMessage) {
+            foreach ($errorMessages as $errorMessage) {
                 $output .= $errorMessage;
             }
             $output .= "</div>";
@@ -52,13 +55,18 @@ class TextArea extends AbstractElement
         $remainingSpan = 'span12';
 
         if ($this->label !== null) {
-            $labelSpan = "span" . $this->form->getLabelSpan();
-            $remainingSpan = "span" . (12 - $this->form->getLabelSpan());
-            $output .= "<label class='$labelSpan' for='" . $this->getFormName() . "'>" . $this->label . "</label>";
+            $labelSpan = "span" . $form->getLabelSpan();
+            $remainingSpan = "span" . (12 - $form->getLabelSpan());
+            $output .= sprintf(
+                "<label class='%s' for='%s'>%s</label>",
+                $labelSpan,
+                $elementInstance->getFormName(),
+                $this->label
+            );
         }
 
         $output .= "<div class='$remainingSpan'>";
-        $output .= "<textarea type='text' name='".$this->getFormName(). "'";
+        $output .= "<textarea type='text' name='".$elementInstance->getFormName(). "'";
 
         if ($this->placeHolder != null) {
             $output .= "placeholder='".$this->placeHolder."'";
@@ -72,14 +80,9 @@ class TextArea extends AbstractElement
         else {
             $output .= "style='width: 100%'";
         }
-
-
         $output .= "/>";
-
-        $output .= htmlentities($this->getCurrentValue());
-
+        $output .= htmlentities($elementInstance->getCurrentValue());
         $output .= "</textarea>";
-
         $output .= "</div>";
         $output .= "</div>";
 

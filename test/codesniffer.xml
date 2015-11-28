@@ -52,8 +52,7 @@
 
     <!-- Sometimes this is fine. -->
     <rule ref="PSR1.Files.SideEffects.FoundWithSymbols">
-        <exclude-pattern>*JigRender.php</exclude-pattern>
-        <exclude-pattern>*Escaper.php</exclude-pattern>
+        <exclude-pattern>*bootstrap.php</exclude-pattern>
     </rule>
 
     <rule ref="PSR1.Methods.CamelCapsMethodName.NotCamelCaps">

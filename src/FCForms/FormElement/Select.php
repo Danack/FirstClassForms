@@ -3,7 +3,9 @@
 
 namespace FCForms\FormElement;
 
-class Select extends AbstractElement
+use FCForms\Form\Form;
+
+class Select extends AbstractElementPrototype
 {
     private $optionDescriptionMap = array();
 
@@ -25,24 +27,24 @@ class Select extends AbstractElement
     /**
      * @return mixed|string
      */
-    public function render()
+    public function render(Form $form, Element $elementInstance)
     {
         $output = "<div class='row-fluid'>";
-        $labelSpan = "span" . $this->form->getLabelSpan();
+        $labelSpan = "span" . $form->getLabelSpan();
 
-        $remainingSpan = "span" . (12 - $this->form->getLabelSpan());
+        $remainingSpan = "span" . (12 - $form->getLabelSpan());
 
         if ($this->label != null) {
-            $output .= "<label class='$labelSpan' for='" . $this->getFormName() . "'>" . $this->label . "</label>";
+            $output .= "<label class='$labelSpan' for='".$elementInstance->getFormName()."'>".$this->label."</label>";
         }
 
         $output .= "<div class='$remainingSpan'>";
 
-        $output .= "<select name='" . $this->getFormName() . "'>";
+        $output .= "<select name='" . $elementInstance->getFormName() . "'>";
         
         foreach ($this->optionDescriptionMap as $option => $description) {
             $selectedString = '';
-            if ($option === $this->getCurrentValue()) {
+            if ($option === $elementInstance->getCurrentValue()) {
                 $selectedString = "selected='selected'";
             }
             

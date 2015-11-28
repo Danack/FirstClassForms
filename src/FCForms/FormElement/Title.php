@@ -1,9 +1,8 @@
 <?php
 
-
 namespace FCForms\FormElement;
 
-class Title extends AbstractElement
+class Title extends AbstractElementPrototype
 {
 
     /**
@@ -22,17 +21,22 @@ class Title extends AbstractElement
     {
     }
 
-    /**
-     * @return mixed|string
-     */
-    public function render()
+    public function hasData()
     {
-        $output = "<div class='row-fluid'>";
-        $output .= "<legend class='span12'>";
-        $output .= $this->getCurrentValue();
-        $output .= "</legend>";
-        $output .= "</div>";
-
-        return $output;
+        return false;
     }
+    
+//    /**
+//     * @return mixed|string
+//     */
+//    public function render(Form $form, Element $elementInstance)
+//    {
+//        $output = "<div class='row-fluid'>";
+//        $output .= "<legend class='span12'>";
+//        $output .= $elementInstance->getCurrentValue();
+//        $output .= "</legend>";
+//        $output .= "</div>";
+//
+//        return $output;
+//    }
 }

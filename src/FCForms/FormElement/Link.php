@@ -3,7 +3,9 @@
 
 namespace FCForms\FormElement;
 
-class Link extends AbstractElement
+use FCForms\Form\Form;
+
+class Link extends AbstractElementPrototype
 {
     /**
      * @return string
@@ -24,10 +26,10 @@ class Link extends AbstractElement
     /**
      * @return mixed|string
      */
-    public function render()
+    public function render(Form $form, Element $elementInstance)
     {
         $output = "<div class='row-fluid'>";
-        $output .= "<div class='" . $this->getStyleName() . " span12'>";
+        $output .= "<div class='".$this->getCSSClassName()." span12'>";
         //$output .= $this->getCurrentValue();
         $output .= "This is meant to be a link";
         $output .= "</div>";

@@ -2,8 +2,24 @@
 
 namespace FCForms\FormElement;
 
-class CSRF extends AbstractElement
+use FCForms\FCFormsException;
+use FCForms\Form\Form;
+use FCForms\Form\DataStore;
+
+class CSRF extends AbstractElementPrototype
 {
+    /**
+     * The form this element is attached to.
+     * @var Form
+     */
+    protected $form;
+
+    public function __construct(Form $form, DataStore $dataStore)
+    {
+        $this->form = $form;
+        $this->dataStore = $dataStore;
+    }
+    
     /**
      * @return string
      */
@@ -26,55 +42,43 @@ class CSRF extends AbstractElement
         }
     }
 
-    /**
-     * Renders the form element
-     * @return string
-     */
-    public function render()
+    public function prepareToRender(Element $elementInstance)
     {
-        $output = "";
-        $this->setCurrentValue(uniqid());
+        $elementInstance->setCurrentValue(uniqid());
         //Showing a CSRF element, creates the value
-        $sessionName = $this->getSessionKeyNameForCSRF();
-        $dataStore = $this->form->getDataStore();
-        $dataStore->storeData($sessionName, $this->getCurrentValue());
-
-        if (count($this->errorMessages) > 0) {
-            $output .= "<div class='errorMessage'>";
-
-            foreach ($this->errorMessages as $errorMessage) {
-                $output .= $errorMessage;
-            }
-            $output .= "</div>";
-        }
-
-        $output .= sprintf(
-            "<input type='hidden' name='%s' value='%s' />",
-            $this->getFormName(),
-            $this->getCurrentValue()
-        );
-
-        return $output;
+        $sessionName = $this->getSessionKeyNameForCSRF($elementInstance);
+        $this->dataStore->setValue($sessionName, $elementInstance->getCurrentValue());
     }
 
     /**
      * Get the session name that stores the CSRF value in.
+     * @param Element $elementInstance
+     * @throws \Exception
      * @return string
      */
-    public function getSessionKeyNameForCSRF()
+    public function getSessionKeyNameForCSRF(Element $elementInstance)
     {
-        return get_class($this->form)."_csrf";
+        if ($elementInstance->getCurrentValue() == null) {
+            throw new \Exception("CSRF id not initialized.");
+        }
+        
+        return get_class($this->form)."_csrf_".$elementInstance->getCurrentValue();
     }
 
     /**
      * Get the value to compare the current value against.
+     * @param Element $elementInstance
+     * @throws FCFormsException
+     * @throws \Exception
      * @return mixed
      */
-    public function getValidationValue()
+    public function getValidationValue(Element $elementInstance)
     {
-        $sessionName = $this->getSessionKeyNameForCSRF($this->getCurrentValue());
-        $dataStore = $this->form->getDataStore();
-        $validationValue = $dataStore->getData($sessionName, false, true);
+        $sessionName = $this->getSessionKeyNameForCSRF($elementInstance);
+        $validationValue = $this->dataStore->getValue($sessionName, false, true);
+        if ($validationValue === false) {
+            throw new FCFormsException("Could not read value for validation");
+        }
 
         return $validationValue;
     }

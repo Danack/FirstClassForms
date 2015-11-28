@@ -5,7 +5,7 @@ namespace FCForms\FormElement;
 use FCForms\Form\Form;
 use FCForms\SafeAccess;
 
-class FormElementCollection
+class ElementCollection implements \IteratorAggregate
 {
     use SafeAccess;
 
@@ -17,17 +17,39 @@ class FormElementCollection
      */
     private $form;
 
-    /** @var AbstractElement[] */
+    /** @var \FCForms\FormElement\Element[] */
     public $elements = array();
 
     protected $className = "collection";
 
+        /**
+     * @param Form $form
+     * @param $rowID
+     * @param $rowElements \FCForms\FormElement\Element[]
+     * @throws \Exception
+     */
+    public function __construct(Form $form, $rowID, $elements)
+    {
+        $this->form = $form;
+        $this->id = $rowID;
+        $this->elements = $elements;
+    }
+    
+    
     /**
      * @return string
      */
     public function getStyleName()
     {
         return $this->form->getClassName() . "_" . $this->className;
+    }
+
+    /**
+     * @return \ArrayIterator
+     */
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->elements);
     }
 
     /**
@@ -52,27 +74,7 @@ class FormElementCollection
         return $result;
     }
 
-    /**
-     * @param Form $form
-     * @param $rowID
-     * @param $rowElements AbstractElement[]
-     * @throws \Exception
-     */
-    public function __construct(Form $form, $rowID, $rowElements)
-    {
-        $this->form = $form;
-        $this->id = $rowID;
 
-        foreach ($rowElements as $rowElement) {
-            if (is_object($rowElement) == false) {
-                throw new \Exception("row element is not an object.");
-            }
-
-            $newElement = clone $rowElement;
-            $newElement->setID($rowID);
-            $this->elements[] = $newElement;
-        }
-    }
     
     public function getErrorMessages()
     {
@@ -84,15 +86,15 @@ class FormElementCollection
         return $errorMessages;
     }
 
-    public function isStoreable()
-    {
-        $storeable = true;
-        foreach ($this->elements as $element) {
-            $storeable &= $element->isStoreable();
-        }
-        
-        return $storeable;
-    }
+//    public function isStoreable()
+//    {
+//        $storeable = true;
+//        foreach ($this->elements as $element) {
+//            $storeable &= $element->canBeStored();
+//        }
+//        
+//        return $storeable;
+//    }
     
     
     /**
@@ -143,16 +145,16 @@ class FormElementCollection
             $element->setValue($dataSource);
         }
     }
-
-    /**
-     *
-     */
-    public function useSubmittedValue()
-    {
-        foreach ($this->elements as $element) {
-            $element->useSubmittedValue();
-        }
-    }
+    
+//    /**
+//     *
+//     */
+//    public function useSubmittedValue(Form $form)
+//    {
+//        foreach ($this->elements as $element) {
+//            $form->useSubmittedValueForElement($element);
+//        }
+//    }
 
     /**
      * @param $rowData
@@ -164,17 +166,12 @@ class FormElementCollection
         }
     }
 
-    /**
-     * @return string
-     */
-    public function render()
+    
+    public function prepareToRender()
     {
-        $output = "";
-
         foreach ($this->elements as $element) {
-            $output .= $element->render();
+            $element->prepareToRender();
         }
 
-        return $output;
     }
 }

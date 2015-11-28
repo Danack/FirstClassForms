@@ -2,6 +2,6 @@
 
 namespace FCForms;
 
-class FileUploadException extends \Exception
+class FileUploadException extends FCFormsException
 {
 }

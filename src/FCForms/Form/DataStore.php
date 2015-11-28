@@ -4,7 +4,7 @@ namespace FCForms\Form;
 
 interface DataStore
 {
-    public function getData($name, $default, $clearOnRead);
+    public function getValue($name, $default, $clearOnRead);
 
-    public function storeData($name, $data);
+    public function setValue($name, $data);
 }

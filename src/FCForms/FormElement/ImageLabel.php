@@ -2,7 +2,9 @@
 
 namespace FCForms\FormElement;
 
-class ImageLabel extends AbstractElement
+use FCForms\Form\Form;
+
+class ImageLabel extends AbstractElementPrototype
 {
     /**
      * @return string
@@ -20,14 +22,19 @@ class ImageLabel extends AbstractElement
     {
     }
 
+    public function hasData()
+    {
+        return false;
+    }
+
     /**
      * @return mixed|string
      */
-    public function render()
+    public function render(Form $form, Element $elementInstance)
     {
         $output = "<div class='row-fluid'>";
-        $output .= "<div class='" . $this->getStyleName() . " span12'>";
-        $output .= "<img src='".$this->getCurrentValue()."' />";
+        $output .= "<div class='" . $this->getCSSClassName() . " span12'>";
+        $output .= "<img src='".$elementInstance->getCurrentValue()."' />";
         $output .= "</img>";
         $output .= "</div>";
         $output .= "</div>";

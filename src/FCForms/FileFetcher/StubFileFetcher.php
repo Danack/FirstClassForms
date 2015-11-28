@@ -4,19 +4,24 @@ namespace FCForms\FileFetcher;
 
 use FCForms\FileFetcher;
 use FCForms\UploadedFile;
+use FCForms\FileUploadException;
 
 class StubFileFetcher implements FileFetcher
 {
-    public function __construct($filename, $originalFilename)
+    /** @var \FCForms\FileFetcher\StubFile[]  */
+    private $stubFiles = [];
+
+    public function __construct(array $stubFiles)
     {
-        $this->filename = $filename;
-        $this->originalFilename = $originalFilename;
+        $this->stubFiles = $stubFiles;
     }
 
-    public function hasUploadedFile($formFileName)
+    public function hasUploadedFile($formName)
     {
-        if (strcmp($formFileName, $this->filename) === 0) {
-            return true;
+        foreach ($this->stubFiles as $stubFile) {
+            if ($stubFile->formName == $formName) {
+                return true;
+            }
         }
 
         return false;
@@ -24,16 +29,29 @@ class StubFileFetcher implements FileFetcher
 
     public function getUploadedFile($formFileName)
     {
-        $tempFilename = tempnam('/tmp', 'mockFileFetcher');
-
-        if (file_exists($this->filename) == false) {
-            throw new \InvalidArgumentException("File ".$this->filename." does not exist.");
+        if (!$this->hasUploadedFile($formFileName)) {
+            //TODO - make functon on exception class
+            throw new FileUploadException("File $formFileName not found ");
+        }
+        
+        $uploadedStubFile = null;
+        foreach ($this->stubFiles as $stubFile) {
+            if ($stubFile->formName == $formFileName) {
+                $uploadedStubFile = $stubFile;
+                break;
+            }
         }
 
-        copy($this->filename, $tempFilename);
+        if (file_exists($uploadedStubFile->filename) == false) {
+            throw new \InvalidArgumentException("File ".$uploadedStubFile->filename." does not exist.");
+        }
+
+        $tempFilename = tempnam('/tmp', 'mockFileFetcher');
+
+        copy($uploadedStubFile->filename, $tempFilename);
 
         return new UploadedFile(
-            $this->originalFilename,
+            $uploadedStubFile->originalFilename,
             $tempFilename,
             filesize($tempFilename)
         );

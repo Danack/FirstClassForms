@@ -1,9 +1,10 @@
 <?php
 
-
 namespace FCForms\FormElement;
 
-class Hidden extends AbstractHiddenElement
+use FCForms\Form\Form;
+
+class Hidden extends AbstractElementPrototype
 {
     /**
      * @return string
@@ -19,20 +20,5 @@ class Hidden extends AbstractHiddenElement
      */
     public function init(array $info)
     {
-    }
-
-    /**
-     * @return mixed|string
-     */
-    public function render()
-    {
-        $output = "";
-        $output .= sprintf(
-            "<input type='hidden' name='%s' value='%s' />",
-            $this->getFormName(),
-            $this->getCurrentValue()
-        );
-
-        return $output;
     }
 }

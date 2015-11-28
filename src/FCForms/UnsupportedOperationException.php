@@ -2,7 +2,7 @@
 
 namespace FCForms;
 
-class UnsupportedOperationException extends \Exception
+class UnsupportedOperationException extends FCFormsException
 {
 
 }

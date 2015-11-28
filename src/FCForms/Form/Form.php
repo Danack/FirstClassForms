@@ -2,10 +2,12 @@
 
 namespace FCForms\Form;
 
-use FCForms\FormElement\FormElementCollection;
+use FCForms\FCFormsException;
+use FCForms\FormElement\ElementCollection;
 use FCForms\SafeAccess;
 use FCForms\FileFetcher;
 use Room11\HTTP\VariableMap;
+use Auryn\Injector;
 
 abstract class Form
 {
@@ -20,19 +22,10 @@ abstract class Form
      */
     protected $fileFetcher;
 
-    /** @var FormElementCollection[] */
-    protected $rowFieldCollectionArray = array();
+    /** @var ElementCollection[] */
+    public $rowFieldCollectionArray = array();
 
-    /** @var  \FCForms\FormElement\AbstractElement[] */
-    protected $rowElements = array();
-
-    /** @var \FCForms\FormElement\AbstractElement[] */
-    protected $startElements = array();
-
-    /** @var \FCForms\FormElement\AbstractElement[] */
-    protected $endElements = array();
-
-    protected $rowIDs = array();
+    public $rowIDs = array();
 
     protected $forceError = false;
     protected $errorMessage = "Form had errors.";
@@ -40,6 +33,15 @@ abstract class Form
     protected $class = 'standardForm';
 
     protected $id = null;
+
+    /** @var  \FCForms\FormElement\ElementCollection[] */
+    public $rowElementsArray = array();
+
+    /** @var \FCForms\FormElement\ElementCollection|\FCForms\FormElement\Element[] */
+    public $startElements = array();
+
+    /** @var \FCForms\FormElement\ElementCollection|\FCForms\FormElement\Element[] */
+    public $endElements = array();
 
     /**
      * @var \FCForms\Form\DataStore
@@ -53,23 +55,62 @@ abstract class Form
 
     const FORM_HIDDEN_FQCN = 'formClass';
 
+    /**
+     * @var Injector
+     */
+    protected $injector;
+
+    /**
+     * @var FormBuilder
+     */
+    protected $formBuilder;
+
+    /**
+     * @var \FCForms\Form\FormPrototype
+     */
+    protected $prototype;
+    
+
     public function getFileFetcher()
     {
         return $this->fileFetcher;
     }
-    
-    //TODO - needs to be variable map, not request.
-    public function __construct(
+
+    private function __construct()
+    {
+    }
+
+    /**
+     * @param DataStore $dataStore
+     * @param VariableMap $variableMap
+     * @param FileFetcher $fileFetcher
+     * @param Injector $injector
+     * @param FormBuilder $formBuilder
+     * @return \FCForms\Form\Form
+     */
+    public static function createBlank(
         DataStore $dataStore,
         VariableMap $variableMap,
-        FileFetcher $fileFetcher
+        FileFetcher $fileFetcher,
+        Injector $injector,
+        FormBuilder $formBuilder
     ) {
-        $this->dataStore = $dataStore;
-        $this->variableMap = $variableMap;
-        $this->fileFetcher = $fileFetcher;
+        $instance = new static();
+        
+        $instance->dataStore = $dataStore;
+        $instance->variableMap = $variableMap;
+        $instance->fileFetcher = $fileFetcher;
+        $instance->injector = $injector;
+        $instance->formBuilder = $formBuilder;
 
-        $definition = $this->getDefinition();
-        $this->init($definition);
+        $definition = $instance->getDefinition();
+        
+        $instance->prototype = $formBuilder->buildPrototypeFromDefinition(
+            $instance,
+            $definition
+        );
+
+        return $instance;
     }
 
     /**
@@ -97,7 +138,7 @@ abstract class Form
         return $this->rowIDs;
     }
 
-    public function getID()
+    protected function getID()
     {
         foreach ($this->endElements as $element) {
             if ($element->getName() == 'formID') {
@@ -112,123 +153,66 @@ abstract class Form
     {
         $standardElements = array(
             array(
-                'type' => 'Intahwebz\FormElement\Hidden',
+                'type' => 'FCForms\FormElement\Hidden',
                 'name' => self::FORM_HIDDEN_FQCN,
                 'value' => get_class($this),
             ),
             array(
-                'type' => 'Intahwebz\FormElement\Hidden',
+                'type' => 'FCForms\FormElement\Hidden',
                 'name' => 'formSubmitted',
                 'value' => $this->getFormName()
             ),
             array(
-                'type' => 'Intahwebz\FormElement\Hidden',
+                'type' => 'FCForms\FormElement\Hidden',
                 'name' => 'formID',
                 'value' => uniqid(),
             ),
             array(
-                'type' => 'Intahwebz\FormElement\CSRF',
+                'type' => 'FCForms\FormElement\CSRF',
                 'name' => 'csrf',
                 'validation' => array(
-                    "Intahwebz\\Validator\\CSRF" => array(),
+                    "FCForms\\Validator\\CSRF" => array(),
                 )
             ),
         );
 
         return $standardElements;
     }
-
-    public function init($definition)
-    {
-        if (array_key_exists('class', $definition) == true) {
-            $this->class = $definition['class'];
-        }
-
-        if (array_key_exists('errorMessage', $definition) == true) {
-            $this->errorMessage = $definition['errorMessage'];
-        }
-
-        if (array_key_exists('startElements', $definition)) {
-            foreach ($definition['startElements'] as $rowElement) {
-                $formElement = $this->createElement($rowElement);
-                $this->startElements[] = $formElement;
-            }
-        }
-
-        foreach ($definition['rowElements'] as $rowElement) {
-            $formElement = $this->createElement($rowElement);
-            $this->rowElements[] = $formElement;
-        }
-
-        foreach ($definition['endElements'] as $rowElement) {
-            $formElement = $this->createElement($rowElement);
-            $this->endElements[] = $formElement;
-        }
-
-        //These are things like csrf
-        $standardElements = $this->getStandardElements();
-
-        foreach ($standardElements as $element) {
-            $formElement = $this->createElement($element);
-            $this->endElements[] = $formElement;
-        }
-    }
-
-    /**
-     * @param $definition
-     * @return \FCForms\FormElement\AbstractElement
-     */
-    public function addStartElement($definition)
-    {
-        $formElement = $this->createElement($definition);
-        array_push($this->startElements, $formElement);
-
-        return $formElement;
-    }
-
-    /**
-     * @param $definition
-     * @return \FCForms\FormElement\AbstractElement
-     */
-    public function addEndElement($definition)
-    {
-        $formElement = $this->createElement($definition);
-        array_unshift($this->endElements, $formElement);
-
-        return $formElement;
-    }
-
-    /**
-     * @param $formElement
-     * @return mixed
-     * @throws DataMissingException
-     */
-    public function createElement($formElement)
-    {
-        if (array_key_exists('type', $formElement) == false) {
-            throw new DataMissingException("Form element has no value for type.");
-        }
-
-        $className = $formElement['type'];
-        /** @var $element \FCForms\FormElement\AbstractElement */
-        $element = new $className($this);
-        $element->initCommon($formElement);
-        $element->init($formElement);
-
-        return $element;
-    }
-
+//    /**
+//     * @param AbstractElementPrototype $element
+//     */
+//    function getSubmittedValueForElement($rowID, AbstractElementPrototype $element)
+//    {
+//        if ($element->getName() != null) {
+//
+//            return $this->variableMap->getVariable($element->getFormName($rowID), null);
+//        }
+//
+//        return null;
+//    }
+    
+            
     /**
      * @throws \Exception
      */
     public function useSubmittedValues()
     {
-        foreach ($this->startElements as $element) {
-            $element->useSubmittedValue();
+        $data = [];
+
+        foreach ($this->prototype->startPrototypes as $startPrototype) {
+            if ($startPrototype->getName() != null) {
+                $rowSpecificName = $startPrototype->getFormName('start');
+                $value =  $this->variableMap->getVariable($rowSpecificName, null);
+                $data['start'][$rowSpecificName] = $value;
+            }
         }
         
-        foreach ($this->endElements as $element) {
-            $element->useSubmittedValue();
+        foreach ($this->prototype->endPrototypes as $endPrototype) {
+            if ($endPrototype->getName() != null) {
+                $rowSpecificName = $endPrototype->getFormName('start');
+                $value =  $this->variableMap->getVariable($rowSpecificName, null);
+                $data['end'][$rowSpecificName] = $value;
+            }
         }
 
         $rowIDs = $this->variableMap->getVariable("rowIDs", false);
@@ -241,24 +225,17 @@ abstract class Form
 
         foreach ($rowIDs as $rowID) {
             $rowID = trim($rowID);
-            $formElementCollection = new FormElementCollection($this, $rowID, $this->rowElements);
-            $formElementCollection->useSubmittedValue();
-            $this->rowFieldCollectionArray[] = $formElementCollection;
+            $rowData = [];
+            foreach ($this->prototype->rowPrototypes as $rowPrototype) {
+                if ($rowPrototype->getName() != null) {
+                    $rowSpecificName = $rowPrototype->getFormName($rowID);
+                    $value =  $this->variableMap->getVariable($rowSpecificName, null);
+                    $rowData[$rowSpecificName] = $value;
+                }
+            }
             $this->rowIDs[] = $rowID;
+            $data[$rowID] = $rowData;
         }
-    }
-
-    /**
-     * @param $rowID
-     * @param array $dataSource
-     */
-    public function addRowValues($rowID, array $dataSource)
-    {
-        $formElementCollection = new FormElementCollection($this, $rowID, $this->rowElements);
-        $formElementCollection->setValues($dataSource);
-        $this->rowFieldCollectionArray[] = $formElementCollection;
-
-        $this->rowIDs[] = $rowID;
     }
 
 
@@ -279,71 +256,28 @@ abstract class Form
      */
     public function setValues(array $dataSource)
     {
-        foreach ($this->startElements as $element) {
-            $element->setValue($dataSource);
+        $this->startElements->setValues($dataSource);
+        foreach ($this->rowElementsArray as $rowElements) {
+            $rowElements->setValues($dataSource);
         }
-        foreach ($this->rowFieldCollectionArray as $rowField) {
-            $rowField->setValues($dataSource);
-        }
-        foreach ($this->endElements as $element) {
-            $element->setValue($dataSource);
-        }
+        $this->endElements->setValues($dataSource);
     }
 
-    /**
-     * @return string
-     */
-    public function render()
-    {
-        $output = '';
 
-        if ($this->hasBeenValidated == true) {
-            if ($this->isValid == false) {
-                $output .= $this->errorMessage;
+    public function getElementByName($elementName)
+    {
+        foreach ($this->startElements as $element) {
+            if ($element->getName() == $elementName) {
+                return $element;
             }
         }
-
-        $formID = $this->getID();
-        
-        $formHTMLName = 'vbform';
-        
-        $output .= sprintf(
-            "<form action='' method='post' name='%s' onsubmit='' id='%' class='well %s' %s>",
-            $formHTMLName,
-            $formID,
-            $this->class,
-            "enctype='multipart/form-data'"
-        );
-
-        $output .= "<input type='hidden' name='formID' value='".$formID."' />";
-        $output .= "<div class='row-fluid'>";
-        $output .= "<div class='span12' style='padding-left: 20px'>";
-
-        foreach ($this->startElements as $element) {
-            $output .= $element->render();
-            $output .= "\n";
-        }
-
-        foreach ($this->rowFieldCollectionArray as $rowFieldCollection) {
-            $output .= $rowFieldCollection->render();
-            $output .= "\n";
-        }
-
-        $rowIDs = implode(',', $this->rowIDs);
-        $output .= "<input type='hidden' name='rowIDs' value='" . $rowIDs . "' />";
-
         foreach ($this->endElements as $element) {
-            $output .= $element->render();
-            $output .= "\n";
+            if ($element->getName() == $elementName) {
+                return $element;
+            }
         }
-
-        $output .= "</form>";
-
-        $output .= "</div>";
-        $output .= "<div class='span1'></div>";
-        $output .= "</div>";
-
-        return $output;
+        
+        throw new FCFormsException("Form does not have an element named '$elementName'");
     }
 
     /**
@@ -351,15 +285,17 @@ abstract class Form
      */
     public function isSubmitted()
     {
-        $formSubmitted = $this->variableMap->getVariable('formSubmitted', false);
-
+        $element = $this->getElementByName('formSubmitted');
+        $formSubmitted = $this->variableMap->getVariable(
+            $element->getFormName(),
+            false
+        );
         if ($formSubmitted == $this->getFormName()) {
             return true;
         }
 
         return false;
     }
-
 
     /**
      * @return array
@@ -368,22 +304,28 @@ abstract class Form
     {
         $data = array();
         foreach ($this->startElements as $element) {
-            $data[$element->getName()] = $element->getCurrentValue();
-        }
-
-        foreach ($this->rowFieldCollectionArray as $rowField) {
-            foreach ($rowField->elements as $element) {
+            if ($element->hasData()) {
                 $data[$element->getName()] = $element->getCurrentValue();
             }
         }
 
+        foreach ($this->rowElementsArray as $rowField) {
+            foreach ($rowField->elements as $element) {
+                if ($element->hasData()) {
+                    $data[$element->getName()] = $element->getCurrentValue();
+                }
+            }
+        }
+
         foreach ($this->endElements as $element) {
-            $data[$element->getName()] = $element->getCurrentValue();
+            if ($element->hasData()) {
+                $data[$element->getName()] = $element->getCurrentValue();
+            }
         }
         
         return $data;
     }
-    
+
     /**
      * @param $id
      * @param $name
@@ -391,30 +333,38 @@ abstract class Form
      */
     public function getValue($id, $name)
     {
-        foreach ($this->startElements as $element) {
-            if ($element->getName() == $name) {
-                return $element->getCurrentValue();
+        if ($id == 'start') {
+            foreach ($this->startElements as $element) {
+                if ($element->getName() == $name) {
+                    return $element->getCurrentValue();
+                }
             }
         }
 
-        foreach ($this->rowFieldCollectionArray as $rowField) {
-            if ($rowField->getID() == $id) {
-                $value = $rowField->getValue($name);
+        foreach ($this->rowElementsArray as $rowElements) {
+            if ($rowElements->getID() == $id) {
+                $value = $rowElements->getValue($name);
                 if ($value !== null) {
                     return $value;
                 }
             }
         }
 
-        foreach ($this->endElements as $element) {
-            if ($element->getName() == $name) {
-                return $element->getCurrentValue();
+        if ($id == 'end') {
+            foreach ($this->endElements as $element) {
+                if ($element->getName() == $name) {
+                    return $element->getCurrentValue();
+                }
             }
         }
 
         return null;
     }
 
+    /**
+     * @param $id
+     * @return array|null
+     */
     public function getRowValues($id)
     {
         foreach ($this->rowFieldCollectionArray as $rowField) {
@@ -422,6 +372,7 @@ abstract class Form
                 return $rowField->getAllValues();
             }
         }
+
         return null;
     }
 
@@ -438,30 +389,28 @@ abstract class Form
             return false;
         }
 
-        foreach ($this->startElements as $element) {
-            $elementValid = $element->validate();
-            $isValid = ($isValid && $elementValid);
+        $elementValid = $this->startElements->validate();
+        $isValid = ($isValid && $elementValid);
+
+        foreach ($this->rowElementsArray as $rowElements) {
+            $isValid = ($isValid && $rowElements->validate());
         }
 
-        foreach ($this->rowFieldCollectionArray as $rowFieldCollection) {
-            $isValid = ($isValid && $rowFieldCollection->validate());
-        }
-
-        foreach ($this->endElements as $element) {
-            $elementValid = $element->validate();
-            $isValid = ($isValid && $elementValid);
-        }
+        $elementValid = $this->endElements->validate();
+        $isValid = ($isValid && $elementValid);
 
         $this->isValid = $isValid;
 
         return $this->isValid;
     }
 
-    
+    /**
+     * @return array
+     */
     public function getErrorMessages()
     {
         $errorMessages = [];
-        
+
         foreach ($this->startElements as $element) {
             $errorMessages += $element->getErrorMessages();
         }
@@ -476,39 +425,81 @@ abstract class Form
         
         return $errorMessages;
     }
-    
-    
 
+    /**
+     * @return array|bool
+     */
     public function areAllElementsStoreable()
     {
-        $isStoreable = true;
-        
-        foreach ($this->startElements as $element) {
-            $isStoreable &= $element->isStoreable();
-        }
-        
-        foreach ($this->rowFieldCollectionArray as $rowFieldCollection) {
-            $isStoreable &= $rowFieldCollection->isStoreable();
-        }
-        
-        foreach ($this->endElements as $element) {
-            $isStoreable &= $element->getErrorMessages();
-        }
-        
-        return $isStoreable;
+        return $this->prototype->areAllElementsStoreable();
     }
-    
-    
+
     /**
      *
      */
-    public function storeValuesInSession()
+    public function saveValuesToStorage()
     {
         $serializedData = $this->serialize();
         $sessionName = $this->getSessionName();
 
-        $this->dataStore->storeData($sessionName, $serializedData);
+        $this->dataStore->setValue($sessionName, $serializedData);
     }
+
+    /**
+     * @return bool
+     */
+    public function readValuesFromStorage($validateIfDataLoaded)
+    {
+        $sessionName = $this->getSessionName();
+
+        //TODO - need to create an object to set time to prevent form from being resubmitted ages later.
+        $storedValues = $this->dataStore->getValue(
+            $sessionName,
+            false,
+            true
+        );
+
+        if ($storedValues === false) {
+            return false;
+        }
+
+        $this->prototype->createElementsFromData($this, $storedValues);
+        
+        if ($validateIfDataLoaded) {
+            $this->validate();
+        }
+
+        return true;
+    }
+
+    /**
+     * @param array $data
+     */
+    public function createFromData(array $data)
+    {
+        $this->prototype->createElementsFromData($this, $data);
+    }
+
+    /**
+     * @param array $startElements
+     * @param $rowElementsArray
+     * @param $endElements
+     */
+    public function setElements(
+        array $startElements,
+        $rowElementsArray,
+        $endElements
+    ) {
+        $this->startElements = new ElementCollection($this, 'start', $startElements);
+
+        $this->rowElementsArray = [];
+        foreach ($rowElementsArray as $rowID => $elements) {
+            $this->rowElementsArray[$rowID] = new ElementCollection($this, $startElements, $rowID);
+        }
+        
+        $this->endElements = new ElementCollection($this, 'end', $endElements);
+    }
+    
 
     /**
      * @return string
@@ -523,35 +514,19 @@ abstract class Form
      */
     public function serialize()
     {
-        $start = array();
-        $rows = array();
-        $end = array();
-
-        foreach ($this->startElements as $element) {
-            $serialized = $element->serialize();
-
-            if ($serialized !== null) {
-                $end = array_merge($start, $serialized);
-            }
+        $start = $this->startElements->serialize();
+        
+        $rows = [];
+        foreach ($this->rowElementsArray as $rowElements) {
+            $rowID = $rowElements->getID();
+            $rows[$rowID] = $rowElements->serialize();
         }
 
-        foreach ($this->rowFieldCollectionArray as $rowFieldCollection) {
-            $rowID = $rowFieldCollection->getID();
-            $rows[$rowID] = $rowFieldCollection->serialize();
-        }
-
-        foreach ($this->endElements as $element) {
-            $serialized = $element->serialize();
-
-            if ($serialized !== null) {
-                $end = array_merge($end, $serialized);
-            }
-        }
+        $end = $this->endElements->serialize();
 
         $rowIDs = $this->variableMap->getVariable('rowIDs', false);
 
         $result = array();
-
         $result['start'] = $start;
         $result['rows'] = $rows;
         $result['end'] = $end;
@@ -563,78 +538,20 @@ abstract class Form
     }
 
     /**
-     * @param $sessionData
-     * @return bool
+     * @throws \Exception
      */
-    public function unserialize($sessionData)
-    {
-        //TODO - Data does need to be validated against form version id.
-        if ($sessionData == false) {
-            return false;
-        }
-
-        foreach ($this->startElements as $element) {
-            $rowData = $sessionData['start'];
-            $element->useData($rowData);
-        }
-
-        foreach ($sessionData['rows'] as $rowID => $rowData) {
-            $rowID = trim($rowID);
-            $formElementCollection = new FormElementCollection($this, $rowID, $this->rowElements);
-
-            $formElementCollection->useData($rowData);
-            $this->rowFieldCollectionArray[] = $formElementCollection;
-            $this->rowIDs[] = $rowID;
-        }
-
-        foreach ($this->endElements as $element) {
-            $rowData = $sessionData['end'];
-            $element->useData($rowData);
-        }
-        $this->forceError = $sessionData['forceError'];
-        $this->errorMessage = $sessionData['errorMessage'];
-
-        return true;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getSessionStoredData($validateIfDataLoaded)
-    {
-        $sessionName = $this->getSessionName();
-
-        //TODO - need to create an object to set time to prevent form from being resubmitted ages later.
-        $storedValues = $this->dataStore->getData(
-            $sessionName,
-            false,
-            true
-        );
-
-        if ($storedValues === false) {
-            return false;
-        }
-
-        $this->unserialize($storedValues);
-        
-        if ($validateIfDataLoaded) {
-            $this->validate();
-        }
-        
-        return true;
-    }
-
     public function reset()
     {
         foreach ($this->startElements as $element) {
             $element->reset();
         }
 
-        $this->rowFieldCollectionArray = array();
+        $this->rowElementsArray = array();
 
         foreach ($this->endElements as $element) {
             $element->reset();
         }
+        throw new \Exception("Not implemented safely.");
     }
 
     /**
@@ -647,16 +564,17 @@ abstract class Form
         //return $this->variableMap->getUploadedFile($filename);
     }
 
+    /**
+     * @return string
+     */
     public function getFormName()
     {
         return get_class($this);
     }
 
-    public function addSubmittedValues($rowName, array $rowValues)
-    {
-        $this->addRowValues($rowName, $rowValues);
-    }
-    
+    /**
+     * @param $errorMessage
+     */
     public function setFormError($errorMessage)
     {
         $this->errorMessage = $errorMessage;
@@ -683,7 +601,36 @@ abstract class Form
 
         //Valid state can be altered by the call-back
         if (!$this->isValid) {
-            $this->storeValuesInSession();
+            $this->saveValuesToStorage();
         }
+    }
+
+    /**
+     * @return bool|string
+     */
+    public function getFormErrorMessage()
+    {
+        if ($this->hasBeenValidated == true) {
+            if ($this->isValid == false) {
+                return $this->errorMessage;
+            }
+        }
+        
+        return false;
+    }
+
+    /**
+     *
+     */
+    public function prepareToRender()
+    {
+        $this->startElements->prepareToRender();
+
+        $this->rowElementsArray = [];
+        foreach ($this->rowElementsArray as $rowElements) {
+            $rowElements->prepareToRender();
+        }
+
+        $this->endElements->prepareToRender();
     }
 }

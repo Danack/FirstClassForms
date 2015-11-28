@@ -12,8 +12,14 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
 {
     private $startLevel = null;
 
+    /**
+     * @var \Auryn\Injector
+     */
+    protected $injector = null;
+    
     public function setup()
     {
+        $this->injector = createInjector();
         $this->startLevel = ob_get_level();
         ob_start();
     }
@@ -33,6 +39,16 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
             strlen($contents),
             "Something has directly output to the screen: [".substr($contents, 0, 50)."]"
         );
+    }
+
+    /**
+     * @return \FCForms\Form\Form
+     */
+    public function createEmptyForm()
+    {
+        $form = $this->injector->execute(['FCFormsTest\ExampleForms\EmptyForm', 'createBlank']);
+
+        return $form;
     }
 
     public function testPHPUnitApparentlyGetsConfused()

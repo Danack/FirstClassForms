@@ -5,7 +5,7 @@
     </php>
 
     <testsuites>
-        <testsuite name="Jig Test Suite">
+        <testsuite name="FCForms Test Suite">
             <directory>../test/</directory>
             <exclude>BaseTestCase.php</exclude> <!-- This doens't seem to work-->
         </testsuite>
@@ -13,8 +13,7 @@
 
     <filter>
         <whitelist>
-            <directory>../src/Jig</directory>
-            <directory>../tmp/generatedTemplates/Jig</directory>
+            <directory>../src/FCForms</directory>
         </whitelist>
     </filter>
 
