@@ -21,7 +21,7 @@ class Password extends ElementPrototype
      * validated the password.
      * @return array
      */
-    public function serialize()
+    public function serialize(Element $elementInstance)
     {
         return array();
     }
@@ -35,44 +35,7 @@ class Password extends ElementPrototype
         return "InputText";
     }
 
-    /**
-     * @return mixed|string
-     */
-    public function render(Form $form)
-    {
-        $output = "";
-        if (count($this->errorMessages) > 0) {
-            $output .= "<div class='row-fluid'>";
-            $output .= "<div class='errorMessage span12'>";
-            foreach ($this->errorMessages as $errorMessage) {
-                $output .= $errorMessage;
-            }
-            $output .= "</div>";
-            $output .= "</div>";
-        }
 
-        $output .= "<div class='row-fluid'>";
-        $remainingSpan = 'span12';
-
-        if ($this->label !== null) {
-            $labelSpan = "span" . $form->getLabelSpan();
-            $remainingSpan = "span" . (12 - $form->getLabelSpan());
-            $output .= "<label class='$labelSpan' for='" . $this->getFormName() . "'>" . $this->label . "</label>";
-        }
-
-        $output .= "<div class='$remainingSpan'>";
-
-        $output .= sprintf(
-            "<input type='password' name='%s' size='80' value='%s' placeholder='Password' style='width: 100%;' />",
-            $this->getFormName(),
-            htmlentities($this->getCurrentValue())
-        );
-
-        $output .= "</div>";
-        $output .= "</div>";
-
-        return $output;
-    }
     
     public function canBeStored()
     {

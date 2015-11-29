@@ -85,4 +85,11 @@ class FormTest extends BaseTestCase
 
         $dataNames = $form->getDataNames();
     }
+
+    public function testPasswordNotStoreable()
+    {
+        $form = buildFormWithData('FCFormsTest\ExampleForms\FormWithPassword');
+        $canBeStored = $form->canAllElementsBeStored();
+        $this->assertFalse($canBeStored);
+    }
 }

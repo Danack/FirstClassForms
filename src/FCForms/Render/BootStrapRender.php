@@ -19,13 +19,14 @@ class BootStrapRender
      */
     public function __construct()
     {
-        $this->renderCallables['FCForms\FormElement\Label'] = [$this, 'renderLabel'];
-        $this->renderCallables['FCForms\FormElement\Title'] = [$this, 'renderTitle'];
         $this->renderCallables['FCForms\FormElement\CheckBox'] = [$this, 'renderCheckBox'];
-        $this->renderCallables['FCForms\FormElement\Text'] = [$this, 'renderText'];
-        $this->renderCallables['FCForms\FormElement\SubmitButton'] = [$this, 'renderSubmitButton'];
-        $this->renderCallables['FCForms\FormElement\Hidden'] = [$this, 'renderHidden'];
         $this->renderCallables['FCForms\FormElement\CSRF'] = [$this, 'renderCSRF'];
+        $this->renderCallables['FCForms\FormElement\Hidden'] = [$this, 'renderHidden'];
+        $this->renderCallables['FCForms\FormElement\Label'] = [$this, 'renderLabel'];
+        $this->renderCallables['FCForms\FormElement\Password'] = [$this, 'renderPassword'];
+        $this->renderCallables['FCForms\FormElement\SubmitButton'] = [$this, 'renderSubmitButton'];
+        $this->renderCallables['FCForms\FormElement\Text'] = [$this, 'renderText'];
+        $this->renderCallables['FCForms\FormElement\Title'] = [$this, 'renderTitle'];
     }
 
     public function getLabelSpan()
@@ -47,6 +48,46 @@ class BootStrapRender
         }
 
         return $this->renderCallables[$class];
+    }
+    
+    
+        /**
+     * @return mixed|string
+     */
+    public function renderPassword(Element $element)
+    {
+        $output = "";
+        if (count($element->errorMessages) > 0) {
+            $output .= "<div class='row-fluid'>";
+            $output .= "<div class='errorMessage span12'>";
+            foreach ($element->errorMessages as $errorMessage) {
+                $output .= $errorMessage;
+            }
+            $output .= "</div>";
+            $output .= "</div>";
+        }
+
+        $output .= "<div class='row-fluid'>";
+        $remainingSpan = 'span12';
+
+        if ($element->getPrototype()->label !== null) {
+            $labelSpan = "span" . $this->getLabelSpan();
+            $remainingSpan = "span" . (12 - $this->getLabelSpan());
+            $output .= "<label class='$labelSpan' for='" . $element->getFormName() . "'>" . $element->getPrototype()->label . "</label>";
+        }
+
+        $output .= "<div class='$remainingSpan'>";
+
+        $output .= sprintf(
+            "<input type='password' name='%s' size='80' value='%s' placeholder='Password' style='width: 100%;' />",
+            $element->getFormName(),
+            htmlentities($element->getCurrentValue())
+        );
+
+        $output .= "</div>";
+        $output .= "</div>";
+
+        return $output;
     }
 
 

@@ -27,7 +27,11 @@ class BootStrapRenderTest extends BaseTestCase
         $form = buildFormWithData('FCFormsTest\ExampleForms\UnrenderableForm');
         $form->createFromData([]);
         $renderer = new \FCForms\Render\BootStrapRender();
-        $this->setExpectedException("FCForms\RenderException");
+        $this->setExpectedException('FCForms\RenderException');
         $renderer->render($form);
     }
+    
+
+
+    
 }
