@@ -4,7 +4,7 @@ namespace FCForms\FormElement;
 
 use FCForms\Form\Form;
 
-class ImageLabel extends AbstractElementPrototype
+class ImageLabel extends ElementPrototype
 {
     /**
      * @return string

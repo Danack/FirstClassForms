@@ -5,7 +5,7 @@ namespace FCForms\FormElement;
 
 use FCForms\Form\Form;
 
-class Select extends AbstractElementPrototype
+class Select extends ElementPrototype
 {
     private $optionDescriptionMap = array();
 

@@ -6,36 +6,28 @@ use FCForms\FormElement\Label;
 use FCForms\Render\BootStrapRender;
 use FluentDOM\Document as FluentDOMDoc;
 use FluentDOM\Xpath as FluentDomXpath;
+use Room11\HTTP\VariableMap\ArrayVariableMap;
 
 class BootStrapRenderTest extends BaseTestCase
 {
     /**
-     * @return \FCForms\FormElement\AbstractElementPrototype
+     * @return \FCForms\FormElement\ElementPrototype
      */
     public function testBasicRendering()
     {
-        $injector = createInjector();
-        /** @var $form \FCFormsTest\ExampleForms\FirstForm */
-        $form = $injector->execute(['FCFormsTest\ExampleForms\FirstForm', 'createBlank']);
-        
-        $data = [
-          'end' => [
-              "isActive" => true,
-              "testText" => 'foobar',
-          ],
-        ];
+        $form = buildFormWithData('FCFormsTest\ExampleForms\FirstForm');
 
-        $form->createFromData($data);
+        $varMap = new ArrayVariableMap([]);
+        $this->assertFalse($form->isSubmitted($varMap));
+        $form->createFromData([]);
+    }
+
+    public function testUnknownElement()
+    {
+        $form = buildFormWithData('FCFormsTest\ExampleForms\UnrenderableForm');
+        $form->createFromData([]);
         $renderer = new \FCForms\Render\BootStrapRender();
-        $text = $renderer->render($form);
-        $variables = getFormVariables($text);
-        
-        /** @var $formAfterSubmission \FCFormsTest\ExampleForms\FirstForm */
-        
-        $injector = createInjector($variables);
-        $formAfterSubmission = $injector->execute(['FCFormsTest\ExampleForms\FirstForm', 'createBlank']);
-        $formAfterSubmission->createFromData($variables);
-        $this->assertFalse($form->isSubmitted());
-        $this->assertTrue($formAfterSubmission->isSubmitted());
+        $this->setExpectedException("FCForms\RenderException");
+        $renderer->render($form);
     }
 }

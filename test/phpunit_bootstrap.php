@@ -19,21 +19,38 @@ $autoloader->add(
  * @return Injector
  * @throws \Auryn\ConfigException
  */
-function createInjector($data = [])
+function createInjector()
 {
     $injector = new Injector();
     $injector->alias('FCForms\Form\DataStore', 'FCFormsTest\Form\ArrayDataStore');
+    $injector->share('FCForms\Form\DataStore');
     $injector->alias('Room11\HTTP\VariableMap', 'Room11\HTTP\VariableMap\ArrayVariableMap');
-    $varMap = new ArrayVariableMap($data);
-    $injector->share($varMap);
 
     $injector->alias('FCForms\FileFetcher', 'FCForms\FileFetcher\StubFileFetcher');
     $injector->share(new StubFileFetcher([]));
-
     $injector->share($injector);
-    
+
     return $injector;
 }
+
+/**
+ * @param $formClassName
+ * @return \FCFormsTest\ExampleForms\FirstForm
+ * @throws Exception
+ */
+function buildFormWithData($formClassName)
+{
+    if (!is_subclass_of($formClassName, 'FCForms\Form\Form', true)) {
+        throw new \Exception('FQCN [$formClassName] is not a subclass of FCForms\Form\Form');
+    }
+
+    $injector = createInjector();
+    /** @var $form \FCFormsTest\ExampleForms\FirstForm */
+    $form = $injector->execute([$formClassName, 'createBlank']);
+
+    return $form;
+}
+
 
 //$injector = createInjector();
 //

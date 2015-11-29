@@ -5,7 +5,7 @@ namespace FCForms\FormElement;
 
 use FCForms\Form\Form;
 
-class Link extends AbstractElementPrototype
+class Link extends ElementPrototype
 {
     /**
      * @return string

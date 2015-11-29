@@ -5,7 +5,7 @@ namespace FCForms\FormElement;
 
 use FCForms\Form\Form;
 
-class Text extends AbstractElementPrototype
+class Text extends ElementPrototype
 {
     /**
      * @param array $info

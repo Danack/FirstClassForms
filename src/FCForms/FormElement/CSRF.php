@@ -5,8 +5,9 @@ namespace FCForms\FormElement;
 use FCForms\FCFormsException;
 use FCForms\Form\Form;
 use FCForms\Form\DataStore;
+use Room11\HTTP\VariableMap;
 
-class CSRF extends AbstractElementPrototype
+class CSRF extends ElementPrototype
 {
     /**
      * The form this element is attached to.

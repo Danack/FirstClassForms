@@ -4,7 +4,7 @@ namespace FCForms\FormElement;
 
 use FCForms\Form\Form;
 
-class SubmitButton extends AbstractElementPrototype
+class SubmitButton extends ElementPrototype
 {
     public $text;
 

@@ -3,8 +3,9 @@
 namespace FCForms\FormElement;
 
 use FCForms\FormDefinitionException;
+use Room11\HTTP\VariableMap;
 
-abstract class AbstractElementPrototype
+abstract class ElementPrototype
 {
     /** @var  string */
     protected $name;

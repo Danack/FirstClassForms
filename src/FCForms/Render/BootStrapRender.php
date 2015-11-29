@@ -3,8 +3,7 @@
 namespace FCForms\Render;
 
 use FCForms\Form\Form;
-use FCForms\FormElement\Label;
-use FCForms\FormElement\AbstractElementPrototype;
+use FCForms\FormElement\ElementPrototype;
 use FCForms\FormElement\Element;
 use FCForms\RenderException;
 
@@ -35,11 +34,11 @@ class BootStrapRender
     }
 
     /**
-     * @param AbstractElementPrototype $prototype
+     * @param ElementPrototype $prototype
      * @return callable
      * @throws RenderException
      */
-    protected function getRenderCallable(AbstractElementPrototype $prototype)
+    protected function getRenderCallable(ElementPrototype $prototype)
     {
         $class = get_class($prototype);
         
@@ -273,14 +272,20 @@ class BootStrapRender
         $form->getFormErrorMessage();
 
         $formHTMLName = 'vbform';
+        $encodingString = "enctype='multipart/form-data'";
         
-        //$formID = $form->getID(); id='%'
+        $formIDString = '';
+        $formID = $form->getHTMLID();
+        if ($formID !== null) {
+            $formIDString = sprintf("id='%s'", $formID);
+        }
 
         $output .= sprintf(
-            "<form action='' method='post' name='%s' onsubmit='' class='well %s' %s>",
+            "<form action='' method='post' name='%s' onsubmit='' class='well %s' %s %s>",
             $formHTMLName,
-            $form->getClassName(),
-            "enctype='multipart/form-data'"
+            $form->getStyleName(),
+            $encodingString,
+            $formIDString
         );
 
         $output .= "<div class='row-fluid'>\n";
@@ -306,7 +311,6 @@ class BootStrapRender
             $output .= "\n";
         }
 
-        
         $output .= "</div>\n";
         $output .= "</div>";
         $output .= "</form>\n";

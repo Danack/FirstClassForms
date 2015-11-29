@@ -1,17 +1,18 @@
 <?php
 
-namespace FCForms\FormElement;
+namespace FCFormsTest\FormElement;
 
-use FCForms\Form\Form;
+use FCForms\FormElement\ElementPrototype;
 
-class Label extends ElementPrototype
+class UnrenderableElement extends ElementPrototype
 {
+
     /**
      * @return string
      */
     public function getCSSClassName()
     {
-        return "Label";
+        return "Unrenderable";
     }
 
     /**
@@ -25,13 +26,5 @@ class Label extends ElementPrototype
     public function hasData()
     {
         return false;
-    }
-    
-    /**
-     * @return mixed
-     */
-    public function render(Form $form, Element $elementInstance)
-    {
-        return "This is a label";
     }
 }

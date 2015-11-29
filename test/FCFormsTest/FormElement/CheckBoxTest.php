@@ -8,7 +8,7 @@ class CheckBoxTest extends AbstractElementTest
 {
 
     /**
-     * @return \FCForms\FormElement\AbstractElementPrototype
+     * @return \FCForms\FormElement\ElementPrototype
      */
     public function getElement()
     {

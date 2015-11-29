@@ -4,7 +4,7 @@ namespace FCForms\FormElement;
 
 use FCForms\Form\Form;
 
-class Password extends AbstractElementPrototype
+class Password extends ElementPrototype
 {
     /**
      * @param array $info

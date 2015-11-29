@@ -28,11 +28,12 @@ abstract class Form
     public $rowIDs = array();
 
     protected $forceError = false;
-    protected $errorMessage = "Form had errors.";
 
-    protected $class = 'standardForm';
+    protected $styleName = 'fcform';
 
     protected $id = null;
+    
+    protected $htmlID = null;
 
     /** @var  \FCForms\FormElement\ElementCollection[] */
     public $rowElementsArray = array();
@@ -48,17 +49,7 @@ abstract class Form
      */
     private $dataStore;
 
-    /**
-     * @var VariableMap
-     */
-    public $variableMap;
-
     const FORM_HIDDEN_FQCN = 'formClass';
-
-    /**
-     * @var Injector
-     */
-    protected $injector;
 
     /**
      * @var FormBuilder
@@ -82,27 +73,21 @@ abstract class Form
 
     /**
      * @param DataStore $dataStore
-     * @param VariableMap $variableMap
      * @param FileFetcher $fileFetcher
-     * @param Injector $injector
      * @param FormBuilder $formBuilder
-     * @return \FCForms\Form\Form
+     * @internal param VariableMap $variableMap
+     * @internal param Injector $injector
+     * @return Form
      */
     public static function createBlank(
         DataStore $dataStore,
-        VariableMap $variableMap,
         FileFetcher $fileFetcher,
-        Injector $injector,
         FormBuilder $formBuilder
     ) {
         $instance = new static();
-        
         $instance->dataStore = $dataStore;
-        $instance->variableMap = $variableMap;
         $instance->fileFetcher = $fileFetcher;
-        $instance->injector = $injector;
         $instance->formBuilder = $formBuilder;
-
         $definition = $instance->getDefinition();
         
         $instance->prototype = $formBuilder->buildPrototypeFromDefinition(
@@ -113,24 +98,19 @@ abstract class Form
         return $instance;
     }
 
-    /**
-     * @return \FCForms\Form\DataStore
-     */
-    public function getDataStore()
-    {
-        return $this->dataStore;
-    }
+//    /**
+//     * @return \FCForms\Form\DataStore
+//     */
+//    public function getDataStore()
+//    {
+//        return $this->dataStore;
+//    }
 
     abstract public function getDefinition();
 
-    public function getLabelSpan()
+    public function getStyleName()
     {
-        return 2;
-    }
-
-    public function getClassName()
-    {
-        return $this->class;
+        return $this->styleName;
     }
 
     public function getRowIDs()
@@ -138,7 +118,7 @@ abstract class Form
         return $this->rowIDs;
     }
 
-    protected function getID()
+    public function getHTMLID()
     {
         foreach ($this->endElements as $element) {
             if ($element->getName() == 'formID') {
@@ -178,65 +158,23 @@ abstract class Form
 
         return $standardElements;
     }
-//    /**
-//     * @param AbstractElementPrototype $element
-//     */
-//    function getSubmittedValueForElement($rowID, AbstractElementPrototype $element)
-//    {
-//        if ($element->getName() != null) {
-//
-//            return $this->variableMap->getVariable($element->getFormName($rowID), null);
-//        }
-//
-//        return null;
-//    }
-    
-            
+
     /**
-     * @throws \Exception
+     * @param array $data
      */
-    public function useSubmittedValues()
+    public function createFromData(array $data)
     {
-        $data = [];
-
-        foreach ($this->prototype->startPrototypes as $startPrototype) {
-            if ($startPrototype->getName() != null) {
-                $rowSpecificName = $startPrototype->getFormName('start');
-                $value =  $this->variableMap->getVariable($rowSpecificName, null);
-                $data['start'][$rowSpecificName] = $value;
-            }
-        }
-        
-        foreach ($this->prototype->endPrototypes as $endPrototype) {
-            if ($endPrototype->getName() != null) {
-                $rowSpecificName = $endPrototype->getFormName('start');
-                $value =  $this->variableMap->getVariable($rowSpecificName, null);
-                $data['end'][$rowSpecificName] = $value;
-            }
-        }
-
-        $rowIDs = $this->variableMap->getVariable("rowIDs", false);
-
-        if ($rowIDs == false) {
-            return;
-        }
-
-        $rowIDs = explode(',', $rowIDs);
-
-        foreach ($rowIDs as $rowID) {
-            $rowID = trim($rowID);
-            $rowData = [];
-            foreach ($this->prototype->rowPrototypes as $rowPrototype) {
-                if ($rowPrototype->getName() != null) {
-                    $rowSpecificName = $rowPrototype->getFormName($rowID);
-                    $value =  $this->variableMap->getVariable($rowSpecificName, null);
-                    $rowData[$rowSpecificName] = $value;
-                }
-            }
-            $this->rowIDs[] = $rowID;
-            $data[$rowID] = $rowData;
-        }
+        $this->prototype->createElementsFromData($this, $data);
     }
+
+    /**
+     * @param VariableMap $variableMap
+     */
+    public function createElementsFromVariableMap(VariableMap $variableMap)
+    {
+        $this->prototype->createElementsFromVariableMap($this, $variableMap);
+    }
+
 
 
 //    /**
@@ -280,14 +218,15 @@ abstract class Form
         throw new FCFormsException("Form does not have an element named '$elementName'");
     }
 
+    
     /**
      * @return bool
      */
-    public function isSubmitted()
+    public function isSubmitted(VariableMap $variableMap)
     {
-        $element = $this->getElementByName('formSubmitted');
-        $formSubmitted = $this->variableMap->getVariable(
-            $element->getFormName(),
+        $prototype = $this->prototype->getPrototypeByName('formSubmitted');
+        $formSubmitted = $variableMap->getVariable(
+            $prototype->getFormName('start'),
             false
         );
         if ($formSubmitted == $this->getFormName()) {
@@ -322,7 +261,7 @@ abstract class Form
                 $data[$element->getName()] = $element->getCurrentValue();
             }
         }
-        
+
         return $data;
     }
 
@@ -429,9 +368,9 @@ abstract class Form
     /**
      * @return array|bool
      */
-    public function areAllElementsStoreable()
+    public function canAllElementsBeStored()
     {
-        return $this->prototype->areAllElementsStoreable();
+        return $this->prototype->canAllElementsBeStored();
     }
 
     /**
@@ -448,7 +387,7 @@ abstract class Form
     /**
      * @return bool
      */
-    public function readValuesFromStorage($validateIfDataLoaded)
+    public function initFromStorage()
     {
         $sessionName = $this->getSessionName();
 
@@ -462,23 +401,15 @@ abstract class Form
         if ($storedValues === false) {
             return false;
         }
-
-        $this->prototype->createElementsFromData($this, $storedValues);
         
-        if ($validateIfDataLoaded) {
-            $this->validate();
-        }
+        //TODO - use forceError
+        $topLevelData = array_merge($storedValues['data']['start'], $storedValues['data']['end']);
+        $rowData = $storedValues['data']['rows'];
+        $this->prototype->createElementsFromData($this, $topLevelData, $rowData);
 
         return true;
     }
 
-    /**
-     * @param array $data
-     */
-    public function createFromData(array $data)
-    {
-        $this->prototype->createElementsFromData($this, $data);
-    }
 
     /**
      * @param array $startElements
@@ -496,10 +427,9 @@ abstract class Form
         foreach ($rowElementsArray as $rowID => $elements) {
             $this->rowElementsArray[$rowID] = new ElementCollection($this, $startElements, $rowID);
         }
-        
+
         $this->endElements = new ElementCollection($this, 'end', $endElements);
     }
-    
 
     /**
      * @return string
@@ -517,22 +447,22 @@ abstract class Form
         $start = $this->startElements->serialize();
         
         $rows = [];
+        $rowIDs = [];
         foreach ($this->rowElementsArray as $rowElements) {
             $rowID = $rowElements->getID();
             $rows[$rowID] = $rowElements->serialize();
+            $rowIDs[] = $rowID;
         }
 
         $end = $this->endElements->serialize();
 
-        $rowIDs = $this->variableMap->getVariable('rowIDs', false);
-
         $result = array();
-        $result['start'] = $start;
-        $result['rows'] = $rows;
-        $result['end'] = $end;
-        $result['rowIDs'] = $rowIDs;
-        $result['forceError'] = $this->forceError;
-        $result['errorMessage'] = $this->errorMessage;
+        $result['data']['start'] = $start;
+        $result['data']['rows'] = $rows;
+        $result['data']['end'] = $end;
+        $result['rowIDs'] = implode(',', $rowIDs);
+        //$result['forceError'] = $this->forceError;
+        //$result['errorMessage'] = $this->errorMessage;
 
         return $result;
     }
@@ -577,30 +507,34 @@ abstract class Form
      */
     public function setFormError($errorMessage)
     {
+        //TODO - not implemented yet...
         $this->errorMessage = $errorMessage;
         $this->forceError = true;
-        //ugh - this is one bit of information spread over multiple variables.
-        $this->isValid = false;
     }
 
     /**
      * Processes the form.
-     * @param $callback
+     * @param VariableMap $variableMap
+     * @param callable $validCallback
+     * @param callable $invalidCallback
      */
-    public function process(callable $validCallback, callable $invalidCallback = null)
-    {
-        $this->useSubmittedValues();
+    public function process(
+        VariableMap $variableMap,
+        callable $validCallback,
+        callable $invalidCallback = null
+    ) {
+        $this->createElementsFromVariableMap($variableMap);
         $this->validate();
 
-        if ($this->isValid) {
+        if ($this->isValid && $this->forceError == false) {
             $validCallback($this);
         }
         else if ($invalidCallback) {
             $invalidCallback($this);
         }
 
-        //Valid state can be altered by the call-back
-        if (!$this->isValid) {
+        // Valid state can be altered by the call-back
+        if (!$this->isValid && $this->forceError == false) {
             $this->saveValuesToStorage();
         }
     }
@@ -632,5 +566,15 @@ abstract class Form
         }
 
         $this->endElements->prepareToRender();
+    }
+    
+    public function getDataNames()
+    {
+        $data = [];
+        $data['start'] = $this->prototype->getStartDataNames();
+        $data['rows'] = $this->prototype->getRowDataNames();
+        $data['end'] = $this->prototype->getEndDataNames();
+        
+        return $data;
     }
 }

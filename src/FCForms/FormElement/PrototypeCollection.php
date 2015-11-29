@@ -11,7 +11,7 @@ class PrototypeCollection implements \IteratorAggregate
     use SafeAccess;
 
 
-    /** @var AbstractElementPrototype[] */
+    /** @var ElementPrototype[] */
     public $prototypes = array();
 
     protected $className = "collection";
@@ -19,7 +19,7 @@ class PrototypeCollection implements \IteratorAggregate
     /**
      * @param Form $form
      * @param $rowID
-     * @param $rowElements AbstractElementPrototype[]
+     * @param $rowElements ElementPrototype[]
      * @throws \Exception
      */
     public function __construct(array $prototypes)

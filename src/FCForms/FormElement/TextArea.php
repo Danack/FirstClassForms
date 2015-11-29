@@ -5,7 +5,7 @@ namespace FCForms\FormElement;
 
 use FCForms\Form\Form;
 
-class TextArea extends AbstractElementPrototype
+class TextArea extends ElementPrototype
 {
     private $rows = 8;
 

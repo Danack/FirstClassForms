@@ -4,7 +4,7 @@ namespace FCForms\Validator;
 
 use Zend\Validator\AbstractValidator;
 
-use FCForms\FormElement\AbstractElementPrototype;
+use FCForms\FormElement\ElementPrototype;
 use FCForms\UnsupportedOperationException;
 use FCForms\FormElement\ElementValidator;
 use FCForms\FormElement\Element;
@@ -24,7 +24,7 @@ class CSRF extends AbstractValidator implements ElementValidator
 
     /**
      * Compare the current value of the CSRF element with the stored value.
-     * @param AbstractElementPrototype $element
+     * @param ElementPrototype $element
      * @return bool|mixed
      */
     public function isValidElement(Element $element)

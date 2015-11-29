@@ -7,7 +7,7 @@ use FCForms\FormElement\Label;
 class LabelTest extends AbstractElementTest
 {
     /**
-     * @return \FCForms\FormElement\AbstractElementPrototype
+     * @return \FCForms\FormElement\ElementPrototype
      */
     public function getElement()
     {

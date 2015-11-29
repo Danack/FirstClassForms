@@ -4,7 +4,7 @@ namespace FCForms\FormElement;
 
 use FCForms\Form\Form;
 
-class CheckBox extends AbstractElementPrototype
+class CheckBox extends ElementPrototype
 {
     public function init(array $info)
     {

@@ -82,7 +82,7 @@ class FormBuilder
         }
 
         $elementType = $definition['type'];
-        /** @var $element \FCForms\FormElement\AbstractElementPrototype */
+        /** @var $element \FCForms\FormElement\ElementPrototype */
 
         $injector = clone $this->injector;
         $injector->alias('FCForms\Form\Form', get_class($form));

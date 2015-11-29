@@ -2,7 +2,7 @@
 
 namespace FCForms\FormElement;
 
-class Title extends AbstractElementPrototype
+class Title extends ElementPrototype
 {
 
     /**
@@ -25,18 +25,4 @@ class Title extends AbstractElementPrototype
     {
         return false;
     }
-    
-//    /**
-//     * @return mixed|string
-//     */
-//    public function render(Form $form, Element $elementInstance)
-//    {
-//        $output = "<div class='row-fluid'>";
-//        $output .= "<legend class='span12'>";
-//        $output .= $elementInstance->getCurrentValue();
-//        $output .= "</legend>";
-//        $output .= "</div>";
-//
-//        return $output;
-//    }
 }

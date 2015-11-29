@@ -3,6 +3,8 @@
 
 namespace FCForms\FormElement;
 
+use Room11\HTTP\VariableMap;
+
 class Element
 {
     /**
@@ -21,12 +23,12 @@ class Element
     protected $rowID;
 
     /**
-     * @var AbstractElementPrototype
+     * @var ElementPrototype
      */
     protected $prototype;
 
     public function __construct(
-        AbstractElementPrototype $elementDefinition,
+        ElementPrototype $elementDefinition,
         $rowID
     ) {
         $this->prototype = $elementDefinition;
@@ -34,7 +36,7 @@ class Element
     }
 
     /**
-     * @return AbstractElementPrototype
+     * @return ElementPrototype
      */
     public function getPrototype()
     {
@@ -42,13 +44,13 @@ class Element
     }
 
     /**
-     * @param AbstractElementPrototype $prototype
+     * @param ElementPrototype $prototype
      * @param $rowID
      * @param $data
      * @return Element
      */
     public static function fromData(
-        AbstractElementPrototype $prototype,
+        ElementPrototype $prototype,
         $rowID,
         $data
     ) {
@@ -191,5 +193,13 @@ class Element
     public function getValidationValue()
     {
         return $this->prototype->getValidationValue($this);
+    }
+    
+        /**
+     * @return array
+     */
+    public function serialize()
+    {
+        return $this->prototype->serialize($this);
     }
 }

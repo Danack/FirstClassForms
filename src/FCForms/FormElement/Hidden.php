@@ -4,7 +4,7 @@ namespace FCForms\FormElement;
 
 use FCForms\Form\Form;
 
-class Hidden extends AbstractElementPrototype
+class Hidden extends ElementPrototype
 {
     /**
      * @return string

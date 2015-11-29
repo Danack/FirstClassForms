@@ -4,6 +4,7 @@ namespace FCForms\FormElement;
 
 use FCForms\Form\Form;
 use FCForms\SafeAccess;
+use Room11\HTTP\VariableMap;
 
 class ElementCollection implements \IteratorAggregate
 {
@@ -41,7 +42,7 @@ class ElementCollection implements \IteratorAggregate
      */
     public function getStyleName()
     {
-        return $this->form->getClassName() . "_" . $this->className;
+        return $this->form->getStyleName() . "_" . $this->className;
     }
 
     /**
