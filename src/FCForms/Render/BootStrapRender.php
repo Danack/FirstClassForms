@@ -74,7 +74,12 @@ class BootStrapRender implements Render
         if ($element->getPrototype()->label !== null) {
             $labelSpan = "span" . $this->getLabelSpan();
             $remainingSpan = "span" . (12 - $this->getLabelSpan());
-            $output .= "<label class='$labelSpan' for='" . $element->getFormName() . "'>" . $element->getPrototype()->label . "</label>";
+            $output .= sprintf(
+                "<label class='%s' for='%s'>%s</label>",
+                $labelSpan,
+                $element->getFormName(),
+                $element->getPrototype()->label
+            );
         }
 
         $output .= "<div class='$remainingSpan'>";
