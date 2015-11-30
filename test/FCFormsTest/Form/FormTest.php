@@ -26,7 +26,7 @@ class FormTest extends BaseTestCase
     {
         $injector = createInjector();
         /** @var $form \FCFormsTest\ExampleForms\FirstForm */
-        $form = $injector->execute(['FCFormsTest\ExampleForms\FirstForm', 'createBlank']);
+        $form = $injector->make('FCFormsTest\ExampleForms\FirstForm');
 
         $renderer = new \FCForms\Render\BootStrapRender();
 
@@ -48,7 +48,7 @@ class FormTest extends BaseTestCase
         $variables = getFormVariables($html);
         $submittedVariableMap = new ArrayVariableMap($variables);
         /** @var $formAfterSubmission \FCFormsTest\ExampleForms\FirstForm */
-        $formAfterSubmission = $injector->execute(['FCFormsTest\ExampleForms\FirstForm', 'createBlank']);
+        $formAfterSubmission = $injector->make('FCFormsTest\ExampleForms\FirstForm');
         $this->assertTrue($formAfterSubmission->isSubmitted($submittedVariableMap));
 
         //$formAfterSubmission->createFromData($variables);
@@ -59,7 +59,7 @@ class FormTest extends BaseTestCase
         //Store the values in storage and
         $formAfterSubmission->saveValuesToStorage();
 
-        $storageForm = $injector->execute(['FCFormsTest\ExampleForms\FirstForm', 'createBlank']);
+        $storageForm = $injector->make('FCFormsTest\ExampleForms\FirstForm');
         /** @var $storageForm \FCFormsTest\ExampleForms\FirstForm */
         $isInitialized = $storageForm->initFromStorage();
         $this->assertTrue($isInitialized);
@@ -73,7 +73,7 @@ class FormTest extends BaseTestCase
     {
         $injector = createInjector();
         /** @var $form \FCFormsTest\ExampleForms\FirstForm */
-        $form = $injector->execute(['FCFormsTest\ExampleForms\FirstForm', 'createBlank']);
+        $form = $injector->make('FCFormsTest\ExampleForms\FirstForm');
 
         $data = [
             "isActive" => true,

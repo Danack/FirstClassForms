@@ -6,8 +6,9 @@ namespace FCForms\Form;
 use Auryn\Injector;
 use FCForms\FCFormsException;
 use FCForms\Form\FormPrototype;
+use FCForms\FormBuilder;
 
-class FormBuilder
+class AurynFormBuilder implements FormBuilder
 {
     private $injector;
 
@@ -16,7 +17,7 @@ class FormBuilder
         $this->injector = $injector;
     }
 
-    public function buildPrototypeFromDefinition(
+    public function buildFormPrototypeFromDefinition(
         Form $form,
         array $definition
     ) {

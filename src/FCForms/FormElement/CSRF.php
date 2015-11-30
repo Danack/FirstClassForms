@@ -4,7 +4,7 @@ namespace FCForms\FormElement;
 
 use FCForms\FCFormsException;
 use FCForms\Form\Form;
-use FCForms\Form\DataStore;
+use FCForms\DataStore;
 use Room11\HTTP\VariableMap;
 
 class CSRF extends ElementPrototype

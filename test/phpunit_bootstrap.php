@@ -22,8 +22,8 @@ $autoloader->add(
 function createInjector()
 {
     $injector = new Injector();
-    $injector->alias('FCForms\Form\DataStore', 'FCFormsTest\Form\ArrayDataStore');
-    $injector->share('FCForms\Form\DataStore');
+    $injector->alias('FCForms\DataStore', 'FCFormsTest\Form\ArrayDataStore');
+    $injector->share('FCForms\DataStore');
     $injector->alias('Room11\HTTP\VariableMap', 'Room11\HTTP\VariableMap\ArrayVariableMap');
 
     $injector->alias('FCForms\FileFetcher', 'FCForms\FileFetcher\StubFileFetcher');
@@ -46,41 +46,10 @@ function buildFormWithData($formClassName)
 
     $injector = createInjector();
     /** @var $form \FCFormsTest\ExampleForms\FirstForm */
-    $form = $injector->execute([$formClassName, 'createBlank']);
+    $form = $injector->make($formClassName);
 
     return $form;
 }
-
-
-//$injector = createInjector();
-//
-//$form = $injector->execute(['FCFormsTest\ExampleForms\FirstForm', 'createBlank']); 
-//
-///** @var $form \FCForms\Form\Form */
-//if ($form->isSubmitted()) {
-//    echo "Form was submitted";
-//    $form->useSubmittedValues();
-//    $form->storeValuesInSession();
-//}
-//else {
-//    echo "was not submitted";
-//
-//    $data = [
-//      'end' => [
-//          "isActive" => true,
-//          "testText" => 'foobar',
-//      ],  
-//    ];
-//
-//    $form->createFromData($data);
-//}
-//
-//$renderer = new \FCForms\Render\BootStrapRender();
-//
-//$text = $renderer->render($form);
-//$variables = getFormVariables($text);
-//
-//var_dump($variables);
 
 
 function getFormVariables($html)

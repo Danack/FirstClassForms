@@ -6,8 +6,9 @@ use FCForms\Form\Form;
 use FCForms\FormElement\ElementPrototype;
 use FCForms\FormElement\Element;
 use FCForms\RenderException;
+use FCForms\Render;
 
-class BootStrapRender
+class BootStrapRender implements Render
 {
     /**
      * @var \callable[]
@@ -79,9 +80,10 @@ class BootStrapRender
         $output .= "<div class='$remainingSpan'>";
 
         $output .= sprintf(
-            "<input type='password' name='%s' size='80' value='%s' placeholder='Password' style='width: 100%;' />",
+            "<input type='password' name='%s' size='80' value='%s' placeholder='Password' %s />",
             $element->getFormName(),
-            htmlentities($element->getCurrentValue())
+            htmlentities($element->getCurrentValue()),
+            "style='width: 100%;'"
         );
 
         $output .= "</div>";
@@ -310,7 +312,7 @@ class BootStrapRender
         $this->form = $form;
         $output = '';
 
-        $form->getFormErrorMessage();
+        $form->getErrorMessage();
 
         $formHTMLName = 'vbform';
         $encodingString = "enctype='multipart/form-data'";
@@ -328,6 +330,14 @@ class BootStrapRender
             $encodingString,
             $formIDString
         );
+
+        if ($form->hasError() && ($formErrorMessage = $form->getErrorMessage())) {
+            $output .= "<div class='row-fluid'>\n";
+            $output .= "<div class='span12' style='padding-left: 20px'>\n";
+            $output .= $formErrorMessage."\n";
+            $output .= "</div>\n";
+            $output .= "</div>\n";
+        }
 
         $output .= "<div class='row-fluid'>\n";
         $output .= "<div class='span12' style='padding-left: 20px'>\n";

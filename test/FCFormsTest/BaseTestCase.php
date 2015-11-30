@@ -46,7 +46,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
      */
     public function createEmptyForm()
     {
-        $form = $this->injector->execute(['FCFormsTest\ExampleForms\EmptyForm', 'createBlank']);
+        $form = $this->injector->make('FCFormsTest\ExampleForms\EmptyForm');
 
         return $form;
     }

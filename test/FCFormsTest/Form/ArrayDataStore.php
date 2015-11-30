@@ -2,9 +2,9 @@
 
 namespace FCFormsTest\Form;
 
-use FCForms\Form\DataStore;
+use FCForms\DataStore;
 
-class ArrayDataStore implements DataStore
+class ArrayDataStore implements \FCForms\DataStore
 {
     private $storage = [];
     

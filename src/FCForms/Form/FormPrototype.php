@@ -13,7 +13,7 @@ class FormPrototype
      * If there is an error in the form, this message is displayed at the start of the form.
      * @var string
      */
-    public $errorMessage = "Form had errors.";
+    public $defaultErrorMessage = "Form had errors.";
 
     /**
      * The CSS class name for the outer form element
@@ -38,7 +38,7 @@ class FormPrototype
         $endPrototypes
     ) {
         $this->cssClass = $cssClass;
-        $this->errorMessage = $errorMessage;
+        $this->defaultErrorMessage = $errorMessage;
         $this->startPrototypes = new PrototypeCollection($startPrototypes);
         $this->rowPrototypes = new PrototypeCollection($rowPrototypes);
         $this->endPrototypes = new PrototypeCollection($endPrototypes);

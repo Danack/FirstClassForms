@@ -12,7 +12,7 @@ class CSRFTest extends BaseTestCase
     {
         $form = $this->createEmptyForm();
         $csrfValidator = new CSRFValidator();
-        $dataStore = $this->injector->make('FCForms\Form\DataStore');
+        $dataStore = $this->injector->make('FCForms\DataStore');
         $csrfElement = new CSRFElement($form, $dataStore);
 
         $element = new Element($csrfElement, $rowID = 5);

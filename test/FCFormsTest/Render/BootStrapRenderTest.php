@@ -30,8 +30,36 @@ class BootStrapRenderTest extends BaseTestCase
         $this->setExpectedException('FCForms\RenderException');
         $renderer->render($form);
     }
-    
 
+    public function testLoginFormRender()
+    {
+        $loginForm = buildFormWithData('FCFormsTest\ExampleForms\LoginForm');
+        $dataStoredInSession = $loginForm->initFromStorage();
+        $renderer = new \FCForms\Render\BootStrapRender();
+        $html = $renderer->render($loginForm);
+    }
 
-    
+    public function testLoginFormRenderWithError()
+    {
+        $injector = createInjector();
+        $errorMessage = "This is a message ".time();
+        $loginForm = $injector->make('FCFormsTest\ExampleForms\LoginForm');
+
+        $loginForm->createFromData([]);
+        $loginForm->setFormError($errorMessage);
+        $dataStoredInSession = $loginForm->initFromStorage();
+        $renderer = new \FCForms\Render\BootStrapRender();
+        $html = $renderer->render($loginForm);
+        $this->assertContains($errorMessage, $html);
+
+        //Store the values in storage and
+        $loginForm->saveValuesToStorage();
+        
+        $loginFormFromStorage = $injector->make('FCFormsTest\ExampleForms\LoginForm');
+        $readFromStorage = $loginFormFromStorage->initFromStorage();
+        $this->assertTrue($readFromStorage);
+        
+        $htmlFromStorage = $renderer->render($loginForm);
+        $this->assertContains($errorMessage, $htmlFromStorage);
+    }
 }

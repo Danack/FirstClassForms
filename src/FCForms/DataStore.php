@@ -1,6 +1,6 @@
 <?php
 
-namespace FCForms\Form;
+namespace FCForms;
 
 interface DataStore
 {

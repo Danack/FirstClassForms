@@ -2,6 +2,7 @@
 
 namespace FCForms\Form;
 
+use FCForms\DataStore;
 use FCForms\FCFormsException;
 use FCForms\FormElement\ElementCollection;
 use FCForms\SafeAccess;
@@ -28,6 +29,8 @@ abstract class Form
     public $rowIDs = array();
 
     protected $forceError = false;
+    
+    protected $errorMessage = null;
 
     protected $styleName = 'fcform';
 
@@ -36,23 +39,23 @@ abstract class Form
     protected $htmlID = null;
 
     /** @var  \FCForms\FormElement\ElementCollection[] */
-    public $rowElementsArray = array();
+    public $rowElementsArray = null;
 
     /** @var \FCForms\FormElement\ElementCollection|\FCForms\FormElement\Element[] */
-    public $startElements = array();
+    public $startElements = null;
 
     /** @var \FCForms\FormElement\ElementCollection|\FCForms\FormElement\Element[] */
-    public $endElements = array();
+    public $endElements = null;
 
     /**
-     * @var \FCForms\Form\DataStore
+     * @var \FCForms\DataStore
      */
     private $dataStore;
 
     const FORM_HIDDEN_FQCN = 'formClass';
 
     /**
-     * @var FormBuilder
+     * @var \FCForms\FormBuilder
      */
     protected $formBuilder;
 
@@ -61,52 +64,36 @@ abstract class Form
      */
     protected $prototype;
     
+    abstract public function getDefinition();
+
+    /**
+     * @param DataStore $dataStore
+     * @param FileFetcher $fileFetcher
+     * @param AurynFormBuilder $formBuilder
+     * @internal param VariableMap $variableMap
+     * @internal param Injector $injector
+     * @return Form
+     */
+    public function __construct(
+        DataStore $dataStore,
+        FileFetcher $fileFetcher,
+        AurynFormBuilder $formBuilder
+    ) {
+        $this->dataStore = $dataStore;
+        $this->fileFetcher = $fileFetcher;
+        $this->formBuilder = $formBuilder;
+        $definition = $this->getDefinition();
+        
+        $this->prototype = $formBuilder->buildFormPrototypeFromDefinition(
+            $this,
+            $definition
+        );
+    }
 
     public function getFileFetcher()
     {
         return $this->fileFetcher;
     }
-
-    private function __construct()
-    {
-    }
-
-    /**
-     * @param DataStore $dataStore
-     * @param FileFetcher $fileFetcher
-     * @param FormBuilder $formBuilder
-     * @internal param VariableMap $variableMap
-     * @internal param Injector $injector
-     * @return Form
-     */
-    public static function createBlank(
-        DataStore $dataStore,
-        FileFetcher $fileFetcher,
-        FormBuilder $formBuilder
-    ) {
-        $instance = new static();
-        $instance->dataStore = $dataStore;
-        $instance->fileFetcher = $fileFetcher;
-        $instance->formBuilder = $formBuilder;
-        $definition = $instance->getDefinition();
-        
-        $instance->prototype = $formBuilder->buildPrototypeFromDefinition(
-            $instance,
-            $definition
-        );
-
-        return $instance;
-    }
-
-//    /**
-//     * @return \FCForms\Form\DataStore
-//     */
-//    public function getDataStore()
-//    {
-//        return $this->dataStore;
-//    }
-
-    abstract public function getDefinition();
 
     public function getStyleName()
     {
@@ -129,6 +116,9 @@ abstract class Form
         throw new DataMissingException("Could not find formID");
     }
 
+    /**
+     * @return array
+     */
     public function getStandardElements()
     {
         $standardElements = array(
@@ -201,7 +191,11 @@ abstract class Form
         $this->endElements->setValues($dataSource);
     }
 
-
+    /**
+     * @param $elementName
+     * @return \FCForms\FormElement\Element
+     * @throws FCFormsException
+     */
     public function getElementByName($elementName)
     {
         foreach ($this->startElements as $element) {
@@ -399,17 +393,20 @@ abstract class Form
         );
 
         if ($storedValues === false) {
+            $this->prototype->createElementsFromData($this, []);
             return false;
         }
-        
-        //TODO - use forceError
+
         $topLevelData = array_merge($storedValues['data']['start'], $storedValues['data']['end']);
         $rowData = $storedValues['data']['rows'];
         $this->prototype->createElementsFromData($this, $topLevelData, $rowData);
 
+        //$storedValues['rowIDs'];
+        $this->forceError = $storedValues['forceError'];
+        $this->errorMessage = $storedValues['errorMessage'];
+
         return true;
     }
-
 
     /**
      * @param array $startElements
@@ -461,8 +458,8 @@ abstract class Form
         $result['data']['rows'] = $rows;
         $result['data']['end'] = $end;
         $result['rowIDs'] = implode(',', $rowIDs);
-        //$result['forceError'] = $this->forceError;
-        //$result['errorMessage'] = $this->errorMessage;
+        $result['forceError'] = $this->forceError;
+        $result['errorMessage'] = $this->errorMessage;
 
         return $result;
     }
@@ -518,7 +515,7 @@ abstract class Form
      * @param callable $validCallback
      * @param callable $invalidCallback
      */
-    public function process(
+    public function processPost(
         VariableMap $variableMap,
         callable $validCallback,
         callable $invalidCallback = null
@@ -534,25 +531,34 @@ abstract class Form
         }
 
         // Valid state can be altered by the call-back
-        if (!$this->isValid && $this->forceError == false) {
-            $this->saveValuesToStorage();
-        }
+        //if (!$this->isValid && $this->forceError == false) {
+        $this->saveValuesToStorage();
+        //}
     }
 
     /**
      * @return bool|string
      */
-    public function getFormErrorMessage()
+    public function getErrorMessage()
     {
-        if ($this->hasBeenValidated == true) {
-            if ($this->isValid == false) {
-                return $this->errorMessage;
-            }
+        if ($this->errorMessage) {
+            return $this->errorMessage;
         }
-        
-        return false;
+
+        return $this->prototype->defaultErrorMessage;
     }
 
+    public function hasError()
+    {
+        if (!$this->isValid) {
+            return true;
+        }
+        else if ($this->forceError == true) {
+            return true;
+        }
+        return false;
+    }
+    
     /**
      *
      */
@@ -567,7 +573,10 @@ abstract class Form
 
         $this->endElements->prepareToRender();
     }
-    
+
+    /**
+     * @return array
+     */
     public function getDataNames()
     {
         $data = [];
