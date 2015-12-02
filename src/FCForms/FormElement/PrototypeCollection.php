@@ -10,7 +10,6 @@ class PrototypeCollection implements \IteratorAggregate
 {
     use SafeAccess;
 
-
     /** @var ElementPrototype[] */
     public $prototypes = array();
 
@@ -43,9 +42,6 @@ class PrototypeCollection implements \IteratorAggregate
     {
         return new \ArrayIterator($this->prototypes);
     }
-
-
-
 
     /**
      * @param $rowID

@@ -11,9 +11,9 @@ class SubmitButton extends ElementPrototype
     /**
      * @return string
      */
-    public function getCSSClassName()
+    public function getPrototypeCSSClass()
     {
-        return "SubmitButton";
+        return "fc_submitbutton";
     }
 
     /**

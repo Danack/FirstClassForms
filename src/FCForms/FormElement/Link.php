@@ -10,9 +10,9 @@ class Link extends ElementPrototype
     /**
      * @return string
      */
-    public function getCSSClassName()
+    public function getPrototypeCSSClass()
     {
-        return "Link";
+        return "fc_link";
     }
 
     /**
@@ -29,7 +29,7 @@ class Link extends ElementPrototype
     public function render(Form $form, Element $elementInstance)
     {
         $output = "<div class='row-fluid'>";
-        $output .= "<div class='".$this->getCSSClassName()." span12'>";
+        $output .= "<div class='".$this->getPrototypeCSSClass()." span12'>";
         //$output .= $this->getCurrentValue();
         $output .= "This is meant to be a link";
         $output .= "</div>";

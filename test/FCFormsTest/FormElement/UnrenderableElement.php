@@ -10,7 +10,7 @@ class UnrenderableElement extends ElementPrototype
     /**
      * @return string
      */
-    public function getCSSClassName()
+    public function getPrototypeCSSClass()
     {
         return "Unrenderable";
     }

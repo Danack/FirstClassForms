@@ -9,9 +9,9 @@ class ImageLabel extends ElementPrototype
     /**
      * @return string
      */
-    public function getCSSClassName()
+    public function getPrototypeCSSClass()
     {
-        return "ImageLabel";
+        return "fc_imagelabel";
     }
 
     /**
@@ -33,7 +33,7 @@ class ImageLabel extends ElementPrototype
     public function render(Form $form, Element $elementInstance)
     {
         $output = "<div class='row-fluid'>";
-        $output .= "<div class='" . $this->getCSSClassName() . " span12'>";
+        $output .= "<div class='" . $this->getPrototypeCSSClass() . " span12'>";
         $output .= "<img src='".$elementInstance->getCurrentValue()."' />";
         $output .= "</img>";
         $output .= "</div>";

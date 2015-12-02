@@ -564,6 +564,11 @@ abstract class Form
      */
     public function prepareToRender()
     {
+        if ($this->startElements == null) {
+            //TODO - resolve whether we need an 'initialised' flag.
+            $this->createFromData([]);
+        }
+        
         $this->startElements->prepareToRender();
 
         $this->rowElementsArray = [];

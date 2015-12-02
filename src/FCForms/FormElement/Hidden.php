@@ -9,9 +9,9 @@ class Hidden extends ElementPrototype
     /**
      * @return string
      */
-    public function getCSSClassName()
+    public function getPrototypeCSSClass()
     {
-        return 'Hidden';
+        return 'fc_hidden';
     }
 
     /**

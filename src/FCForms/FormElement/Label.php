@@ -9,9 +9,9 @@ class Label extends ElementPrototype
     /**
      * @return string
      */
-    public function getCSSClassName()
+    public function getPrototypeCSSClass()
     {
-        return "Label";
+        return "fc_label";
     }
 
     /**
@@ -25,13 +25,5 @@ class Label extends ElementPrototype
     public function hasData()
     {
         return false;
-    }
-    
-    /**
-     * @return mixed
-     */
-    public function render(Form $form, Element $elementInstance)
-    {
-        return "This is a label";
     }
 }

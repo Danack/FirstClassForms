@@ -1,15 +1,12 @@
 <?php
 
-
 namespace FCForms\FormElement;
-
-use FCForms\Form\Form;
 
 class TextArea extends ElementPrototype
 {
-    private $rows = 8;
+    private $rows = 3;
 
-    private $cols = null;
+    private $cols = 80;
 
     /**
      * @param array $info
@@ -17,7 +14,6 @@ class TextArea extends ElementPrototype
      */
     public function init(array $info)
     {
-        
         if (array_key_exists('rows', $info) == true) {
             $this->rows = intval($info['rows']);
         }
@@ -27,65 +23,26 @@ class TextArea extends ElementPrototype
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getCSSClassName()
+    public function getRows()
     {
-        return "InputText";
+        return $this->rows;
     }
 
     /**
-     * @return mixed|string
+     * @return null
      */
-    public function render(Form $form, Element $elementInstance)
+    public function getCols()
     {
-        $output = "";
-        $errorMessages = $elementInstance->getErrorMessages();
-        if (count($errorMessages) > 0) {
-            $output .= "<div class='row-fluid'>";
-            $output .= "<div class='errorMessage span12'>";
-            foreach ($errorMessages as $errorMessage) {
-                $output .= $errorMessage;
-            }
-            $output .= "</div>";
-            $output .= "</div>";
-        }
+        return $this->cols;
+    }
 
-        $output .= "<div class='row-fluid'>";
-        $remainingSpan = 'span12';
-
-        if ($this->label !== null) {
-            $labelSpan = "span" . $form->getLabelSpan();
-            $remainingSpan = "span" . (12 - $form->getLabelSpan());
-            $output .= sprintf(
-                "<label class='%s' for='%s'>%s</label>",
-                $labelSpan,
-                $elementInstance->getFormName(),
-                $this->label
-            );
-        }
-
-        $output .= "<div class='$remainingSpan'>";
-        $output .= "<textarea type='text' name='".$elementInstance->getFormName(). "'";
-
-        if ($this->placeHolder != null) {
-            $output .= "placeholder='".$this->placeHolder."'";
-        }
-
-        $output .= "rows='".$this->rows."'";
-
-        if ($this->cols != null) {
-            $output .= "cols='".$this->cols."'";
-        }
-        else {
-            $output .= "style='width: 100%'";
-        }
-        $output .= "/>";
-        $output .= htmlentities($elementInstance->getCurrentValue());
-        $output .= "</textarea>";
-        $output .= "</div>";
-        $output .= "</div>";
-
-        return $output;
+    /**
+     * @return string
+     */
+    public function getPrototypeCSSClass()
+    {
+        return "fc_textarea";
     }
 }

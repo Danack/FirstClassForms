@@ -8,9 +8,9 @@ class Title extends ElementPrototype
     /**
      * @return string
      */
-    public function getCSSClassName()
+    public function getPrototypeCSSClass()
     {
-        return "Title";
+        return "fc_title";
     }
 
     /**

@@ -27,13 +27,22 @@ abstract class ElementPrototype
      * @var string
      */
     public $label = null;
+    
+    private $cssClass = null;
 
     /**
      * Use to generate the class that is applied to the element, to allow
      * it to be styled specifically.
      * @return mixed
      */
-    abstract public function getCSSClassName();
+    abstract protected function getPrototypeCSSClass();
+    
+    public function getCSSClass()
+    {
+        if ($this->cssClass != null) {
+            return $this->cssClass." ".$this->getPrototypeCSSClass();
+        }
+    }
     
     /**
      * @param array $info
@@ -134,6 +143,10 @@ abstract class ElementPrototype
 
         if (array_key_exists('placeHolder', $formElement) == true) {
             $this->placeHolder = $formElement['placeHolder'];
+        }
+        
+        if (array_key_exists('class', $formElement) == true) {
+            $this->class = $formElement['class'];
         }
 
         // @TODO - naming things is hard

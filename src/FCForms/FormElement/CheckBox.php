@@ -2,8 +2,6 @@
 
 namespace FCForms\FormElement;
 
-use FCForms\Form\Form;
-
 class CheckBox extends ElementPrototype
 {
     public function init(array $info)
@@ -13,8 +11,8 @@ class CheckBox extends ElementPrototype
     /**
      * @return string
      */
-    public function getCSSClassName()
+    public function getPrototypeCSSClass()
     {
-        return 'CheckBox';
+        return 'fc_checkbox';
     }
 }

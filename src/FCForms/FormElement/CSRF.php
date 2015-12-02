@@ -24,9 +24,9 @@ class CSRF extends ElementPrototype
     /**
      * @return string
      */
-    public function getCSSClassName()
+    public function getPrototypeCSSClass()
     {
-        return 'CSRF';
+        return 'fc_csrf';
     }
 
     /**

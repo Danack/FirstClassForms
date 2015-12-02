@@ -30,9 +30,9 @@ class Password extends ElementPrototype
     /**
      * @return string
      */
-    public function getCSSClassName()
+    public function getPrototypeCSSClass()
     {
-        return "InputText";
+        return "fc_password";
     }
 
 

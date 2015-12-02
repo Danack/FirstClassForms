@@ -7,7 +7,9 @@ use FCForms\FormElement\ElementPrototype;
 use FCForms\FormElement\Element;
 use FCForms\RenderException;
 use FCForms\Render;
+use FCForms\FormElement\Select;
 
+// @TODO - <span class="help-block"></span>
 class BootStrapRender implements Render
 {
     /**
@@ -25,14 +27,18 @@ class BootStrapRender implements Render
         $this->renderCallables['FCForms\FormElement\Hidden'] = [$this, 'renderHidden'];
         $this->renderCallables['FCForms\FormElement\Label'] = [$this, 'renderLabel'];
         $this->renderCallables['FCForms\FormElement\Password'] = [$this, 'renderPassword'];
+        $this->renderCallables['FCForms\FormElement\Select'] = [$this, 'renderSelect'];
         $this->renderCallables['FCForms\FormElement\SubmitButton'] = [$this, 'renderSubmitButton'];
         $this->renderCallables['FCForms\FormElement\Text'] = [$this, 'renderText'];
+        $this->renderCallables['FCForms\FormElement\TextArea'] = [$this, 'renderTextArea'];
+        
+        
         $this->renderCallables['FCForms\FormElement\Title'] = [$this, 'renderTitle'];
     }
 
     public function getLabelSpan()
     {
-        return 2;
+        return 3;
     }
 
     /**
@@ -43,7 +49,7 @@ class BootStrapRender implements Render
     protected function getRenderCallable(ElementPrototype $prototype)
     {
         $class = get_class($prototype);
-        
+
         if (array_key_exists($class, $this->renderCallables) == false) {
             throw new RenderException("This renderer doesn't know how to render elements of type $class");
         }
@@ -52,47 +58,134 @@ class BootStrapRender implements Render
     }
     
     
+    /**
+     * @return mixed|string
+     */
+    public function renderSelect(Element $element, Select $prototype)
+    {
+
+//        $output = "<div class='row-fluid'>";
+//        $labelSpan = "span".$this->getLabelSpan();
+//        $remainingSpan = "span" . (12 - $this->getLabelSpan());
+
+//        if ($prototype->label != null) {
+//            $output .= sprintf(
+//                "<label class='%s' for='%s'>%s</label>",
+//                $labelSpan,
+//                $element->getFormName(),
+//                $prototype->label
+//            );
+//        }
+//
+//        $output .= "<div class='$remainingSpan'>\n";
+//        $output .= sprintf(
+//            "<select name='%s'>\n",
+//            $element->getFormName()
+//        );
+
+        $optionText = '';
+        foreach ($prototype->getOptionDescriptionMap() as $option => $description) {
+            $selectedString = '';
+            if ($option === $element->getCurrentValue()) {
+                $selectedString = "selected='selected'";
+            }
+            
+            $optionText .= sprintf(
+                "<option value='%s' %s >%s</option>\n",
+                htmlentities($option),
+                $selectedString,
+                htmlentities($description)
+            );
+        }
+
+//        $output .= "</select>\n";
+//        $output .= "</div>\n";
+//        $output .= "</div>\n";
+
+        //multiple=""
+
+        $html = <<< HTML
+<div class="form-group">
+    <label for="select" class="col-lg-%d control-label">%s</label>
+    <div class="col-lg-%d">
+      <select class="form-control" id="select" name="%s">
+          %s
+      </select>
+    </div>
+  </div>
+HTML;
+
+        $output = sprintf(
+            $html,
+            $this->getLabelSpan(),
+            $prototype->getLabel(),
+            12 - $this->getLabelSpan(),
+            $element->getFormName(),
+            $optionText
+        );
+
+        return $output;
+    }
+    
         /**
      * @return mixed|string
      */
     public function renderPassword(Element $element)
     {
-        $output = "";
-        if (count($element->errorMessages) > 0) {
-            $output .= "<div class='row-fluid'>";
-            $output .= "<div class='errorMessage span12'>";
-            foreach ($element->errorMessages as $errorMessage) {
-                $output .= $errorMessage;
-            }
-            $output .= "</div>";
-            $output .= "</div>";
-        }
+//        $output = "";
+//        if (count($element->errorMessages) > 0) {
+//            $output .= "<div class='row-fluid'>";
+//            $output .= "<div class='errorMessage span12'>";
+//            foreach ($element->errorMessages as $errorMessage) {
+//                $output .= $errorMessage;
+//            }
+//            $output .= "</div>";
+//            $output .= "</div>";
+//        }
 
-        $output .= "<div class='row-fluid'>";
-        $remainingSpan = 'span12';
+//        $output .= "<div class='row-fluid'>";
+//        $remainingSpan = 'span12';
 
-        if ($element->getPrototype()->label !== null) {
-            $labelSpan = "span" . $this->getLabelSpan();
-            $remainingSpan = "span" . (12 - $this->getLabelSpan());
-            $output .= sprintf(
-                "<label class='%s' for='%s'>%s</label>",
-                $labelSpan,
-                $element->getFormName(),
-                $element->getPrototype()->label
-            );
-        }
+//        if ($element->getPrototype()->label !== null) {
+//            $labelSpan = "span" . $this->getLabelSpan();
+//            $remainingSpan = "span" . (12 - $this->getLabelSpan());
+//            $output .= sprintf(
+//                "<label class='%s' for='%s'>%s</label>",
+//                $labelSpan,
+//                $element->getFormName(),
+//                
+//            );
+//        }
+        
+        $html = <<< HTML
+  <div class="form-group">
+    <label for="inputPassword3" class="col-sm-%d control-label">%s</label>
+    <div class="col-sm-%d">
+      <input type="password" class="form-control" id="inputPassword3" placeholder="%s">
+    </div>
+  </div>
+HTML;
 
-        $output .= "<div class='$remainingSpan'>";
-
-        $output .= sprintf(
-            "<input type='password' name='%s' size='80' value='%s' placeholder='Password' %s />",
-            $element->getFormName(),
-            htmlentities($element->getCurrentValue()),
-            "style='width: 100%;'"
+        $output = sprintf(
+            $html,
+            $this->getLabelSpan(),
+            $element->getPrototype()->label,
+            12 - $this->getLabelSpan(),
+            $element->getPrototype()->getPlaceHolder()
         );
-
-        $output .= "</div>";
-        $output .= "</div>";
+        
+//
+//        $output .= "<div class='$remainingSpan'>";
+//
+//        $output .= sprintf(
+//            "<input type='password' name='%s' size='80' value='%s' placeholder='Password' %s />",
+//            $element->getFormName(),
+//            htmlentities($element->getCurrentValue()),
+//            "style='width: 100%;'"
+//        );
+//
+//        $output .= "</div>";
+//        $output .= "</div>";
 
         return $output;
     }
@@ -149,23 +242,21 @@ class BootStrapRender implements Render
         /** @var  $prototype \FCForms\FormElement\SubmitButton */
         $prototype = $element->getPrototype();
 
-        $output = "";
-        $output .= "<div class='row-fluid'>";
-        $offsetClass = 'span' . ($this->getLabelSpan());
-        $spanClass = 'span' . (12 - $this->getLabelSpan());
+        $html = <<< HTML
+  <div class="form-group">
+    <div class="col-sm-offset-%d col-sm-%d">
+      <button type="submit" class="btn btn-primary">%s</button>
+    </div>
+  </div>
+HTML;
 
-        $output .= "<div class='$offsetClass'>\n";
-        $output .= "&nbsp;\n";
-        $output .= "</div>\n";
-        $output .= "<div class='$spanClass'>\n";
-        $output .= sprintf(
-            "<input type='submit' name='%s' value='%s' />\n",
-            $element->getFormName(),
+        $output = sprintf(
+            $html,
+            $this->getLabelSpan(),
+            12 - $this->getLabelSpan(),
             $prototype->text
         );
-
-        $output .= "</div>\n";
-        $output .= "</div>\n";
+        //$element->getFormName(),
 
         return $output;
     }
@@ -178,36 +269,37 @@ class BootStrapRender implements Render
     {
         /** @var $prototype \FCForms\FormElement\CheckBox */
         $prototype = $element->getPrototype();
-        
-        $output = "<div class='row-fluid'>\n";
-        $labelSpan = "span" . $this->getLabelSpan();
-        $remainingSpan = "span" . (12 - $this->getLabelSpan());
-
-        if ($element->getPrototype()->label != null) {
-            $output .= sprintf(
-                "<label class='%s' for='%s'>%s</label>",
-                $labelSpan,
-                $element->getFormName(),
-                $prototype->label
-            );
-        }
-
-        $checked = '';
+        $checkedString = '';
         if ($element->getCurrentValue() == true) {
-            $checked = "checked='checked'";
+            $checkedString = "checked='checked'";
         }
+        
+        $html = <<< HTML
+  <div class="form-group">
+    <div class="col-sm-offset-%d col-sm-%d">
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" name="%s" %s>%s
+        </label>
+      </div>
+    </div>
+  </div>
+HTML;
 
-        $output .= "<div class='$remainingSpan'>\n";
-        $output .= sprintf(
-            "<input type='checkbox' name='%s' value='1' %s />\n",
+        $output = sprintf(
+            $html,
+            $this->getLabelSpan(),
+            12 - $this->getLabelSpan(),
             $element->getFormName(),
-            $checked
+            $checkedString,
+            $prototype->getLabel()
         );
-        $output .= "</div>\n";
-        $output .= "</div>\n";
 
         return $output;
     }
+    
+      
+    
 
     /**
      * @return mixed|string
@@ -226,13 +318,19 @@ class BootStrapRender implements Render
         /**
      * @return mixed|string
      */
-    public function renderTitle(Element $elementInstance)
+    public function renderTitle(Element $element)
     {
-        $output = "<div class='row-fluid'>\n";
-        $output .= "<legend class='span12'>\n";
-        $output .= $elementInstance->getCurrentValue();
-        $output .= "</legend>\n";
-        $output .= "</div>\n";
+        $html = <<< HTML
+        <legend class='%s'>
+            %s
+        </legend>
+HTML;
+        
+        $output = sprintf(
+            $html,
+            $element->getPrototype()->getPrototypeCSSClass(),
+            $element->getCurrentValue()
+        );
 
         return $output;
     }
@@ -245,53 +343,153 @@ class BootStrapRender implements Render
         /** @var $prototype \FCForms\FormElement\Text */
         $prototype = $element->getPrototype();
 
-        $output = "";
-        $errorMessages = $element->getErrorMessages();
-
-        if (count($errorMessages) > 0) {
-            $output .= "<div class='row-fluid'>\n";
-            $output .= "<div class='errorMessage span12'>\n";
-            foreach ($errorMessages as $errorMessage) {
-                $output .= $errorMessage;
-            }
-            $output .= "</div>\n";
-            $output .= "</div>\n";
-        }
-
-        $output .= "<div class='row-fluid'>\n";
-        $remainingSpan = 'span12';
-
-        if ($prototype->label !== null) {
-            $labelSpan = "span" . $this->getLabelSpan();
-            $remainingSpan = "span" . (12 - $this->getLabelSpan());
-            $output .= sprintf(
-                "<label class='%s' for='%s'>%s</label>\n",
-                $labelSpan,
-                $element->getFormName(),
-                $prototype->label
-            );
-        }
-
-        $output .= "<div class='$remainingSpan'>\n";
-        
+//        $output = "";
+//        $errorMessages = $element->getErrorMessages();
+//
+//        if (count($errorMessages) > 0) {
+//            $output .= "<div class='row-fluid'>\n";
+//            $output .= "<div class='errorMessage span12'>\n";
+//            foreach ($errorMessages as $errorMessage) {
+//                $output .= $errorMessage;
+//            }
+//            $output .= "</div>\n";
+//            $output .= "</div>\n";
+//        }
+//
+//        $output .= "<div class='row-fluid'>\n";
+//        $remainingSpan = 'span12';
+//
+//        if ($prototype->label !== null) {
+//            $labelSpan = "span" . $this->getLabelSpan();
+//            $remainingSpan = "span" . (12 - $this->getLabelSpan());
+//            $output .= sprintf(
+//                "<label class='%s' for='%s'>%s</label>\n",
+//                $labelSpan,
+//                $element->getFormName(),
+//                $prototype->label
+//            );
+//        }
+//
+//        $output .= "<div class='$remainingSpan'>\n";
+//        
         $placeHolderText = "";
         $placeHolder = $prototype->getPlaceHolder();
         if ($placeHolder != null) {
-            $placeHolderText .= "placeholder='".$placeHolder."'";
+            $placeHolderText .= $placeHolder;
         }
 
-        $output .= sprintf(
-            "<input type='text' name='%s' size='80' value='%s' style='width: 100%%;' %s />\n",
-            $element->getFormName(),
-            htmlentities($element->getCurrentValue(), ENT_QUOTES),
-            $placeHolderText
-        );
+//        $output .= sprintf(
+//            "<input type='text' name='%s' size='80' value='%s' style='width: 100%%;' %s />\n",
+//            $element->getFormName(),
+//            htmlentities($element->getCurrentValue(), ENT_QUOTES),
+//            $placeHolderText
+//        );
+//
+//        $output .= "</div>\n";
+//        $output .= "</div>\n";
+        
+        $html = <<< HTML
+  <div class="form-group">
+    <label for="inputEmail3" class="col-sm-%d control-label">%s</label>
+    <div class="col-sm-%d">
+      <input type="email" class="form-control" id="inputEmail3" name="%s" placeholder="%s" value="%s">
+    </div>
+  </div>
+HTML;
 
-        $output .= "</div>\n";
-        $output .= "</div>\n";
+        $output = sprintf(
+            $html,
+            $this->getLabelSpan(),
+            $prototype->label,
+            12 - $this->getLabelSpan(),
+            $element->getFormName(),
+            $placeHolderText,
+            htmlentities($element->getCurrentValue(), ENT_QUOTES)
+        );
 
         return $output;
     }
+    
+    
+    /**
+     * @return mixed|string
+     */
+    public function renderTextArea(Element $element)
+    {
+        $output = "";
+        $errorMessages = $element->getErrorMessages();
+        if (count($errorMessages) > 0) {
+            $output .= "<div class='row-fluid'>";
+            $output .= "<div class='errorMessage span12'>";
+            foreach ($errorMessages as $errorMessage) {
+                $output .= $errorMessage;
+            }
+            $output .= "</div>";
+            $output .= "</div>";
+        }
+
+//        $output .= "<div class='row-fluid'>";
+//        $remainingSpan = 'span12';
+//
+//        if ($this->label !== null) {
+//            $labelSpan = "span" . $form->getLabelSpan();
+//            $remainingSpan = "span" . (12 - $form->getLabelSpan());
+//            $output .= sprintf(
+//                "<label class='%s' for='%s'>%s</label>",
+//                $labelSpan,
+//                $elementInstance->getFormName(),
+//                $this->label
+//            );
+//        }
+//        $output .= "<div class='$remainingSpan'>";
+//        $output .= "<textarea type='text' name='".$elementInstance->getFormName(). "'";
+
+        /** @var $prototype \FCForms\FormElement\TextArea */
+        $prototype = $element->getPrototype();
+
+        
+        $placeHolderText = '';
+        if ($prototype->getPlaceHolder() != null) {
+            $placeHolderText .= "placeholder='".$prototype->getPlaceHolder()."'";
+        }
+
+//        $output .= "rows='".$this->rows."'";
+//
+//        if ($this->cols != null) {
+//            $output .= "cols='".$this->cols."'";
+//        }
+//        else {
+//            $output .= "style='width: 100%'";
+//        }
+//        $output .= "/>";
+//        $output .= htmlentities($elementInstance->getCurrentValue());
+//        $output .= "</textarea>";
+//        $output .= "</div>";
+//        $output .= "</div>";
+
+        $html = <<< HTML
+<div class="form-group">
+  <label for="textArea" class="col-sm-%d control-label">%s</label>
+  <div class="col-lg-%d">
+      <textarea class="form-control" rows="%d" cols="%d" id="textArea" %s>%s</textarea>
+  </div>
+</div>
+HTML;
+
+        $output .= sprintf(
+            $html,
+            $this->getLabelSpan(),
+            $prototype->label,
+            12 - $this->getLabelSpan(),
+            $prototype->getRows(),
+            $prototype->getCols(),
+            $placeHolderText,
+            $element->getCurrentValue()
+        );
+
+        return $output;
+    }
+    
     
     
     /**
@@ -304,7 +502,7 @@ class BootStrapRender implements Render
         $prototype = $element->getPrototype();
         $callable = $this->getRenderCallable($prototype);
 
-        return $callable($element);
+        return $callable($element, $prototype);
     }
 
     /**
@@ -319,7 +517,7 @@ class BootStrapRender implements Render
 
         $form->getErrorMessage();
 
-        $formHTMLName = 'vbform';
+        $formHTMLName = 'formname';
         $encodingString = "enctype='multipart/form-data'";
         
         $formIDString = '';
@@ -327,14 +525,18 @@ class BootStrapRender implements Render
         if ($formID !== null) {
             $formIDString = sprintf("id='%s'", $formID);
         }
-
+        
+        $output .= '<div class="well bs-component">';
+        
         $output .= sprintf(
-            "<form action='' method='post' name='%s' onsubmit='' class='well %s' %s %s>",
+            "<form action='' method='post' name='%s' onsubmit='' class='form-horizontal %s' %s %s>\n",
             $formHTMLName,
             $form->getStyleName(),
             $encodingString,
             $formIDString
         );
+        
+        $output .= "<fieldset>\n";
 
         if ($form->hasError() && ($formErrorMessage = $form->getErrorMessage())) {
             $output .= "<div class='row-fluid'>\n";
@@ -343,9 +545,6 @@ class BootStrapRender implements Render
             $output .= "</div>\n";
             $output .= "</div>\n";
         }
-
-        $output .= "<div class='row-fluid'>\n";
-        $output .= "<div class='span12' style='padding-left: 20px'>\n";
 
         foreach ($form->startElements as $element) {
             $output .= $this->renderElement($element);
@@ -360,16 +559,16 @@ class BootStrapRender implements Render
         }
 
         $rowIDs = implode(',', $form->rowIDs);
-        $output .= "<input type='hidden' name='rowIDs' value='".$rowIDs."' />";
+        $output .= "<input type='hidden' name='rowIDs' value='".$rowIDs."' />\n";
 
         foreach ($form->endElements as $element) {
             $output .= $this->renderElement($element);
             $output .= "\n";
         }
 
-        $output .= "</div>\n";
-        $output .= "</div>";
+        $output .= "</fieldset>\n";
         $output .= "</form>\n";
+        $output .= '</div>';
 
         return $output;
     }

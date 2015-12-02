@@ -92,6 +92,7 @@ class AurynFormBuilder implements FormBuilder
         $element->initCommon($definition);
         $element->init($definition);
 
+
         return $element;
     }
 
