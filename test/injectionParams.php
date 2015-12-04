@@ -34,6 +34,7 @@ $shares = [
     'Room11\HTTP\HeadersSet',
 //    'Blog\Debug',
     'FCFormsTest\ExampleForms\ListExamplesForm',
+    'FCFormsTest\ExampleForms\SignupExampleForm',
     new StubFileFetcher([]),
 ];
     

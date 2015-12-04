@@ -1,21 +1,36 @@
 <?php
 
-
 namespace FCForms\FormElement;
 
-class Select extends ElementPrototype
+class RadioButton extends ElementPrototype
 {
     private $optionDescriptionMap = array();
 
     private $multipleAllowed = false;
 
+    /**
+     * @return string
+     */
+    public function getPrototypeCSSClass()
+    {
+        return "fc_radiobutton";
+    }
+
+    /**
+     * @param array $info
+     * @return mixed|void
+     */
     public function init(array $info)
     {
-        //$values
-        //$descriptions
         $this->optionDescriptionMap = $info['options'];
     }
 
+    public function hasData()
+    {
+        return true;
+    }
+    
+    
     public function getOptionDescriptionMap()
     {
         return $this->optionDescriptionMap;
@@ -24,13 +39,5 @@ class Select extends ElementPrototype
     public function multipleAllowed()
     {
         return $this->multipleAllowed;
-    }
-    
-    /**
-     * @return string
-     */
-    public function getPrototypeCSSClass()
-    {
-        return 'fc_select';
     }
 }

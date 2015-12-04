@@ -3,10 +3,7 @@
 
 {block name='mainContent'}
    
-    {inject name='form' type='FCFormsTest\ExampleForms\EmailLoginForm'}
-    {inject name='formRender' type='FCForms\Render'}
-    
-    {$formRender->render($form) | nofilter}
+    Forms are great. At least when they don't suck.
     
 {/block}
 

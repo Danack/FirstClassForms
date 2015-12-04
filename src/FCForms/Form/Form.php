@@ -64,6 +64,10 @@ abstract class Form
      */
     protected $prototype;
     
+    /** @var null|string Whether the form has been initialized  */
+    private $initialized = null;
+    
+    
     abstract public function getDefinition();
 
     /**
@@ -152,20 +156,20 @@ abstract class Form
     /**
      * @param array $data
      */
-    public function createFromData(array $data)
+    public function initFromData(array $data)
     {
         $this->prototype->createElementsFromData($this, $data);
+        $this->initialized = 'initFromData';
     }
 
     /**
      * @param VariableMap $variableMap
      */
-    public function createElementsFromVariableMap(VariableMap $variableMap)
+    public function initFromVariableMap(VariableMap $variableMap)
     {
         $this->prototype->createElementsFromVariableMap($this, $variableMap);
+        $this->initialized = 'initFromVariableMap';
     }
-
-
 
 //    /**
 //     * @param $rowID
@@ -404,6 +408,8 @@ abstract class Form
         $this->forceError = $storedValues['forceError'];
         $this->errorMessage = $storedValues['errorMessage'];
 
+        $this->initialized = 'initFromVariableMap';
+        
         return true;
     }
 
@@ -519,7 +525,7 @@ abstract class Form
         callable $validCallback,
         callable $invalidCallback = null
     ) {
-        $this->createElementsFromVariableMap($variableMap);
+        $this->initFromVariableMap($variableMap);
         $this->validate();
 
         if ($this->isValid && $this->forceError == false) {
@@ -529,10 +535,7 @@ abstract class Form
             $invalidCallback($this);
         }
 
-        // Valid state can be altered by the call-back
-        //if (!$this->isValid && $this->forceError == false) {
         $this->saveValuesToStorage();
-        //}
     }
 
     /**
@@ -563,9 +566,8 @@ abstract class Form
      */
     public function prepareToRender()
     {
-        if ($this->startElements == null) {
-            //TODO - resolve whether we need an 'initialised' flag.
-         //   $this->createFromData([]);
+        if ($this->initialized == null) {
+            throw new FCFormsException("Form has not been initialized with data. Did you remember to share it?");
         }
 
         $this->startElements->prepareToRender();

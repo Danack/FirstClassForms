@@ -24,6 +24,7 @@
     ],
     "require-dev": {
         "danack/asm": "dev-master",
+        "danack/escape": "^0.5.0",
         "danack/jig": "^0.17.1",
         "danack/tier": "^0.2.3",
         "fluentdom/fluentdom": "^5.3.0",

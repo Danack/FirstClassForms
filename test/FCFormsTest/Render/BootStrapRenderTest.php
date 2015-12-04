@@ -19,13 +19,13 @@ class BootStrapRenderTest extends BaseTestCase
 
         $varMap = new ArrayVariableMap([]);
         $this->assertFalse($form->isSubmitted($varMap));
-        $form->createFromData([]);
+        $form->initFromData([]);
     }
 
     public function testUnknownElement()
     {
         $form = buildFormWithData('FCFormsTest\ExampleForms\UnrenderableForm');
-        $form->createFromData([]);
+        $form->initFromData([]);
         $renderer = new \FCForms\Render\BootStrapRender();
         $this->setExpectedException('FCForms\RenderException');
         $renderer->render($form);
@@ -45,7 +45,7 @@ class BootStrapRenderTest extends BaseTestCase
         $errorMessage = "This is a message ".time();
         $loginForm = $injector->make('FCFormsTest\ExampleForms\LoginForm');
 
-        $loginForm->createFromData([]);
+        $loginForm->initFromData([]);
         $loginForm->setFormError($errorMessage);
         $dataStoredInSession = $loginForm->initFromStorage();
         $renderer = new \FCForms\Render\BootStrapRender();

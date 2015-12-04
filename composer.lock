@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "511de81aecfeeeff5caec136e09ea657",
+    "hash": "5599b54a7275f61816391e1474d820f4",
     "packages": [
         {
             "name": "room11/http",
@@ -331,6 +331,52 @@
             ],
             "description": "A userland replacement for PHP's session management.",
             "time": "2015-12-01 02:36:11"
+        },
+        {
+            "name": "danack/escape",
+            "version": "0.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Danack/Escape.git",
+                "reference": "c95a90c10ec2a557bb65f3704b086514b7b727db"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Danack/Escape/zipball/c95a90c10ec2a557bb65f3704b086514b7b727db",
+                "reference": "c95a90c10ec2a557bb65f3704b086514b7b727db",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.4 || ^7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "3.7.*",
+                "squizlabs/php_codesniffer": "^2.0.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Escape": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Dan Ackroyd",
+                    "email": "Danack@basereality.com",
+                    "homepage": "http://www.basereality.com"
+                }
+            ],
+            "description": "A standalone version of the escaping functions extracted from Twig.",
+            "keywords": [
+                "escaping",
+                "html",
+                "xss"
+            ],
+            "time": "2015-12-04 07:20:34"
         },
         {
             "name": "danack/jig",

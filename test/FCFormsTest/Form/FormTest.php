@@ -39,7 +39,7 @@ class FormTest extends BaseTestCase
         ];
 
         // Check initializing from data is okay
-        $form->createFromData($data);
+        $form->initFromData($data);
         $values = $form->getAllValues();
         $this->checkValuesValid($data, $values);
 
@@ -52,7 +52,7 @@ class FormTest extends BaseTestCase
         $this->assertTrue($formAfterSubmission->isSubmitted($submittedVariableMap));
 
         //$formAfterSubmission->createFromData($variables);
-        $formAfterSubmission->createElementsFromVariableMap($submittedVariableMap);
+        $formAfterSubmission->initFromVariableMap($submittedVariableMap);
         $submittedValues = $formAfterSubmission->getAllValues();
         $this->checkValuesValid($data, $submittedValues);
 

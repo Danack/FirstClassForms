@@ -41,7 +41,7 @@ class HTTP
             return false;
         }
     
-        $form->createElementsFromVariableMap($variableMap);
+        $form->initFromVariableMap($variableMap);
         $form->saveValuesToStorage();
 
         return new RedirectBody("Form submitted", $request->getPath(), 303);
