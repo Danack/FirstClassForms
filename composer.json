@@ -25,7 +25,7 @@
     "require-dev": {
         "danack/asm": "dev-master",
         "danack/jig": "^0.17.1",
-        "danack/tier": "^0.2.2",
+        "danack/tier": "^0.2.3",
         "fluentdom/fluentdom": "^5.3.0",
         "mockery/mockery": "0.9.1",
         "nikic/fast-route": "0.6.0",

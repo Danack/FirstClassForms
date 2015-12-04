@@ -9,6 +9,9 @@ class Select extends ElementPrototype
 {
     private $optionDescriptionMap = array();
 
+    private $multipleAllowed = false;
+
+
     public function init(array $info)
     {
         //$values
@@ -21,6 +24,11 @@ class Select extends ElementPrototype
         return $this->optionDescriptionMap;
     }
 
+    public function multipleAllowed()
+    {
+        return $this->multipleAllowed;
+    }
+    
     /**
      * @return string
      */

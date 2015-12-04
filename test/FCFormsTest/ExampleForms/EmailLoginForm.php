@@ -23,7 +23,8 @@ class EmailLoginForm extends Form
                     'type'  => 'FCForms\FormElement\Text',
                     'label' => 'Email',
                     'name'  => 'email',
-                    'placeholder' => 'Email'
+                    'placeholder' => 'Email',
+                    
                 ),
                 array(
                     'type' => 'FCForms\FormElement\Password',

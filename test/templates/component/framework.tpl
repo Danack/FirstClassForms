@@ -9,22 +9,21 @@
     <link rel='stylesheet' type='text/css' href='/css/bootstrap.css' />
     <link rel='stylesheet' type='text/css' href='/css/bootstrap-theme.css' />
 
+    <script type='text/javascript' src='/js/jquery-1.9.1.min.js'></script>
+    <script type='text/javascript' src='/js/jquery-ui-1.10.0.custom.min.js'></script>
     <script type='text/javascript' src='/js/bootstrap.js'></script>
-    
 </head>
 
 <body class="main">
 
 <div class="container">
   {include file='component/navbar'}
-    
   <div class="row">
     <div class="col-md-6">
       {block name='mainContent'}        
       {/block}
     </div>
     <div class="col-md-6">
-      
     </div>
 </div>
 

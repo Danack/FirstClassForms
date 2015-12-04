@@ -27,10 +27,11 @@ class HTTP
         if ($request->getMethod() != 'POST') {
             return false;
         }
-    
+  
         /** @var $form \FCForms\Form\Form */
         $form = $injector->make($formName);
     
+        //Some elements e.g. passwords, should not be stored in session storage.
         if ($form->canAllElementsBeStored() == false) {
             return false;
         }
@@ -42,7 +43,7 @@ class HTTP
     
         $form->createElementsFromVariableMap($variableMap);
         $form->saveValuesToStorage();
-    
+
         return new RedirectBody("Form submitted", $request->getPath(), 303);
     }
 }

@@ -43,6 +43,10 @@ class CSRF extends ElementPrototype
         }
     }
 
+    /**
+     * @param Element $elementInstance
+     * @throws \Exception
+     */
     public function prepareToRender(Element $elementInstance)
     {
         $elementInstance->setCurrentValue(uniqid());

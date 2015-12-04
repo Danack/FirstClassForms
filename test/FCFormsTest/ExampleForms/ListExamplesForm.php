@@ -28,48 +28,53 @@ class ListExamplesForm extends Form
                     'type'  => 'FCForms\FormElement\Text',
                     'label' => 'Email',
                     'name'  => 'email',
-                    'placeholder' => 'Email'
-                ),
-                array(
-                    'type' => 'FCForms\FormElement\Password',
-                    'label' => 'Password',
-                    'name' => 'Password',
+                    //'placeHolder' => 'Emailadasd',
                     'validation' => array(
                         "Zend\\Validator\\StringLength" => array(
-                            'min' => 4,
+                            'min' => 20,
                         ),
                     )
                 ),
-                array(
-                    'isActive',
-                    'type'  => 'FCForms\FormElement\CheckBox',
-                    'label' => 'Remember me',
-                    'name'  => 'rememberMe',
-                ),
-                array(
-                    'submitButton',
-                    'type'  => 'FCForms\FormElement\SubmitButton',
-                    'name'  => 'submit',
-                    'text'  => 'Sign in',
-                ),
-                array(
-                    'isActive',
-                    'type'  => 'FCForms\FormElement\Select',
-                    'label' => 'Some text',
-                    'name'  => 'example',
-                    'options' => array(
-                        'foo1' => 'bar1',
-                        'foo2' => 'bar2',
-                        'foo3' => 'bar3',
-                    )
-                ),
-                array(
-                    'isActive',
-                    'type'  => 'FCForms\FormElement\TextArea',
-                    'label' => 'Description',
-                    'name'  => 'description',
-                    'placeholder' => 'Description'
-                ),
+//                array(
+//                    'type' => 'FCForms\FormElement\Password',
+//                    'label' => 'Password',
+//                    'name' => 'Password',
+//                    'validation' => array(
+//                        "Zend\\Validator\\StringLength" => array(
+//                            'min' => 4,
+//                        ),
+//                    )
+//                ),
+//                array(
+//                    'isActive',
+//                    'type'  => 'FCForms\FormElement\CheckBox',
+//                    'label' => 'Remember me',
+//                    'name'  => 'rememberMe',
+//                ),
+//                array(
+//                    'submitButton',
+//                    'type'  => 'FCForms\FormElement\SubmitButton',
+//                    'name'  => 'submit',
+//                    'text'  => 'Sign in',
+//                ),
+//                array(
+//                    'isActive',
+//                    'type'  => 'FCForms\FormElement\Select',
+//                    'label' => 'Some text',
+//                    'name'  => 'example',
+//                    'options' => array(
+//                        'foo1' => 'bar1',
+//                        'foo2' => 'bar2',
+//                        'foo3' => 'bar3',
+//                    )
+//                ),
+//                array(
+//                    'isActive',
+//                    'type'  => 'FCForms\FormElement\TextArea',
+//                    'label' => 'Description',
+//                    'name'  => 'description',
+//                    'placeholder' => 'Description'
+//                ),
                 array(
                     'submitButton',
                     'type'  => 'FCForms\FormElement\SubmitButton',

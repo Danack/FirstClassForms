@@ -15,7 +15,7 @@ use Room11\HTTP\Body;
 use Room11\HTTP\VariableMap;
 use FCForms\Form\Form;
 use Room11\HTTP\HeadersSet;
-use Blog\Config;
+//use Blog\Config;
 use Room11\HTTP\Body\RedirectBody;
 use ASM\Session;
 use ASM\SessionConfig;
@@ -36,7 +36,7 @@ function getEnvWithDefault($env, $default)
     }
     return $value;
 }
-//
+
 //function createUploadedFileFetcher()
 //{
 //    return new \Intahwebz\Utils\UploadedFileFetcher($_FILES);
@@ -64,35 +64,7 @@ function createJigConfig()
     
     return $jigConfig;
 }
-//
-//function createCaching()
-//{
-//    return new \Room11\Caching\LastModified\Revalidate(3600, 1200);
-//}
-//
-//
-///**
-// * @param ArtaxClient $client
-// * @param \Amp\Reactor $reactor
-// * @param ResponseCache $cache
-// * @return GithubService
-// */
-//function createGithubArtaxService(ArtaxClient $client, \Amp\Reactor $reactor, ResponseCache $cache)
-//{
-//    return new GithubService($client, $reactor, $cache, "Danack/Tier");
-//}
-//
-//
-//function createScriptInclude()
-//{
-//    $packScript = getEnvWithDefault('imagickdemo.packscript', 1);
-//    if ($packScript) {
-//        return new Intahwebz\Utils\ScriptIncludePacked();
-//    }
-//    else {
-//        return new Intahwebz\Utils\ScriptIncludeIndividual();
-//    }
-//}
+
 
 /**
  * The callable that routes a request.
@@ -146,92 +118,11 @@ function routeRequest(Request $request, Response $response)
     }
 }
 
+function redirectToGet(Request $request)
+{
+    return new RedirectBody("Form missing", $request->getPath(), 303);
+}
 
-//function correctUmask($filename)
-//{
-//    $umask = umask();
-//    $correctMode = ( 0777 - $umask);
-//
-//    return chmod($filename, $correctMode);
-//}
-//    
-//function saveTmpFile($tmpName, $destFilename)
-//{
-//    renameMultiplatform($tmpName, $destFilename);
-//    correctUmask($destFilename);
-//    //@unlink($tmpName);
-//}
-//
-//function getTemplates($directory)
-//{
-//    $srcPath = realpath($directory);
-//
-//    $objects = new \RecursiveIteratorIterator(
-//        new \RecursiveDirectoryIterator($srcPath),
-//        \RecursiveIteratorIterator::SELF_FIRST
-//    );
-//
-//    $templateObjects = new \RegexIterator($objects, '#.*\.tpl#');
-//
-//    $templates = [];
-//    foreach ($templateObjects as $key => $var) {
-//        $templateName = str_replace(
-//            [".tpl", $srcPath.'/'],
-//            '',
-//            $var->getRealPath()
-//        );
-//        $templates[$templateName] = $templateName;
-//    }
-//
-//    return $templates;
-//}
-//
-//
-//function createTemplateList()
-//{
-//    $srcPath = __DIR__."/../templates/";
-//    $templates = getTemplates($srcPath);
-//
-//    return new TemplateList($templates);
-//}
-//
-///* Stops passwords from being put into log files.
-// * Need to make it generate valid php arrays so make life easier.
-// */
-//function dump_table($var)
-//{
-//    $forbiddenKeys = array(
-//        //'password',
-//    );
-//
-//    if (is_array($var) or is_object($var)) {
-//        foreach ($var as $key => $value) {
-//            if (is_array($value) or is_object($value)) {
-//                dump_table($value);
-//            }
-//            else {
-//                if (in_array($key, $forbiddenKeys) == true) {
-//                    $value = '********';
-//                }
-//                echo "'$key' => '$value' ";
-//            }
-//        }
-//    }
-//    else {
-//        echo "'$var' ";
-//    }
-//}
-//
-//
-//function getVar_DumpOutput($response)
-//{
-//    ob_start();
-//    dump_table($response);
-//    $obContents = ob_get_contents();
-//    ob_end_clean();
-//
-//    return $obContents;
-//}
 
 /**
  * Helper function to bind the route list to FastRoute
@@ -239,21 +130,14 @@ function routeRequest(Request $request, Response $response)
  */
 function routesFunction(FastRoute\RouteCollector $r)
 {
-//    $r->addRoute('GET', "/css/{cssInclude}", ['ScriptServer\Controller\ScriptServer', 'getPackedCSS']);
-//    $r->addRoute('GET', '/js/{jsInclude}', ['ScriptServer\Controller\ScriptServer', 'getPackedJavascript']);
     $r->addRoute('GET', '/login', ['Blog\Controller\Login', 'loginGet']);
     $r->addRoute('POST', '/login', ['Blog\Controller\Login', 'loginPost']);
-    
     $r->addRoute('GET', '/', ['FCFormsTest\Controller\Example', 'index']);
-
     $r->addRoute('GET', '/list', ['FCFormsTest\Controller\Example', 'listExample']);
+    $r->addRoute('POST', '/list', 'redirectToGet');
 }
 
-//function routeIndex()
-//{
-//    return "/";
-//}
-//
+
 //function ensureAbsoluteFilename($filename)
 //{
 //    $filename = str_replace("..", "", $filename);
@@ -261,87 +145,8 @@ function routesFunction(FastRoute\RouteCollector $r)
 //    $filename = str_replace("\\", "", $filename);
 //    return $filename;
 //}
-//
-///**
-// * @param $filename
-// * @param string $size
-// * @return string
-// */
-//function urlStaticImage($filename, $size = 'original')
-//{
-//    $imageName = $filename;
-//    $sizeString = $size;
-//    return "/staticImage/".$sizeString."/".urlencode($imageName);
-//}
-//
-///**
-// * @param $imageFilename
-// * @param $size
-// * @param string $float
-// * @param bool $description
-// * @return string
-// */
-//function articleImage($imageFilename, $size, $float = 'left', $description = false)
-//{
-//    $output = '';
-//    $marginClass = '';
-//    if ($float == 'left') {
-//        $marginClass = 'articleMarginFloatLeft';
-//    }
-//    if ($float == 'right') {
-//        $marginClass = 'articleMarginFloatRight';
-//    }
-//    $output .= "<div class='articleImage $marginClass' style='float: $float;'>";
-//    $thumbnailURL = urlStaticImage($imageFilename, $size);
-//    $fullImageURL = urlStaticImage($imageFilename);
-//    $output .= "<a href='$fullImageURL' target='_blank' class='plainLink'>";
-//    $output .= "<img src='$thumbnailURL'/> ";
-//    //Size could actually just be setting the height - which would be annoying.
-//    //So we don't support that.
-//    $width = intval($size);
-//    if ($description != false) {
-//        $output .= "<br/>";
-//        $output .= "<div style='width: ".$width."px'>";
-//        $output .= $description;
-//        $output .= "</div>";
-//    }
-//    $output .= "</a></div>";
-//
-//    return $output;
-//}
-//
-//
-//function routeBlogPost($blogPostID)
-//{
-//    return sprintf('/blog/%d', $blogPostID);
-//}
-//
-//function routeDraft($draftFilename)
-//{
-//    return sprintf('/draft/%s', $draftFilename);
-//}
-//
-//
-//function routeBlogPostWithFormat($blogPostID, $format)
-//{
-//    return sprintf('/blog/%d.%d', $blogPostID, $format);
-//}
-//
-//function routeJSInclude($url)
-//{
-//    return "/js/".$url;
-//}
-//
-//function routeBlogEdit($blogPostID)
-//{
-//    return "/blogedit/".$blogPostID;
-//}
-//
-//function routeBlogReplace($blogPostID)
-//{
-//    return "/blogreplace/".$blogPostID;
-//}
-//
+
+
 
 function createASMFileDriver()
 {
@@ -377,23 +182,10 @@ function createSession(\ASM\Driver $driver)
 function addSessionHeader(Session $session, HeadersSet $headerSet)
 {
     $session->save();
-    
     $headers = $session->getHeaders(\ASM\SessionManager::CACHE_PRIVATE);
-
     foreach ($headers as $key => $value) {
         $headerSet->addHeader($key, $value);
     }
 
     return TierApp::PROCESS_CONTINUE;
 }
-
-//function createUserPermissions(Session $session)
-//{
-//    $role = $session->getSessionVariable(\BaseReality\Content\BaseRealityConstant::$userRole);
-//    
-//    if ($role == false) {
-//        return new \Blog\User\AnonymousPermissions();
-//    }
-//    
-//    return new \Blog\User\LoggedInPermissions($role);
-//}

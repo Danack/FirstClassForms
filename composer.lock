@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "bd2dd4a7771bbb57bfcdf1e9455e7610",
+    "hash": "511de81aecfeeeff5caec136e09ea657",
     "packages": [
         {
             "name": "room11/http",
@@ -384,16 +384,16 @@
         },
         {
             "name": "danack/tier",
-            "version": "0.2.2",
+            "version": "0.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Danack/Tier.git",
-                "reference": "6332d245459081277716d6e0ada25289211e71ff"
+                "reference": "020762220e251c498a3a3bcdf0d207474867f6c0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Danack/Tier/zipball/6332d245459081277716d6e0ada25289211e71ff",
-                "reference": "6332d245459081277716d6e0ada25289211e71ff",
+                "url": "https://api.github.com/repos/Danack/Tier/zipball/020762220e251c498a3a3bcdf0d207474867f6c0",
+                "reference": "020762220e251c498a3a3bcdf0d207474867f6c0",
                 "shasum": ""
             },
             "require": {
@@ -431,7 +431,7 @@
                 "di",
                 "example"
             ],
-            "time": "2015-11-17 01:18:00"
+            "time": "2015-12-03 21:48:47"
         },
         {
             "name": "fluentdom/fluentdom",

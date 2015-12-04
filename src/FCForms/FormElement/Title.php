@@ -2,9 +2,9 @@
 
 namespace FCForms\FormElement;
 
+// @Todo - rename legend?
 class Title extends ElementPrototype
 {
-
     /**
      * @return string
      */

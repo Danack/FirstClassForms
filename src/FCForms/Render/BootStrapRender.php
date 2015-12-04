@@ -7,7 +7,10 @@ use FCForms\FormElement\ElementPrototype;
 use FCForms\FormElement\Element;
 use FCForms\RenderException;
 use FCForms\Render;
+use FCForms\FormElement\Password;
 use FCForms\FormElement\Select;
+use FCForms\FormElement\Text;
+use FCForms\FormElement\Title;
 
 // @TODO - <span class="help-block"></span>
 class BootStrapRender implements Render
@@ -56,6 +59,25 @@ class BootStrapRender implements Render
 
         return $this->renderCallables[$class];
     }
+
+    private function getErrorHTML(Element $element)
+    {
+        $errorMessages = $element->getErrorMessages();
+        
+        $helpText = "";
+
+        if (count($errorMessages) > 0) {
+            //.has-warning, .has-error, or .has-success
+            foreach ($errorMessages as $errorMessage) {
+                $helpText .= sprintf(
+                    "<span id='helpBlock2' class='help-block'>%s</span>",
+                    $errorMessage
+                );
+            }
+        }
+
+        return $helpText;
+    }
     
     
     /**
@@ -63,26 +85,6 @@ class BootStrapRender implements Render
      */
     public function renderSelect(Element $element, Select $prototype)
     {
-
-//        $output = "<div class='row-fluid'>";
-//        $labelSpan = "span".$this->getLabelSpan();
-//        $remainingSpan = "span" . (12 - $this->getLabelSpan());
-
-//        if ($prototype->label != null) {
-//            $output .= sprintf(
-//                "<label class='%s' for='%s'>%s</label>",
-//                $labelSpan,
-//                $element->getFormName(),
-//                $prototype->label
-//            );
-//        }
-//
-//        $output .= "<div class='$remainingSpan'>\n";
-//        $output .= sprintf(
-//            "<select name='%s'>\n",
-//            $element->getFormName()
-//        );
-
         $optionText = '';
         foreach ($prototype->getOptionDescriptionMap() as $option => $description) {
             $selectedString = '';
@@ -97,10 +99,6 @@ class BootStrapRender implements Render
                 htmlentities($description)
             );
         }
-
-//        $output .= "</select>\n";
-//        $output .= "</div>\n";
-//        $output .= "</div>\n";
 
         //multiple=""
 
@@ -130,7 +128,7 @@ HTML;
         /**
      * @return mixed|string
      */
-    public function renderPassword(Element $element)
+    public function renderPassword(Element $element, Password $prototype)
     {
 //        $output = "";
 //        if (count($element->errorMessages) > 0) {
@@ -171,7 +169,7 @@ HTML;
             $this->getLabelSpan(),
             $element->getPrototype()->label,
             12 - $this->getLabelSpan(),
-            $element->getPrototype()->getPlaceHolder()
+            $prototype->getPlaceHolder()
         );
         
 //
@@ -297,9 +295,6 @@ HTML;
 
         return $output;
     }
-    
-      
-    
 
     /**
      * @return mixed|string
@@ -318,17 +313,17 @@ HTML;
         /**
      * @return mixed|string
      */
-    public function renderTitle(Element $element)
+    public function renderTitle(Element $element, Title $prototype)
     {
         $html = <<< HTML
         <legend class='%s'>
             %s
         </legend>
 HTML;
-        
+
         $output = sprintf(
             $html,
-            $element->getPrototype()->getPrototypeCSSClass(),
+            $prototype->getPrototypeCSSClass(),
             $element->getCurrentValue()
         );
 
@@ -338,61 +333,27 @@ HTML;
     /**
      * @return mixed|string
      */
-    public function renderText(Element $element)
+    public function renderText(Element $element, Text $prototype)
     {
-        /** @var $prototype \FCForms\FormElement\Text */
-        $prototype = $element->getPrototype();
+        $helpText = $this->getErrorHTML($element);
 
-//        $output = "";
-//        $errorMessages = $element->getErrorMessages();
-//
-//        if (count($errorMessages) > 0) {
-//            $output .= "<div class='row-fluid'>\n";
-//            $output .= "<div class='errorMessage span12'>\n";
-//            foreach ($errorMessages as $errorMessage) {
-//                $output .= $errorMessage;
-//            }
-//            $output .= "</div>\n";
-//            $output .= "</div>\n";
-//        }
-//
-//        $output .= "<div class='row-fluid'>\n";
-//        $remainingSpan = 'span12';
-//
-//        if ($prototype->label !== null) {
-//            $labelSpan = "span" . $this->getLabelSpan();
-//            $remainingSpan = "span" . (12 - $this->getLabelSpan());
-//            $output .= sprintf(
-//                "<label class='%s' for='%s'>%s</label>\n",
-//                $labelSpan,
-//                $element->getFormName(),
-//                $prototype->label
-//            );
-//        }
-//
-//        $output .= "<div class='$remainingSpan'>\n";
-//        
+        $errorClass = '';
+        if ($element->hasError()) {
+            $errorClass = 'has-error';
+        }
+    
         $placeHolderText = "";
         $placeHolder = $prototype->getPlaceHolder();
         if ($placeHolder != null) {
             $placeHolderText .= $placeHolder;
         }
 
-//        $output .= sprintf(
-//            "<input type='text' name='%s' size='80' value='%s' style='width: 100%%;' %s />\n",
-//            $element->getFormName(),
-//            htmlentities($element->getCurrentValue(), ENT_QUOTES),
-//            $placeHolderText
-//        );
-//
-//        $output .= "</div>\n";
-//        $output .= "</div>\n";
-        
         $html = <<< HTML
-  <div class="form-group">
+  <div class="form-group $errorClass">
     <label for="inputEmail3" class="col-sm-%d control-label">%s</label>
     <div class="col-sm-%d">
-      <input type="email" class="form-control" id="inputEmail3" name="%s" placeholder="%s" value="%s">
+      <input type="text" class="form-control" id="inputEmail3" name="%s" placeholder="%s" value="%s">
+      %s
     </div>
   </div>
 HTML;
@@ -404,7 +365,8 @@ HTML;
             12 - $this->getLabelSpan(),
             $element->getFormName(),
             $placeHolderText,
-            htmlentities($element->getCurrentValue(), ENT_QUOTES)
+            htmlentities($element->getCurrentValue(), ENT_QUOTES),
+            $helpText
         );
 
         return $output;

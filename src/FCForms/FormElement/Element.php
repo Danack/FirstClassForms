@@ -195,7 +195,17 @@ class Element
         return $this->prototype->getValidationValue($this);
     }
     
-        /**
+    public function hasError()
+    {
+        //TODO - separate error messages from error state?
+        $errorMessages = $this->getErrorMessages();
+        if (count($errorMessages)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * @return array
      */
     public function serialize()

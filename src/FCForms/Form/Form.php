@@ -384,14 +384,13 @@ abstract class Form
     public function initFromStorage()
     {
         $sessionName = $this->getSessionName();
-
+        
         //TODO - need to create an object to set time to prevent form from being resubmitted ages later.
         $storedValues = $this->dataStore->getValue(
             $sessionName,
             false,
             true
         );
-
         if ($storedValues === false) {
             $this->prototype->createElementsFromData($this, []);
             return false;
@@ -566,9 +565,9 @@ abstract class Form
     {
         if ($this->startElements == null) {
             //TODO - resolve whether we need an 'initialised' flag.
-            $this->createFromData([]);
+         //   $this->createFromData([]);
         }
-        
+
         $this->startElements->prepareToRender();
 
         $this->rowElementsArray = [];

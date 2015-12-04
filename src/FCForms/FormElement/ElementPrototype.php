@@ -42,6 +42,8 @@ abstract class ElementPrototype
         if ($this->cssClass != null) {
             return $this->cssClass." ".$this->getPrototypeCSSClass();
         }
+        
+        return "";
     }
     
     /**
@@ -138,7 +140,6 @@ abstract class ElementPrototype
 
         if (array_key_exists('label', $formElement) == true) {
             $this->label = $formElement['label'];
-            $this->placeHolder = $this->label;
         }
 
         if (array_key_exists('placeHolder', $formElement) == true) {
