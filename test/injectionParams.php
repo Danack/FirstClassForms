@@ -33,9 +33,10 @@ $shares = [
 //    'BaseReality\Form\BlogReplaceForm',
     'Room11\HTTP\HeadersSet',
 //    'Blog\Debug',
+    'FCFormsTest\ExampleForms\FileExampleForm',
     'FCFormsTest\ExampleForms\ListExamplesForm',
     'FCFormsTest\ExampleForms\SignupExampleForm',
-    new StubFileFetcher([]),
+    'FCForms\FileFetcher'
 ];
     
 
@@ -54,7 +55,10 @@ $aliases = [
 //    'Jig\Jig' => 'Blog\Service\BlogJig',
     'FCForms\Render' => 'FCForms\Render\BootStrapRender',
     'FCForms\DataStore' => 'FCForms\Bridge\SessionDataStore',
-    'FCForms\FileFetcher' => 'FCForms\FileFetcher\StubFileFetcher',
+    
+    //'FCForms\FileFetcher' => 'FCForms\FileFetcher\StubFileFetcher',
+    'FCForms\FileFetcher' => 'FCForms\FileFetcher\UploadedFileFetcher',
+
     'Room11\HTTP\VariableMap' => 'Room11\HTTP\VariableMap\RequestVariableMap',
     'Room11\HTTP\RequestHeaders' => 'Room11\HTTP\Request\HTTPRequestHeaders',
     'Room11\HTTP\Response' => 'Room11\HTTP\Response\Response',

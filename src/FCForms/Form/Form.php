@@ -165,9 +165,11 @@ abstract class Form
     /**
      * @param VariableMap $variableMap
      */
-    public function initFromVariableMap(VariableMap $variableMap)
-    {
-        $this->prototype->createElementsFromVariableMap($this, $variableMap);
+    public function initFromSubmittedData(
+        VariableMap $variableMap,
+        FileFetcher $fileFetcher
+    ) {
+        $this->prototype->createElementsFromSubmittedData($this, $variableMap, $fileFetcher);
         $this->initialized = 'initFromVariableMap';
     }
 
@@ -347,7 +349,6 @@ abstract class Form
     public function getErrorMessages()
     {
         $errorMessages = [];
-
         foreach ($this->startElements as $element) {
             $errorMessages += $element->getErrorMessages();
         }
@@ -525,7 +526,7 @@ abstract class Form
         callable $validCallback,
         callable $invalidCallback = null
     ) {
-        $this->initFromVariableMap($variableMap);
+        $this->initFromSubmittedData($variableMap);
         $this->validate();
 
         if ($this->isValid && $this->forceError == false) {

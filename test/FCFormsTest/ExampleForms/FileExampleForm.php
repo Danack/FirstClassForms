@@ -4,7 +4,7 @@ namespace FCFormsTest\ExampleForms;
 
 use FCForms\Form\Form;
 
-class SignupExampleForm extends Form
+class FileExampleForm extends Form
 {
     public function getDefinition()
     {
@@ -14,7 +14,7 @@ class SignupExampleForm extends Form
             'startElements' => [
                 [
                     'type'  => 'FCForms\FormElement\Title',
-                    'value' => 'Signup example',
+                    'value' => 'File upload example',
                     'class' => 'text-center'
                 ]
             ],
@@ -25,31 +25,36 @@ class SignupExampleForm extends Form
             'endElements'   => array(
                 array(
                     'isActive',
-                    'type'  => 'FCForms\FormElement\Text',
-                    'label' => 'Email',
-                    'name'  => 'email',
-                    'placeHolder' => 'Email',
+                    'type'  => 'FCForms\FormElement\File',
+                    'label' => 'Image',
+                    'name'  => 'image',
+                    'placeHolder' => 'Image',
                     'validation' => array(
-                        "Zend\\Validator\\StringLength" => array(
-                            'min' => 20,
-                        ),
+//                        "Zend\\Validator\\StringLength" => array(
+//                            'min' => 20,
+//                        ),
                     )
                 ),
+                
                 array(
-                    'type'  => 'FCForms\FormElement\CheckBox',
-                    'label' => 'Spam me',
-                    'name'  => 'spamMe',
-                    'default' => 'true',
-                    'helpText' => 'Why would anyone ever opt in to receive marketing messages?'
+                    'isActive',
+                    'type'  => 'FCForms\FormElement\Text',
+                    'label' => 'Description',
+                    'name'  => 'description',
+                    'placeHolder' => 'Description',
+                    'validation' => array(
+//                        "Zend\\Validator\\StringLength" => array(
+//                            'min' => 20,
+//                        ),
+                    )
                 ),
                 array(
                     'submitButton',
                     'type'  => 'FCForms\FormElement\SubmitButton',
                     'label' => null,
-                    'name'  => 'submit',
-                    'text'  => 'Signup',
+                    'name'  => 'upload',
+                    'text'  => 'Upload',
                 ),
-                
             ),
 
             'validation'    => array(

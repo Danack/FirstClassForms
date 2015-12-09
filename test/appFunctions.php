@@ -137,6 +137,7 @@ function routesFunction(FastRoute\RouteCollector $r)
     $r->addRoute('GET', '/', ['FCFormsTest\Controller\Example', 'index']);
     $r->addRoute('GET', '/list', ['FCFormsTest\Controller\Example', 'listExample']);
     $r->addRoute('GET', '/signup', ['FCFormsTest\Controller\Example', 'signupExample']);
+    $r->addRoute('GET', '/file', ['FCFormsTest\Controller\Example', 'fileExample']);
     
     
     

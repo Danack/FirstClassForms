@@ -2,6 +2,7 @@
 
 namespace FCForms\Form;
 
+use FCForms\FileFetcher;
 use FCForms\FormElement\Element;
 use FCForms\FormElement\PrototypeCollection;
 use FCForms\FCFormsException;
@@ -161,8 +162,9 @@ class FormPrototype
      * @param $rowID
      * @return array
      */
-    protected function getDataForPrototypes(
+    protected function extractDataFromSubmission(
         VariableMap $variableMap,
+        FileFetcher $fileFetcher,
         PrototypeCollection $prototypes,
         $rowID
     ) {
@@ -171,8 +173,11 @@ class FormPrototype
         foreach ($prototypes as $prototype) {
             if ($prototype->getName() != null) {
                 $rowSpecificName = $prototype->getFormName($rowID);
-                $value =  $variableMap->getVariable($rowSpecificName, null);
-                $data[$rowSpecificName] = $value;
+                $data[$rowSpecificName] = $prototype->extractDataFromSubmission(
+                    $variableMap,
+                    $fileFetcher,
+                    $rowID
+                );
             }
         }
 
@@ -185,10 +190,13 @@ class FormPrototype
      * @param VariableMap $variableMap
      * @return bool
      */
-    public function createElementsFromVariableMap(Form $form, VariableMap $variableMap)
-    {
-        $startData = $this->getDataForPrototypes($variableMap, $this->startPrototypes, 'start');
-        $endData = $this->getDataForPrototypes($variableMap, $this->endPrototypes, 'end');
+    public function createElementsFromSubmittedData(
+        Form $form,
+        VariableMap $variableMap,
+        FileFetcher $fileFetcher
+    ) {
+        $startData = $this->extractDataFromSubmission($variableMap, $fileFetcher, $this->startPrototypes, 'start');
+        $endData = $this->extractDataFromSubmission($variableMap, $fileFetcher, $this->endPrototypes, 'end');
         $data = array_merge($startData, $endData);
         
         $rowIDs = $variableMap->getVariable("rowIDs", false);
@@ -200,7 +208,12 @@ class FormPrototype
         $rowIDs = explode(',', $rowIDs);
         foreach ($rowIDs as $rowID) {
             $rowID = trim($rowID);
-            $data[$rowID] = $this->getDataForPrototypes($variableMap, $this->rowPrototypes, $rowID);
+            $data[$rowID] = $this->extractDataFromSubmission(
+                $variableMap,
+                $fileFetcher,
+                $this->rowPrototypes,
+                $rowID
+            );
         }
         
         return $this->createElementsFromData($form, $data);

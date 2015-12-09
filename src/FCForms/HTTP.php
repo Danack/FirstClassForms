@@ -14,7 +14,8 @@ class HTTP
     public static function processFormRedirect(
         Request $request,
         Injector $injector,
-        VariableMap $variableMap
+        VariableMap $variableMap,
+        FileFetcher $fileFetcher
     ) {
         $formName = $variableMap->getVariable(Form::FORM_HIDDEN_FQCN);
         $isValidFormFQCN = is_subclass_of($formName, 'FCForms\Form\Form', $allow_string = true);
@@ -41,7 +42,7 @@ class HTTP
             return false;
         }
     
-        $form->initFromVariableMap($variableMap);
+        $form->initFromSubmittedData($variableMap, $fileFetcher);
         $form->saveValuesToStorage();
 
         return new RedirectBody("Form submitted", $request->getPath(), 303);

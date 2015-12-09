@@ -52,7 +52,7 @@ class FormTest extends BaseTestCase
         $this->assertTrue($formAfterSubmission->isSubmitted($submittedVariableMap));
 
         //$formAfterSubmission->createFromData($variables);
-        $formAfterSubmission->initFromVariableMap($submittedVariableMap);
+        $formAfterSubmission->initFromSubmittedData($submittedVariableMap);
         $submittedValues = $formAfterSubmission->getAllValues();
         $this->checkValuesValid($data, $submittedValues);
 

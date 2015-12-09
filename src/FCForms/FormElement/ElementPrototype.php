@@ -4,6 +4,7 @@ namespace FCForms\FormElement;
 
 use FCForms\FormDefinitionException;
 use Room11\HTTP\VariableMap;
+use FCForms\FileFetcher;
 
 abstract class ElementPrototype
 {
@@ -260,5 +261,16 @@ abstract class ElementPrototype
     public function prepareToRender(Element $elementInstance)
     {
 
+    }
+    
+    public function extractDataFromSubmission(
+        VariableMap $variableMap,
+        FileFetcher $fileFetcher,
+        $rowID
+    ) {
+        $rowSpecificName = $this->getFormName($rowID);
+        $value = $variableMap->getVariable($rowSpecificName, null);
+
+        return $value;
     }
 }

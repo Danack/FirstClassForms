@@ -1,25 +1,26 @@
 <?php
 
 
-namespace FCForms\Utils;
+namespace FCForms\FileFetcher;
 
 use FCForms\FileFetcher;
 use FCForms\FileUploadException;
 use FCForms\UploadedFile;
+use Room11\HTTP\Request;
 
-function getNormalizedFILES($files)
-{
-    $newFiles = array();
-    foreach ($files as $fieldName => $fieldValue) {
-        foreach ($fieldValue as $paramName => $paramValue) {
-            /** @noinspection PhpUnusedLocalVariableInspection */
-            foreach ((array)$paramValue as $index => $value) {
-                $newFiles[$fieldName][$paramName] = $value;
-            }
-        }
-    }
-    return $newFiles;
-}
+//function getNormalizedFILES($files)
+//{
+//    $newFiles = array();
+//    foreach ($files as $fieldName => $fieldValue) {
+//        foreach ($fieldValue as $paramName => $paramValue) {
+//            /** @noinspection PhpUnusedLocalVariableInspection */
+//            foreach ((array)$paramValue as $index => $value) {
+//                $newFiles[$fieldName][$paramName] = $value;
+//            }
+//        }
+//    }
+//    return $newFiles;
+//}
 
 function getFileUploadErrorMeaning($errorCode)
 {
@@ -45,9 +46,9 @@ function getFileUploadErrorMeaning($errorCode)
         }
 
         //TODO - handle these
-// UPLOAD_ERR_NO_TMP_DIR
-// UPLOAD_ERR_CANT_WRITE
-// UPLOAD_ERR_EXTENSION
+        // UPLOAD_ERR_NO_TMP_DIR
+        // UPLOAD_ERR_CANT_WRITE
+        // UPLOAD_ERR_EXTENSION
 
         default: { //a default error, just in case!  :)
             return "There was a problem with your upload, error code is ".$errorCode;
@@ -56,66 +57,66 @@ function getFileUploadErrorMeaning($errorCode)
 }
 
 
-
-
-
 class UploadedFileFetcher implements FileFetcher
 {
-    private $files;
+    private $request;
 
     /**
      * @param $files array A CGI style list of files aka $_FILES
      */
-    public function __construct($files)
+    public function __construct(Request $request)
     {
-        $this->files = getNormalizedFILES($files);
-    }
+        $this->request = $request;
 
-    public function hasUploadedFile($formFileName)
-    {
-        if (!array_key_exists($formFileName, $this->files)) {
-            return false;
-        }
-
-        if ($this->files[$formFileName]['error'] == UPLOAD_ERR_OK) {
-            return true;
-        }
-
-        return false;
     }
 
     /**
      * @param $formFileName
-     * @throws \Intahwebz\FileUploadException
-     * @return \Intahwebz\UploadedFile
+     * @return bool
+     */
+    public function hasUploadedFile($formFileName)
+    {
+        return $this->request->hasFormFile($formFileName);
+    }
+
+    /**
+     * @param $formFileName
+     * @throws \FCForms\FileUploadException
+     * @return \FCForms\UploadedFile
      */
     public function getUploadedFile($formFileName)
     {
-        $files = $this->files;
+        $fileEntry = $this->request->getFormFile($formFileName);
 
-        if (isset($files[$formFileName]) == false) {
-            throw new FileUploadException("File not uploaded. \$files[".$formFileName."] is not set.");
+        if ($fileEntry['error'] != UPLOAD_ERR_OK) {
+            throw new FileUploadException(
+                "Error detected in upload: ".getFileUploadErrorMeaning($fileEntry['error'])
+            );
         }
-        else {
-            if ($files[$formFileName]['error'] == UPLOAD_ERR_OK) {
-                if (is_uploaded_file($files[$formFileName]['tmp_name'])) {
-                    return new \Intahwebz\UploadedFile(
-                        $files[$formFileName]['name'],
-                        $files[$formFileName]['tmp_name'],
-                        $files[$formFileName]['size']
-                    );
-                }
-                else {
-                    throw new FileUploadException(
-                        "File not uploaded. Status [".$files[$formFileName]['error']."] indicated error."
-                    );
-                }
-            }
-            else {
-                throw new FileUploadException(
-                    "Error detected in upload: ".getFileUploadErrorMeaning($files[$formFileName]['error'])
-                );
-            }
+
+        if (!is_uploaded_file($fileEntry['tmp_name'])) {
+            throw new FileUploadException(
+                "File not uploaded. Status [".$fileEntry['error']."] indicated error."
+            );
         }
+
+        //TODO - this is a hard-coded implementation. needs to be extracted to be a
+        //separate dependency. e.g. to allow file to be stored non-locally.
+        $storageName = tempnam(sys_get_temp_dir(), "fileupload_");
+        $result = @move_uploaded_file($fileEntry['tmp_name'], $storageName);
+        
+        if (!$result) {
+            throw new FileUploadException(
+                "Failed to move uploaded file to temp dir"
+            );
+        }
+
+        //TODO - bother doing anything with the type?
+        //'type' => string 'image/png' (length=9)
+        return new UploadedFile(
+            $fileEntry['name'],
+            $storageName,
+            $fileEntry['size']
+        );
     }
 }
