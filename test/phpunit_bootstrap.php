@@ -5,6 +5,7 @@ use Room11\HTTP\VariableMap\ArrayVariableMap;
 use FCForms\FileFetcher\StubFileFetcher;
 use FCFormsTest\ExampleForms\EmptyForm;
 use FCForms\Render\BootStrapRender;
+use FCFormsTest\FCFormsTestException;
 
 $autoloader = require(__DIR__.'/../vendor/autoload.php');
 
@@ -66,10 +67,10 @@ function getFormVariables($html)
         $nameAttr = $element->attributes->getNamedItem('name');
         $valueAttr = $element->attributes->getNamedItem('value');
         if ($nameAttr == null) {
-            throw new \Exception("Input element is missing name: ".$element);
+            throw new FCFormsTestException("Input element is missing name: ".$element);
         }
         if ($valueAttr == null) {
-            throw new \Exception("Input element is missing value: ".$element);
+            throw new FCFormsTestException("Input element is missing value: ".$element);
         }
 
         $variables[$nameAttr->nodeValue] = $valueAttr->nodeValue;

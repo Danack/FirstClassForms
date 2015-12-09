@@ -154,12 +154,10 @@ abstract class ElementPrototype
         if (array_key_exists('label', $formElement) == true) {
             $this->label = $formElement['label'];
         }
-        
-        
+
         if (array_key_exists('helpText', $formElement) == true) {
             $this->helpText = $formElement['helpText'];
         }
-        
 
         if (array_key_exists('placeHolder', $formElement) == true) {
             $this->placeHolder = $formElement['placeHolder'];

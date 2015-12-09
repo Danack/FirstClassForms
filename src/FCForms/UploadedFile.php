@@ -76,16 +76,4 @@ class UploadedFile
     {
         unlink($this->filename);
     }
-    
-    public function storeInTempDir()
-    {
-//        $tmpName = tempnam(sys_get_temp_dir(), "fileupload_");
-//        $result = move_uploaded_file($uploadedFile->tmpName, $tmpName);
-//
-//        if ($result == true) {
-//            $uploadedFile->tmpName = $tmpName;
-//            $serializedData = $uploadedFile->serialize();
-//            $this->form->getDataStore()->setValue($this->getID(), $serializedData);
-//            $this->setCurrentValue($uploadedFile);
-    }
 }

@@ -23,13 +23,11 @@ class FirstForm extends Form
 
             'endElements'   => array(
                 array(
-                    'isActive',
                     'type'  => 'FCForms\FormElement\CheckBox',
                     'label' => 'Is active',
                     'name'  => 'isActive',
                 ),
                 array(
-                    'isActive',
                     'type'  => 'FCForms\FormElement\Text',
                     'label' => 'Some text',
                     'name'  => 'testText',

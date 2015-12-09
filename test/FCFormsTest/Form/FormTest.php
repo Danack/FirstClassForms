@@ -7,6 +7,7 @@ use FCForms\Render\BootStrapRender;
 use FluentDOM\Document as FluentDOMDoc;
 use FluentDOM\Xpath as FluentDomXpath;
 use Room11\HTTP\VariableMap\ArrayVariableMap;
+use FCForms\FileFetcher\StubFileFetcher;
 
 class FormTest extends BaseTestCase
 {
@@ -51,8 +52,8 @@ class FormTest extends BaseTestCase
         $formAfterSubmission = $injector->make('FCFormsTest\ExampleForms\FirstForm');
         $this->assertTrue($formAfterSubmission->isSubmitted($submittedVariableMap));
 
-        //$formAfterSubmission->createFromData($variables);
-        $formAfterSubmission->initFromSubmittedData($submittedVariableMap);
+        $stubFiles = new StubFileFetcher([]);
+        $formAfterSubmission->initFromSubmittedData($submittedVariableMap, $stubFiles);
         $submittedValues = $formAfterSubmission->getAllValues();
         $this->checkValuesValid($data, $submittedValues);
 

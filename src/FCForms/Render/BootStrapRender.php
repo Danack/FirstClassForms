@@ -260,7 +260,7 @@ HTML;
     <div class="col-sm-offset-%d col-sm-%d">
       <div class="checkbox">
         <label>
-          <input type="checkbox" name="%s" %s>%s
+          <input type="checkbox" name="%s" value="%s" %s>%s
         </label>
       </div>
       %s
@@ -274,6 +274,7 @@ HTML;
             $errorClass,
             $this->getLabelSpan(),
             12 - $this->getLabelSpan(),
+            Escape::htmlAttribute($element->getFormName()),
             Escape::htmlAttribute($element->getFormName()),
             $checkedString,
             Escape::html($prototype->getLabel()),

@@ -396,20 +396,19 @@ abstract class Form
             false,
             true
         );
+
         if ($storedValues === false) {
             $this->prototype->createElementsFromData($this, []);
+            $this->initialized = 'initFromStorageNoData';
             return false;
         }
 
         $topLevelData = array_merge($storedValues['data']['start'], $storedValues['data']['end']);
         $rowData = $storedValues['data']['rows'];
         $this->prototype->createElementsFromData($this, $topLevelData, $rowData);
-
-        //$storedValues['rowIDs'];
         $this->forceError = $storedValues['forceError'];
         $this->errorMessage = $storedValues['errorMessage'];
-
-        $this->initialized = 'initFromVariableMap';
+        $this->initialized = 'initFromStorageWithData';
         
         return true;
     }

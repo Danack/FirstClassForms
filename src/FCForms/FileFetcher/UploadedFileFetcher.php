@@ -8,20 +8,6 @@ use FCForms\FileUploadException;
 use FCForms\UploadedFile;
 use Room11\HTTP\Request;
 
-//function getNormalizedFILES($files)
-//{
-//    $newFiles = array();
-//    foreach ($files as $fieldName => $fieldValue) {
-//        foreach ($fieldValue as $paramName => $paramValue) {
-//            /** @noinspection PhpUnusedLocalVariableInspection */
-//            foreach ((array)$paramValue as $index => $value) {
-//                $newFiles[$fieldName][$paramName] = $value;
-//            }
-//        }
-//    }
-//    return $newFiles;
-//}
-
 function getFileUploadErrorMeaning($errorCode)
 {
     switch ($errorCode) {
