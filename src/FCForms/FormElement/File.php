@@ -30,13 +30,21 @@ class File extends ElementPrototype
     
     public function serialize(Element $element)
     {
-        $data = array($this->name => $element->getCurrentValue()->serialize());
+        $data = $element->getCurrentValue();
+        if ($data) {
+            $data = $data->serialize();
+        }
+        $data = array($this->name => $data);
             
         return $data;
     }
 
     public function deserialize($serializedData)
     {
+        if ($serializedData == null) {
+            return null;
+        }
+
         $uploadedFile = UploadedFile::deserialize($serializedData);
         return $uploadedFile;
     }
@@ -55,9 +63,7 @@ class File extends ElementPrototype
         $rowID
     ) {
         $rowSpecificName = $this->getFormName($rowID);
-
         if (!$fileFetcher->hasUploadedFile($rowSpecificName)) {
-            echo "rowSpecificName $rowSpecificName \n";
             return null;
         }
 

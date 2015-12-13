@@ -9,6 +9,7 @@ use FCForms\SafeAccess;
 use FCForms\FileFetcher;
 use Room11\HTTP\VariableMap;
 use Auryn\Injector;
+use FCForms\FileFetcher\StubFileFetcher;
 
 abstract class Form
 {
@@ -167,8 +168,12 @@ abstract class Form
      */
     public function initFromSubmittedData(
         VariableMap $variableMap,
-        FileFetcher $fileFetcher
+        FileFetcher $fileFetcher = null
     ) {
+        if ($fileFetcher == null) {
+            $fileFetcher = new StubFileFetcher([]);
+        }
+
         $this->prototype->createElementsFromSubmittedData($this, $variableMap, $fileFetcher);
         $this->initialized = 'initFromVariableMap';
     }
@@ -469,32 +474,40 @@ abstract class Form
         return $result;
     }
 
-    /**
-     * @throws \Exception
-     */
-    public function reset()
-    {
-        foreach ($this->startElements as $element) {
-            $element->reset();
-        }
-
-        $this->rowElementsArray = array();
-
-        foreach ($this->endElements as $element) {
-            $element->reset();
-        }
-        throw new \Exception("Not implemented safely.");
-    }
-
-    /**
-     * @param $filename
-     * @return \FCForms\UploadedFile
-     */
-    public function getUploadedFile($filename)
-    {
-        throw new \Exception("Not currently supported");
-        //return $this->variableMap->getUploadedFile($filename);
-    }
+//    /**
+//     * @param $filename
+//     * @return \FCForms\UploadedFile
+//     */
+//    public function getUploadedFile($name, $id)
+//    {
+//
+//        if ($id == 'start') {
+//            foreach ($this->startElements as $element) {
+//                if ($element->getName() == $name) {
+//                    return $element->getCurrentValue();
+//                }
+//            }
+//        }
+//
+//        foreach ($this->rowElementsArray as $rowElements) {
+//            if ($rowElements->getID() == $id) {
+//                $value = $rowElements->getValue($name);
+//                if ($value !== null) {
+//                    return $value;
+//                }
+//            }
+//        }
+//
+//        if ($id == 'end') {
+//            foreach ($this->endElements as $element) {
+//                if ($element->getName() == $name) {
+//                    return $element->getCurrentValue();
+//                }
+//            }
+//        }
+//
+//        return $this->
+//    }
 
     /**
      * @return string
@@ -509,34 +522,33 @@ abstract class Form
      */
     public function setFormError($errorMessage)
     {
-        //TODO - not implemented yet...
         $this->errorMessage = $errorMessage;
         $this->forceError = true;
     }
 
-    /**
-     * Processes the form.
-     * @param VariableMap $variableMap
-     * @param callable $validCallback
-     * @param callable $invalidCallback
-     */
-    public function processPost(
-        VariableMap $variableMap,
-        callable $validCallback,
-        callable $invalidCallback = null
-    ) {
-        $this->initFromSubmittedData($variableMap);
-        $this->validate();
-
-        if ($this->isValid && $this->forceError == false) {
-            $validCallback($this);
-        }
-        else if ($invalidCallback) {
-            $invalidCallback($this);
-        }
-
-        $this->saveValuesToStorage();
-    }
+//    /**
+//     * Processes the form.
+//     * @param VariableMap $variableMap
+//     * @param callable $validCallback
+//     * @param callable $invalidCallback
+//     */
+//    public function processPost(
+//        VariableMap $variableMap,
+//        callable $validCallback,
+//        callable $invalidCallback = null
+//    ) {
+//        $this->initFromSubmittedData($variableMap);
+//        $this->validate();
+//
+//        if ($this->isValid && $this->forceError == false) {
+//            $validCallback($this);
+//        }
+//        else if ($invalidCallback) {
+//            $invalidCallback($this);
+//        }
+//
+//        $this->saveValuesToStorage();
+//    }
 
     /**
      * @return bool|string

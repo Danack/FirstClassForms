@@ -65,6 +65,11 @@ class UploadedFileFetcher implements FileFetcher
         return $this->request->hasFormFile($formFileName);
     }
 
+    public function getAllFileNames()
+    {
+        return $this->request->getAllFormFiles();
+    }
+    
     /**
      * @param $formFileName
      * @throws \FCForms\FileUploadException
