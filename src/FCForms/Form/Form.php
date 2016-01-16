@@ -8,6 +8,8 @@ use FCForms\FormElement\ElementCollection;
 use FCForms\SafeAccess;
 use FCForms\FileFetcher;
 use Room11\HTTP\VariableMap;
+use Auryn\Injector;
+use FCForms\FileFetcher\StubFileFetcher;
 
 abstract class Form
 {
@@ -166,8 +168,12 @@ abstract class Form
      */
     public function initFromSubmittedData(
         VariableMap $variableMap,
-        FileFetcher $fileFetcher
+        FileFetcher $fileFetcher = null
     ) {
+        if ($fileFetcher == null) {
+            $fileFetcher = new StubFileFetcher([]);
+        }
+
         $this->prototype->createElementsFromSubmittedData($this, $variableMap, $fileFetcher);
         $this->initialized = 'initFromVariableMap';
     }
@@ -468,32 +474,6 @@ abstract class Form
         return $result;
     }
 
-    /**
-     * @throws \Exception
-     */
-    public function reset()
-    {
-        foreach ($this->startElements as $element) {
-            $element->reset();
-        }
-
-        $this->rowElementsArray = array();
-
-        foreach ($this->endElements as $element) {
-            $element->reset();
-        }
-        throw new \Exception("Not implemented safely.");
-    }
-
-    /**
-     * @param $filename
-     * @return \FCForms\UploadedFile
-     */
-    public function getUploadedFile($filename)
-    {
-        throw new \Exception("Not currently supported");
-        //return $this->variableMap->getUploadedFile($filename);
-    }
 
     /**
      * @return string
@@ -508,7 +488,6 @@ abstract class Form
      */
     public function setFormError($errorMessage)
     {
-        //TODO - not implemented yet...
         $this->errorMessage = $errorMessage;
         $this->forceError = true;
     }

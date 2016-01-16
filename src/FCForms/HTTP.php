@@ -8,6 +8,8 @@ use FCForms\Form\Form;
 use Room11\HTTP\Request;
 use Room11\HTTP\VariableMap;
 use Room11\HTTP\Body\RedirectBody;
+use Tier\Executable;
+use Tier\InjectionParams;
 
 class HTTP
 {
@@ -34,7 +36,11 @@ class HTTP
     
         //Some elements e.g. passwords, should not be stored in session storage.
         if ($form->canAllElementsBeStored() == false) {
-            return false;
+            $fn = function () {
+                return false;
+            };
+
+            return new Executable($fn, new InjectionParams([$form]));
         }
     
         /** @var $form \FCForms\Form\Form */

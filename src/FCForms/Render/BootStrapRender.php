@@ -152,7 +152,7 @@ HTML;
   <div class="form-group">
     <label for="inputPassword3" class="col-sm-%d control-label">%s</label>
     <div class="col-sm-%d">
-      <input type="password" class="form-control" id="inputPassword3" placeholder="%s">
+      <input type="password" class="form-control" id="inputPassword3" placeholder="%s" name="%s">
     </div>
   </div>
 HTML;
@@ -162,7 +162,8 @@ HTML;
             $this->getLabelSpan(),
             Escape::html($element->getPrototype()->label),
             12 - $this->getLabelSpan(),
-            Escape::htmlAttribute($prototype->getPlaceHolder())
+            Escape::htmlAttribute($prototype->getPlaceHolder()),
+            Escape::htmlAttribute($element->getFormName())
         );
 
         return $output;
