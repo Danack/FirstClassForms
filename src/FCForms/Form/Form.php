@@ -8,7 +8,6 @@ use FCForms\FormElement\ElementCollection;
 use FCForms\SafeAccess;
 use FCForms\FileFetcher;
 use Room11\HTTP\VariableMap;
-use Auryn\Injector;
 
 abstract class Form
 {
@@ -515,30 +514,6 @@ abstract class Form
     }
 
     /**
-     * Processes the form.
-     * @param VariableMap $variableMap
-     * @param callable $validCallback
-     * @param callable $invalidCallback
-     */
-    public function processPost(
-        VariableMap $variableMap,
-        callable $validCallback,
-        callable $invalidCallback = null
-    ) {
-        $this->initFromSubmittedData($variableMap);
-        $this->validate();
-
-        if ($this->isValid && $this->forceError == false) {
-            $validCallback($this);
-        }
-        else if ($invalidCallback) {
-            $invalidCallback($this);
-        }
-
-        $this->saveValuesToStorage();
-    }
-
-    /**
      * @return bool|string
      */
     public function getErrorMessage()
@@ -567,7 +542,11 @@ abstract class Form
     public function prepareToRender()
     {
         if ($this->initialized == null) {
-            throw new FCFormsException("Form has not been initialized with data. Did you remember to share it?");
+            $message = sprintf(
+                "Form %s has not been initialized with data. Did you remember to share it?",
+                get_class($this)
+            );
+            throw new FCFormsException($message);
         }
 
         $this->startElements->prepareToRender();
