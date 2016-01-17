@@ -2,7 +2,7 @@
 
 namespace FCForms\Render;
 
-use Escape\Escape;
+
 use FCForms\Form\Form;
 use FCForms\FormElement\ElementPrototype;
 use FCForms\FormElement\Element;
@@ -18,6 +18,8 @@ use FCForms\FormElement\SubmitButton;
 use FCForms\FormElement\Text;
 use FCForms\FormElement\TextArea;
 use FCForms\FormElement\Title;
+use FCForms\Escaper;
+
 
 class BootStrapRender implements Render
 {
@@ -27,10 +29,16 @@ class BootStrapRender implements Render
     private $renderCallables = [];
 
     /**
+     * @var Escaper
+     */
+    private $escaper;
+    
+    /**
      *
      */
-    public function __construct()
+    public function __construct(Escaper $escaper)
     {
+        $this->escaper = $escaper;
         $this->renderCallables['FCForms\FormElement\CheckBox'] = [$this, 'renderCheckBox'];
         $this->renderCallables['FCForms\FormElement\CSRF'] = [$this, 'renderCSRF'];
         $this->renderCallables['FCForms\FormElement\File'] = [$this, 'renderFile'];
@@ -75,7 +83,7 @@ class BootStrapRender implements Render
             foreach ($errorMessages as $errorMessage) {
                 $helpText .= sprintf(
                     "<span id='helpBlock2' class='help-block'>%s</span>",
-                    Escape::html($errorMessage)
+                    $this->escaper->escapeHTML($errorMessage)
                 );
             }
         }
@@ -90,7 +98,7 @@ class BootStrapRender implements Render
         if ($prototype->helpText) {
             $helpText = sprintf(
                 "<span id='helpBlock' class='help-block'>%s</span>",
-                Escape::html($prototype->helpText)
+                $this->escaper->escapehtml($prototype->helpText)
             );
         }
         
@@ -112,9 +120,9 @@ class BootStrapRender implements Render
             
             $optionText .= sprintf(
                 "<option value='%s' %s >%s</option>\n",
-                Escape::htmlAttribute($option),
-                Escape::html($selectedString),
-                Escape::htmlAttribute($description)
+                $this->escaper->escapeHTMLAttribute($option),
+                $this->escaper->escapeHTML($selectedString),
+                $this->escaper->escapeHTMLAttribute($description)
             );
         }
 
@@ -136,7 +144,7 @@ HTML;
             $this->getLabelSpan(),
             $prototype->getLabel(),
             12 - $this->getLabelSpan(),
-            Escape::htmlAttribute($element->getFormName()),
+            $this->escaper->escapeHTMLAttribute($element->getFormName()),
             $optionText
         );
 
@@ -160,10 +168,10 @@ HTML;
         $output = sprintf(
             $html,
             $this->getLabelSpan(),
-            Escape::html($element->getPrototype()->label),
+            $this->escaper->escapehtml($element->getPrototype()->label),
             12 - $this->getLabelSpan(),
-            Escape::htmlAttribute($prototype->getPlaceHolder()),
-            Escape::htmlAttribute($element->getFormName())
+            $this->escaper->escapehtmlAttribute($prototype->getPlaceHolder()),
+            $this->escaper->escapehtmlAttribute($element->getFormName())
         );
 
         return $output;
@@ -190,8 +198,8 @@ HTML;
 
         $output .= sprintf(
             "<input type='hidden' name='%s' value='%s' />\n",
-            Escape::htmlAttribute($element->getFormName()),
-            Escape::htmlAttribute($element->getCurrentValue())
+            $this->escaper->escapehtmlAttribute($element->getFormName()),
+            $this->escaper->escapehtmlAttribute($element->getCurrentValue())
         );
 
         return $output;
@@ -205,8 +213,8 @@ HTML;
         $output = "";
         $output .= sprintf(
             "<input type='hidden' name='%s' value='%s' />\n",
-            Escape::htmlAttribute($element->getFormName()),
-            Escape::htmlAttribute($element->getCurrentValue())
+            $this->escaper->escapehtmlAttribute($element->getFormName()),
+            $this->escaper->escapehtmlAttribute($element->getCurrentValue())
         );
 
         return $output;
@@ -230,7 +238,7 @@ HTML;
             $html,
             $this->getLabelSpan(),
             12 - $this->getLabelSpan(),
-            Escape::html($prototype->text)
+            $this->escaper->escapehtml($prototype->text)
         );
 
         return $output;
@@ -275,10 +283,10 @@ HTML;
             $errorClass,
             $this->getLabelSpan(),
             12 - $this->getLabelSpan(),
-            Escape::htmlAttribute($element->getFormName()),
-            Escape::htmlAttribute($element->getFormName()),
+            $this->escaper->escapehtmlAttribute($element->getFormName()),
+            $this->escaper->escapehtmlAttribute($element->getFormName()),
             $checkedString,
-            Escape::html($prototype->getLabel()),
+            $this->escaper->escapehtml($prototype->getLabel()),
             $errorText,
             $helpText
         );
@@ -323,10 +331,9 @@ HTML;
         $output = sprintf(
             $html,
             $this->getLabelSpan(),
-            Escape::html($prototype->label),
+            $this->escaper->escapehtml($prototype->label),
             12 - $this->getLabelSpan(),
-            Escape::htmlAttribute($element->getFormName()),
-            //Escape::htmlAttribute($placeHolderText),
+            $this->escaper->escapehtmlAttribute($element->getFormName()),
             $acceptText,
             $errorText
         );
@@ -352,7 +359,7 @@ HTML;
             $prototype->getCSSClass(),
             $this->getLabelSpan(),
             12 - $this->getLabelSpan(),
-            Escape::html($label->getCurrentValue())
+            $this->escaper->escapehtml($label->getCurrentValue())
         );
 
         return $output;
@@ -388,10 +395,10 @@ HTML;
 
             $radioText .= sprintf(
                 $radioHTML,
-                Escape::htmlAttribute($element->getFormName()),
-                Escape::htmlAttribute($option),
+                $this->escaper->escapehtmlAttribute($element->getFormName()),
+                $this->escaper->escapehtmlAttribute($option),
                 $checkedString,
-                Escape::html($description)
+                $this->escaper->escapehtml($description)
             );
         }
 
@@ -409,7 +416,7 @@ HTML;
             $html,
             $errorClass,
             $this->getLabelSpan(),
-            Escape::htmlAttribute($prototype->getLabel()),
+            $this->escaper->escapehtmlAttribute($prototype->getLabel()),
             12 - $this->getLabelSpan(),
             $radioText,
             $errorText
@@ -435,7 +442,7 @@ HTML;
         $output = sprintf(
             $html,
             $prototype->getCSSClass(),
-            Escape::html($element->getCurrentValue())
+            $this->escaper->escapehtml($element->getCurrentValue())
         );
 
         return $output;
@@ -476,9 +483,9 @@ HTML;
             $this->getLabelSpan(),
             $prototype->label,
             12 - $this->getLabelSpan(),
-            Escape::htmlAttribute($element->getFormName()),
-            Escape::htmlAttribute($placeHolderText),
-            Escape::htmlAttribute($element->getCurrentValue()),
+            $this->escaper->escapehtmlAttribute($element->getFormName()),
+            $this->escaper->escapehtmlAttribute($placeHolderText),
+            $this->escaper->escapehtmlAttribute($element->getCurrentValue()),
             $errorText
         );
 
@@ -503,7 +510,7 @@ HTML;
         if ($prototype->getPlaceHolder() != null) {
             $placeHolderText .= sprintf(
                 "placeholder='%s'",
-                Escape::htmlAttribute($prototype->getPlaceHolder())
+                $this->escaper->escapehtmlAttribute($prototype->getPlaceHolder())
             );
         }
 
@@ -519,14 +526,14 @@ HTML;
 
         $output .= sprintf(
             $html,
-            Escape::htmlAttribute($errorClass),
+            $this->escaper->escapehtmlAttribute($errorClass),
             $this->getLabelSpan(),
-            Escape::html($prototype->label),
+            $this->escaper->escapehtml($prototype->label),
             12 - $this->getLabelSpan(),
             $prototype->getRows(),
             $prototype->getCols(),
             $placeHolderText,
-            Escape::html($element->getCurrentValue()),
+            $this->escaper->escapehtml($element->getCurrentValue()),
             $errorText
         );
 
@@ -567,7 +574,7 @@ HTML;
         if ($formID !== null) {
             $formIDString = sprintf(
                 "id='%s'",
-                Escape::htmlAttribute($formID)
+                $this->escaper->escapehtmlAttribute($formID)
             );
         }
         
@@ -575,7 +582,7 @@ HTML;
         
         $output .= sprintf(
             "<form action='' method='post' name='%s' onsubmit='' class='form-horizontal %s' %s %s>\n",
-            Escape::htmlAttribute($formHTMLName),
+            $this->escaper->escapehtmlAttribute($formHTMLName),
             $form->getStyleName(),
             $encodingString,
             $formIDString
@@ -612,7 +619,7 @@ HTML;
         $rowIDs = implode(',', $form->rowIDs);
         $output .= sprintf(
             "<input type='hidden' name='rowIDs' value='%s' />\n",
-            Escape::htmlAttribute($rowIDs)
+            $this->escaper->escapehtmlAttribute($rowIDs)
         );
 
         foreach ($form->endElements as $element) {

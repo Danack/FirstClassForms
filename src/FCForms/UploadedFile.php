@@ -8,7 +8,7 @@ class UploadedFile
     private $filename;
     private $size;
 
-    public function __construct($originalName, $filename, $allegedSize)
+    public function __construct($originalName, $filename, $allegedSize, $allegedType)
     {
         $this->originalName = $originalName;
         $this->filename = $filename;
