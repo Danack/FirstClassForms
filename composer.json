@@ -37,7 +37,7 @@
     },
     "require":{
         "php": ">=5.4",
-        "room11/http": "^0.0.10",
+        "room11/http": "^0.1.0`",
         "zendframework/zend-inputfilter" : ">=2.1.5",
         "zendframework/zend-filter": ">=2.1.5",
         "zendframework/zend-validator": ">=2.1.5"
