@@ -4,20 +4,20 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "2bb6d916b7f3b91bea85383b3af66966",
+    "hash": "576f929dc418afc7902dfb8e2a59822b",
     "packages": [
         {
             "name": "room11/http",
-            "version": "0.0.10",
+            "version": "0.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Danack/HTTP.git",
-                "reference": "5b427e7fb89076441e859c197aa725e3cfa89b73"
+                "reference": "e909d21ea44799947b18fa02e8aa24f017bb860c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Danack/HTTP/zipball/5b427e7fb89076441e859c197aa725e3cfa89b73",
-                "reference": "5b427e7fb89076441e859c197aa725e3cfa89b73",
+                "url": "https://api.github.com/repos/Danack/HTTP/zipball/e909d21ea44799947b18fa02e8aa24f017bb860c",
+                "reference": "e909d21ea44799947b18fa02e8aa24f017bb860c",
                 "shasum": ""
             },
             "require-dev": {
@@ -49,7 +49,7 @@
                 "interface",
                 "room11"
             ],
-            "time": "2016-01-07 18:07:52"
+            "time": "2016-01-18 12:49:27"
         },
         {
             "name": "zendframework/zend-filter",
