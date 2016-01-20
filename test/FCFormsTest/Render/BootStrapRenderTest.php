@@ -26,7 +26,8 @@ class BootStrapRenderTest extends BaseTestCase
     {
         $form = buildFormWithData('FCFormsTest\ExampleForms\UnrenderableForm');
         $form->initFromData([]);
-        $renderer = new \FCForms\Render\BootStrapRender();
+        $injector = createInjector();
+        $renderer  = $injector->make('FCForms\Render\BootStrapRender');
         $this->setExpectedException('FCForms\RenderException');
         $renderer->render($form);
     }
@@ -35,7 +36,8 @@ class BootStrapRenderTest extends BaseTestCase
     {
         $loginForm = buildFormWithData('FCFormsTest\ExampleForms\LoginForm');
         $dataStoredInSession = $loginForm->initFromStorage();
-        $renderer = new \FCForms\Render\BootStrapRender();
+        $injector = createInjector();
+        $renderer  = $injector->make('FCForms\Render\BootStrapRender');
         $html = $renderer->render($loginForm);
     }
 
@@ -48,7 +50,8 @@ class BootStrapRenderTest extends BaseTestCase
         $loginForm->initFromData([]);
         $loginForm->setFormError($errorMessage);
         $dataStoredInSession = $loginForm->initFromStorage();
-        $renderer = new \FCForms\Render\BootStrapRender();
+        $renderer  = $injector->make('FCForms\Render\BootStrapRender');
+        
         $html = $renderer->render($loginForm);
         $this->assertContains($errorMessage, $html);
 

@@ -2,7 +2,6 @@
 
 namespace FCForms\Render;
 
-
 use FCForms\Form\Form;
 use FCForms\FormElement\ElementPrototype;
 use FCForms\FormElement\Element;
@@ -19,7 +18,6 @@ use FCForms\FormElement\Text;
 use FCForms\FormElement\TextArea;
 use FCForms\FormElement\Title;
 use FCForms\Escaper;
-
 
 class BootStrapRender implements Render
 {

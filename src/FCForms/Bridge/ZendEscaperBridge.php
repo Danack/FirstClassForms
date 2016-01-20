@@ -18,6 +18,9 @@ class ZendEscaperBridge implements Escaper
     
     public function escapeHTML($string)
     {
+        if ($string === null) {
+            return '';
+        }
         if (is_object($string) == true) {
             if (method_exists($string, '__toString') == false) {
                 throw EscapeException::fromBadObject($string);
@@ -33,6 +36,9 @@ class ZendEscaperBridge implements Escaper
 
     public function escapeHTMLAttribute($string)
     {
+        if ($string === null) {
+            return '';
+        }
         if (is_object($string) == true) {
             if (method_exists($string, '__toString') == false) {
                 throw EscapeException::fromBadObject($string);
@@ -48,6 +54,9 @@ class ZendEscaperBridge implements Escaper
 
     public function escapeJavascript($string)
     {
+        if ($string === null) {
+            return '';
+        }
         if (is_object($string) == true) {
             if (method_exists($string, '__toString') == false) {
                 throw EscapeException::fromBadObject($string);
@@ -63,6 +72,9 @@ class ZendEscaperBridge implements Escaper
 
     public function escapeCSS($string)
     {
+        if ($string === null) {
+            return '';
+        }
         if (is_object($string) == true) {
             if (method_exists($string, '__toString') == false) {
                 throw EscapeException::fromBadObject($string);
@@ -78,6 +90,9 @@ class ZendEscaperBridge implements Escaper
 
     public function escapeURLComponent($string)
     {
+        if ($string === null) {
+            return '';
+        }
         if (is_object($string) == true) {
             if (method_exists($string, '__toString') == false) {
                 throw EscapeException::fromBadObject($string);

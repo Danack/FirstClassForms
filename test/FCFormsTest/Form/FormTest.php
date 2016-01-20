@@ -28,8 +28,7 @@ class FormTest extends BaseTestCase
         $injector = createInjector();
         /** @var $form \FCFormsTest\ExampleForms\FirstForm */
         $form = $injector->make('FCFormsTest\ExampleForms\FirstForm');
-
-        $renderer = new \FCForms\Render\BootStrapRender();
+        $renderer = $injector->make('FCForms\Render\BootStrapRender');
 
         $variableMap = new ArrayVariableMap([]);
         $this->assertFalse($form->isSubmitted($variableMap));

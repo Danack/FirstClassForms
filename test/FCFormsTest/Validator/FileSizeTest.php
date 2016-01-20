@@ -38,7 +38,7 @@ class FileSizeTest extends BaseTestCase
             'maxSize' => (filesize($filename) + 100 + $offset),
         ];
 
-        $uploadedFile = new UploadedFile("Whatever", __FILE__, filesize(__FILE__));
+        $uploadedFile = new UploadedFile("Whatever", __FILE__, filesize(__FILE__), 'text/plain');
         $validator = new FileSize($options);
         $valid = $validator->isValid($uploadedFile);
         $this->assertEquals($expectedResult, $valid);

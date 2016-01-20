@@ -29,6 +29,8 @@ function createInjector()
 
     $injector->alias('FCForms\FileFetcher', 'FCForms\FileFetcher\StubFileFetcher');
     $injector->share(new StubFileFetcher([]));
+    $injector->alias('FCForms\Escaper', 'FCForms\Bridge\ZendEscaperBridge');
+    
     $injector->share($injector);
 
     return $injector;
