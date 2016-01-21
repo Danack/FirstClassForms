@@ -3,6 +3,7 @@
 namespace FCForms\FormElement;
 
 use FCForms\FCFormsException;
+use FCForms\DataMissingException;
 use FCForms\Form\Form;
 use FCForms\DataStore;
 use Room11\HTTP\VariableMap;
@@ -81,8 +82,9 @@ class CSRF extends ElementPrototype
     {
         $sessionName = $this->getSessionKeyNameForCSRF($elementInstance);
         $validationValue = $this->dataStore->getValue($sessionName, false, true);
+
         if ($validationValue === false) {
-            throw new FCFormsException("Could not read value for validation");
+            throw new DataMissingException("Could not read value for validation");
         }
 
         return $validationValue;

@@ -4,11 +4,11 @@ namespace FCForms\Form;
 
 use FCForms\DataStore;
 use FCForms\FCFormsException;
+use FCForms\DataMissingException;
 use FCForms\FormElement\ElementCollection;
 use FCForms\SafeAccess;
 use FCForms\FileFetcher;
 use Room11\HTTP\VariableMap;
-use Auryn\Injector;
 use FCForms\FileFetcher\StubFileFetcher;
 
 abstract class Form
@@ -332,18 +332,28 @@ abstract class Form
         if ($this->forceError) {
             return false;
         }
+        
+        try {
 
-        $elementValid = $this->startElements->validate();
-        $isValid = ($isValid && $elementValid);
+            $elementValid = $this->startElements->validate();
+            $isValid = ($isValid && $elementValid);
 
-        foreach ($this->rowElementsArray as $rowElements) {
-            $isValid = ($isValid && $rowElements->validate());
+            foreach ($this->rowElementsArray as $rowElements) {
+                $isValid = ($isValid && $rowElements->validate());
+            }
+
+            $elementValid = $this->endElements->validate();
+            $isValid = ($isValid && $elementValid);
+
+            $this->isValid = $isValid;
+
         }
-
-        $elementValid = $this->endElements->validate();
-        $isValid = ($isValid && $elementValid);
-
-        $this->isValid = $isValid;
+        catch (DataMissingException $dme) {
+            $this->isValid = false;
+            //This needs to notify a user provided callback.
+            $this->errorMessage = "Error reading stored data";
+        }
+        
 
         return $this->isValid;
     }

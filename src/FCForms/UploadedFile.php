@@ -7,6 +7,7 @@ class UploadedFile
     private $originalName;
     private $filename;
     private $size;
+    private $allegedType;
 
     public function __construct($originalName, $filename, $allegedSize, $allegedType)
     {
@@ -22,6 +23,7 @@ class UploadedFile
         }
 
         $this->size = $size;
+        $this->allegedType = $allegedType;
     }
 
     /**
@@ -54,6 +56,7 @@ class UploadedFile
         $data['originalName'] = $this->originalName;
         $data['filename'] = $this->filename;
         $data['size'] = $this->size;
+        $data['alleged_type'] = $this->allegedType;
 
         return json_encode($data);
     }
@@ -65,10 +68,11 @@ class UploadedFile
             throw new FCFormsException("Failed to decode string $string");
         }
         //@todo - sanity check tmpName
-        return new self(
+        return new self(    
             $data['originalName'],
             $data['filename'],
-            $data['size']
+            $data['size'],
+            $data['alleged_type']
         );
     }
 

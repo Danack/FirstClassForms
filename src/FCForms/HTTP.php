@@ -5,16 +5,16 @@ namespace FCForms;
 
 use Auryn\Injector;
 use FCForms\Form\Form;
-use Room11\HTTP\Request;
 use Room11\HTTP\VariableMap;
 use Room11\HTTP\Body\RedirectBody;
 use Tier\Executable;
 use Tier\InjectionParams;
+use Room11\HTTP\RequestRouting;
 
 class HTTP
 {
     public static function processFormRedirect(
-        Request $request,
+        RequestRouting $request,
         Injector $injector,
         VariableMap $variableMap,
         FileFetcher $fileFetcher
